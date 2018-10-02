@@ -1,0 +1,43 @@
+<div *ngIf="showToggle"
+     [style.display]="'block'"
+     [style.background-color]="'rgba(0,0,0,0.4)'"
+     class="modal fade in" role="dialog" id="editRow">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()">&times;
+        </button>
+        <h2 class="modal-title">{{'companies.edit' }}</h2>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="companyForm" class="form-horizontal" method="post" id="detailsForm">
+          <input type="text" hidden="hidden" id="id" name="id">
+
+          <div class="form-group">
+            <label for="name" class="control-label col-xs-3">{{'companies.name' }}</label>
+
+            <div class="col-xs-9">
+              <input formControlName="name" type="text" class="form-control" id="name" name="name" placeholder="Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="INN" class="control-label col-xs-3">{{'companies.INN' }}</label>
+
+            <div class="col-xs-9">
+              <input formControlName="INN" type="text" class="form-control" id="INN" name="INN" placeholder="INN">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-3 col-xs-9">
+              <button type="button"
+                      [disabled]="!companyForm.valid"
+                      class="btn btn-primary" (click)="onSave()">Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

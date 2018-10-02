@@ -1,0 +1,22 @@
+<p-pickList [source]="source" [target]="target" sourceHeader="Available" targetHeader="Selected" dragdrop="true"
+            dragdropScope="params"
+            [responsive]="true" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}" filterBy="name"
+            sourceFilterPlaceholder="Search by name" targetFilterPlaceholder="Search by name">
+  <ng-template let-params pTemplate="item">
+    <div class="ui-helper-clearfix" style="width:100%">
+      <button type="button" pButton icon="fa fa-plus" style="float:right"
+              (click)="onEdit(params)" label="Add">Edit
+      </button>
+    </div>
+    <div>
+      <button pButton style="float:right;margin: 5px 0 0 0" class="ui-button-danger "
+              (click)="onDelete(params)"
+              label="Delete">Delete
+      </button>
+    </div>
+    <div class="ui-helper-clearfix">
+      <div style="font-size:14px;float:left;margin:15px 5px 0 0">{{params.name}}</div>
+    </div>
+  </ng-template>
+</p-pickList>
+<app-params-edit (onSaveEvent)="onSave($event)"></app-params-edit>
