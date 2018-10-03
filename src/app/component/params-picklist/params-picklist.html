@@ -1,17 +1,46 @@
-<p-pickList [source]="source" [target]="target" sourceHeader="Available" targetHeader="Selected" dragdrop="true"
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12 ui-md-4">
+    <div class="ui-inputgroup">
+      <span class="ui-inputgroup-addon"><i class="fa fa-chevron-right"> Модель</i></span>
+      <p-dropdown [options]="models" [(ngModel)]="selectedModel" [filter]="true"
+                  [style]="{'width':'150px'}">
+        <ng-template let-item pTemplate="selectedItem">
+          <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+            <div style="font-size:14px;float:right;margin-top:4px">{{item.value}}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-md-4">
+    <div class="ui-inputgroup">
+      <span class="ui-inputgroup-addon"><i class="fa fa-list-ol"> Стадия</i></span>
+      <p-dropdown [options]="stages" [(ngModel)]="selectedStage" [filter]="true"
+                  [style]="{'width':'150px'}">
+        <ng-template let-item pTemplate="selectedItem">
+          <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+            <div style="font-size:14px;float:right;margin-top:4px">{{item.label}}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </div>
+</div>
+<p-pickList [source]="source" [target]="target" sourceHeader="Список параметров" targetHeader="Список выбранных параметров" dragdrop="true"
             dragdropScope="params"
             [responsive]="true" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}" filterBy="name"
-            sourceFilterPlaceholder="Search by name" targetFilterPlaceholder="Search by name">
+            sourceFilterPlaceholder="Поиск по названию" targetFilterPlaceholder="Поиск по названию">
   <ng-template let-params pTemplate="item">
     <div class="ui-helper-clearfix" style="width:100%">
       <button type="button" pButton icon="fa fa-plus" style="float:right"
-              (click)="onEdit(params)" label="Add">Edit
+              (click)="onEdit(params)" label="Add">Изменить
       </button>
     </div>
     <div>
       <button pButton style="float:right;margin: 5px 0 0 0" class="ui-button-danger "
               (click)="onDelete(params)"
-              label="Delete">Delete
+              label="Delete">Удалить
       </button>
     </div>
     <div class="ui-helper-clearfix">
@@ -19,4 +48,12 @@
     </div>
   </ng-template>
 </p-pickList>
+<!--TODO метод на рассчет-->
+<footer>
+  <div class="ui-helper-clearfix" style="width:100%">
+    <button type="button" pButton icon="fa-calculator" style="float:right"
+            (click)="showCreateModal()" label="Add">Рассчитать
+    </button>
+  </div>
+</footer>
 <app-params-edit (onSaveEvent)="onSave($event)"></app-params-edit>

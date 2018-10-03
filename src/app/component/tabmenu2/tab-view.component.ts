@@ -7,7 +7,6 @@ import {MessageService} from 'primeng/api';
   providers: [MessageService]
 })
 export class TabViewComponent {
-
   constructor(private messageService: MessageService) {
   }
 

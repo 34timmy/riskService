@@ -1,16 +1,16 @@
-<p-pickList [source]="source" [target]="target" sourceHeader="Available" targetHeader="Selected" dragdrop="true"
+<p-pickList [source]="source" [target]="target" sourceHeader="Список компаний" targetHeader="Список выбранных компаний" dragdrop="true"
             dragdropScope="companies"
             [responsive]="true" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}" filterBy="name"
-            sourceFilterPlaceholder="Search by name" targetFilterPlaceholder="Search by name">
+            sourceFilterPlaceholder="Поиск по названию" targetFilterPlaceholder="Поиск по названию">
   <ng-template let-company pTemplate="item">
     <div class="ui-helper-clearfix" style="width:100%">
       <button type="button" pButton icon="fa fa-plus" style="float:right"
-              (click)="onEdit(company)" label="Add">Edit
+              (click)="onEdit(company)" label="Add">Изменить
       </button>
     </div>
     <div>
-      <button pButton style="float:right;margin: 5px 0px 0px 0px" (click)="onDelete(company)"
-              label="Delete">Delete
+      <button pButton style="float:right;margin: 5px 0 0 0" (click)="onDelete(company)"
+              label="Delete">Удалить
       </button>
     </div>
     <div class="ui-helper-clearfix">

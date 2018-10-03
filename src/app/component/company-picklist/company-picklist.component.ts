@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CompanyModel} from '../../model/company.model';
 import {CompanyService} from '../../service/company.service';
-import {CompanyEditComponent} from '../company/company-edit.component';
+import {CompanyEditComponent} from './company-edit.component';
 
 @Component({
   templateUrl: './company-picklist.html',
@@ -22,6 +22,10 @@ export class CompanyPicklistComponent implements OnInit {
   ngOnInit() {
     this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
     this.target = [];
+  }
+
+  private reloadCompanies() {
+    this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
   }
 
   showCreateModal() {
@@ -49,9 +53,5 @@ export class CompanyPicklistComponent implements OnInit {
         this.reloadCompanies();
       }
     );
-  }
-
-  private reloadCompanies() {
-    this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
   }
 }

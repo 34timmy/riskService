@@ -1,17 +1,17 @@
 import {Routes, RouterModule} from '@angular/router';
-import {CompanyListComponent} from './component/company/company-list.component';
 import {ModuleWithProviders} from '@angular/core';
+import {TabViewComponent} from './component/tabmenu2/tab-view.component';
 
 
 const appRoutes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: '/app-company-list',
+        redirectTo: '/app-tabpanel',
     },
       {
-        path: 'app-company-list',
-        component: CompanyListComponent
+        path: 'app-tabpanel',
+        component: TabViewComponent
     }
 ];
 
