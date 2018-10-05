@@ -1,0 +1,1 @@
+CREATE TABLE test_table (a1 integer PRIMARY KEY, a2 varchar2(250));

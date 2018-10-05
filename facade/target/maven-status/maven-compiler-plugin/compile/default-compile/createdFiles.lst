@@ -1,0 +1,6 @@
+main\java\ru\mifi\service\risk\controllers\DataController.class
+main\java\ru\mifi\service\risk\controllers\ExceptionHandlerController.class
+main\java\ru\mifi\service\risk\exception\RestException.class
+main\java\ru\mifi\service\risk\controllers\ResponseHelper.class
+main\java\ru\mifi\service\risk\RiskServiceApplication.class
+main\java\ru\mifi\service\risk\config\SwaggerConfig.class
