@@ -1,4 +1,4 @@
-package main.java.ru.mifi.service.risk.controllers;
+package ru.mifi.service.risk.controllers;
 
 import java.util.HashMap;
 import java.util.Map;

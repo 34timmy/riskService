@@ -1,11 +1,11 @@
-package main.java.ru.mifi.service.risk.controllers;
+package ru.mifi.service.risk.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import main.java.ru.mifi.service.risk.exception.RestException;
+import ru.mifi.service.risk.exception.RestException;
 
 @Controller
 public class ExceptionHandlerController {

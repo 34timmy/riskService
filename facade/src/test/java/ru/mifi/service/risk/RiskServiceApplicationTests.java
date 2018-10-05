@@ -1,4 +1,4 @@
-package test.java.ru.mifi.service.risk;
+package ru.mifi.service.risk;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

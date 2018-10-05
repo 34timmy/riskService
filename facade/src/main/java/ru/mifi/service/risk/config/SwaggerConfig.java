@@ -1,4 +1,4 @@
-package main.java.ru.mifi.service.risk.config;
+package ru.mifi.service.risk.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

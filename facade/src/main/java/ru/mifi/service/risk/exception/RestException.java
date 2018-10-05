@@ -1,4 +1,4 @@
-package main.java.ru.mifi.service.risk.exception;
+package ru.mifi.service.risk.exception;
 
 public class RestException extends Exception {
 
