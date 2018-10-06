@@ -16,8 +16,10 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
+//                .paths(PathSelectors.any())
                 .paths(PathSelectors.regex(
-                        ".*test.*"
+                        ".*getData.*"
+                        + "|.*import.*"
                         + "|.*2nd_keyword.*"
 
                 ))

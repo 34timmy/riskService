@@ -17,8 +17,9 @@ CREATE TABLE company_business_params (
     param_value varchar2(4000)
 );
 ALTER TABLE company_business_params ADD CONSTRAINT company_bus_param_pk PRIMARY KEY (company_id, param_code, year);
-ALTER TABLE company_business_params ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id);
-ALTER TABLE company_business_params ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code);
+--Нужны ли эти констрейнты? ну нет описания и нет - рассчитать-то всё можем.
+-- ALTER TABLE company_business_params ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id);
+-- ALTER TABLE company_business_params ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code);
 
 
 CREATE TABLE model (
@@ -32,6 +33,7 @@ CREATE TABLE model_calc (
     node VARCHAR2(255) NOT NULL,
     parent_node VARCHAR2(255),
     weight INTEGER,
+    level INTEGER,
     is_leaf INTEGER
 );
 ALTER TABLE model_calc ADD CONSTRAINT model_calc_pk PRIMARY KEY (model_id, node);
