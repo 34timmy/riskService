@@ -24,7 +24,7 @@ ALTER TABLE company_business_params ADD CONSTRAINT company_bus_param_pk PRIMARY 
 
 CREATE TABLE model (
     id varchar2(255) NOT NULL,
-    description varchar2(250)
+    descr varchar2(250)
 );
 ALTER TABLE model ADD CONSTRAINT model_pk PRIMARY KEY (id);
 
@@ -32,7 +32,7 @@ CREATE TABLE model_calc (
     model_id VARCHAR2(255) NOT NULL,
     node VARCHAR2(255) NOT NULL,
     parent_node VARCHAR2(255),
-    weight INTEGER,
+    weight DOUBLE PRECISION,
     level INTEGER,
     is_leaf INTEGER
 );
@@ -41,22 +41,20 @@ ALTER TABLE model_calc ADD CONSTRAINT model_calc_model_fk FOREIGN KEY (model_id)
 ALTER TABLE model_calc ADD CONSTRAINT weight_val_check CHECK (weight BETWEEN 0 and 100);
 ALTER TABLE model_calc ADD CONSTRAINT leaf_val_check CHECK (is_leaf BETWEEN 0 and 1);
 
-CREATE TABLE leaf_node_calc (
+CREATE TABLE formula (
     node VARCHAR2(255) NOT NULL,
+    descr VARCHAR2(4000) NOT NULL,
     calculation VARCHAR2(4000) NOT NULL,
-    formula_type integer NOT NULL,
+    formula_type VARCHAR2(255) NOT NULL,
     a varchar2(4000) NOT NULL,
     b varchar2(4000) NOT NULL,
     c varchar2(4000) NOT NULL,
     d varchar2(4000) NOT NULL,
-    xa VARCHAR2(4000) NOT NULL,
     xb VARCHAR2(4000) NOT NULL,
-    xc VARCHAR2(4000) NOT NULL,
-    xd VARCHAR2(4000) NOT NULL
-
+    comments VARCHAR2(4000) NOT NULL
 );
-ALTER TABLE leaf_node_calc ADD CONSTRAINT leaf_node_calc_pk PRIMARY KEY (node);
-ALTER TABLE leaf_node_calc ADD CONSTRAINT node_fk FOREIGN KEY (node) REFERENCES model_calc (node);
+ALTER TABLE formula ADD CONSTRAINT formula_pk PRIMARY KEY (node);
+ALTER TABLE formula ADD CONSTRAINT node_fk FOREIGN KEY (node) REFERENCES model_calc (node);
 
 CREATE TABLE company_list(
     id VARCHAR2(255) NOT NULL,

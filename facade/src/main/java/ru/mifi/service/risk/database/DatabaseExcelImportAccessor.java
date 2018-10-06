@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.UUID;
 
 /**
@@ -19,14 +21,23 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
     private static final int BATCH_SIZE = 100;
     private Integer insertCompanyStmtCounter = 0;
     private Integer insertCompanyParamStmtCounter = 0;
+    private Integer insertFormulaStmtCounter = 0;
+    private Integer insertModelStmtCounter = 0;
+    private Integer insertModelCalcStmtCounter = 0;
 
     final DataSource ds;
     final Connection connection;
     final PreparedStatement insertCompanyStmt;
     final PreparedStatement insertCompanyParamStmt;
+    final PreparedStatement insertFormulaStmt;
+    final PreparedStatement insertModelStmt;
+    final PreparedStatement insertModelCalcStmt;
 
     private static final String SQL_INSERT_COMPANY = "INSERT INTO company (id, inn) VALUES (?,?)";
     private static final String SQL_INSERT_COMPANY_PARAM = "INSERT INTO company_business_params (company_id, param_code, year, param_value) VALUES (?,?,?,?)";
+    private static final String SQL_INSERT_FORMULA = "INSERT INTO formula (node, calculation, descr, formula_type, a, b, c, d, xb,comments) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    private static final String SQL_INSERT_MODEL = "INSERT INTO model (id, descr) VALUES (?,'Загружено из Excel')";
+    private static final String SQL_INSERT_MODEL_CALC = "INSERT INTO model_CALC (model_id, node, parent_node, weight, level, is_leaf) VALUES (?,?,?,?,?,?)";
 
 
 
@@ -35,26 +46,34 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
         this.connection = ds.getConnection();
         this.insertCompanyParamStmt = connection.prepareStatement(SQL_INSERT_COMPANY_PARAM);
         this.insertCompanyStmt = connection.prepareStatement(SQL_INSERT_COMPANY);
+        this.insertFormulaStmt = connection.prepareStatement(SQL_INSERT_FORMULA);
+        this.insertModelStmt = connection.prepareStatement(SQL_INSERT_MODEL);
+        this.insertModelCalcStmt = connection.prepareStatement(SQL_INSERT_MODEL_CALC);
+    }
 
+    private void tryToClose(AutoCloseable toClose) {
+        try {
+            toClose.close();
+        } catch (Exception ex) {
+            LOG.error("Не удалось закрыть: " + insertCompanyParamStmt);
+        }
+    }
+    private void tryToCloseAndExecute(Statement stmt) throws SQLException {
+        try {
+            stmt.executeBatch();
+        } finally {
+            tryToClose(stmt);
+        }
     }
 
     @Override
     public void close() throws Exception {
-        try {
-            insertCompanyParamStmt.executeBatch();
-            insertCompanyParamStmt.close();
-        } catch (Exception ex) {
-            LOG.error("Не удалось закрыть конекшн на инсерт параметров компаний: " + insertCompanyParamStmt);
-        } finally {
-            try {
-                insertCompanyStmt.executeBatch();
-                insertCompanyStmt.close();
-            } catch (Exception ex) {
-                LOG.error("Не удалось закрыть конекшн на инсерт компаний: " + insertCompanyParamStmt);
-            } finally {
-                connection.close();
-            }
-        }
+        tryToCloseAndExecute(insertModelStmt);
+        tryToCloseAndExecute(insertModelCalcStmt);
+        tryToCloseAndExecute(insertCompanyParamStmt);
+        tryToCloseAndExecute(insertCompanyStmt);
+        tryToCloseAndExecute(insertFormulaStmt);
+        tryToClose(connection);
     }
 
     /**
@@ -71,6 +90,35 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
         return id;
     }
     /**
+     * Добавляем узел модель расчетов для инсерта
+     * @throws SQLException при косяке работы со стейтментами
+     */
+    public void insertModelCalc(
+            String model_id,
+            String node,
+            String parent_node,
+            Double weight,
+            Integer level,
+            Integer isLeaf
+    ) throws SQLException {
+        insertModelCalcStmt.setString(1, model_id);
+        insertModelCalcStmt.setString(2, node);
+        insertModelCalcStmt.setString(3, parent_node);
+        insertModelCalcStmt.setDouble(4, weight);
+        insertModelCalcStmt.setInt(5, level);
+        insertModelCalcStmt.setInt(6, isLeaf);
+        insertModelCalcStmtCounter = addReqToStmtBatch(insertModelCalcStmtCounter, insertModelCalcStmt);
+    }
+
+    /**
+     * Добавляем модель для инсерта
+     * @throws SQLException при косяке работы со стейтментами
+     */
+    public void insertModel(String id) throws SQLException {
+        insertModelStmt.setString(1, id);
+        insertModelStmtCounter= addReqToStmtBatch(insertModelStmtCounter, insertModelStmt);
+    }
+    /**
      * Добавляем компанию для инсерта
      * @param inn   инн
      * @return  присвоенный идентификатор
@@ -81,6 +129,45 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
         insertCompanyStmt.setString(2, inn);
         insertCompanyStmtCounter = addReqToStmtBatch(insertCompanyStmtCounter, insertCompanyStmt);
         return id;
+    }
+
+    /**
+     * Добавляем формулу для сохранения в базу.
+     * @param node имя узла иерархии расчета
+     * @param calculation способ подсчета входного значения
+     * @param descr описание формулы
+     * @param formulaType тип формулы
+     * @param a параметр А
+     * @param b параметр B
+     * @param c параметр C
+     * @param d параметр D
+     * @param xb параметр XB
+     * @throws SQLException если че-то не так с БД
+     */
+    public void insertFormula(
+            String node,
+            String calculation,
+            String descr,
+            String formulaType,
+            String a,
+            String b,
+            String c,
+            String d,
+            String xb,
+            String comments
+    ) throws SQLException {
+        int counter = 1;
+        insertFormulaStmt.setString(counter++, node);
+        insertFormulaStmt.setString(counter++, calculation);
+        insertFormulaStmt.setString(counter++, descr);
+        insertFormulaStmt.setString(counter++, formulaType);
+        insertFormulaStmt.setString(counter++, a);
+        insertFormulaStmt.setString(counter++, b);
+        insertFormulaStmt.setString(counter++, c);
+        insertFormulaStmt.setString(counter++, d);
+        insertFormulaStmt.setString(counter++, xb);
+        insertFormulaStmt.setString(counter, comments);
+        insertFormulaStmtCounter = addReqToStmtBatch(insertFormulaStmtCounter, insertFormulaStmt);
     }
 
     /**
