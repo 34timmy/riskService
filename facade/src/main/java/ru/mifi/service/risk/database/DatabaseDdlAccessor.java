@@ -13,11 +13,16 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 
 /**
- * Основная логика по работе с БД.
+ * Работа с базой для DDL.
  * Created by DenRUS on 06.10.2018.
  */
 public class DatabaseDdlAccessor {
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseDdlAccessor.class);
+
+    public DatabaseDdlAccessor(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     private DataSource dataSource;
     
     private static final String SQL_CREATE_TEMP_TABLE =
@@ -34,10 +39,10 @@ public class DatabaseDdlAccessor {
     private static final String SQL_LEAF_CHECK_TEMP_TABLE_CONSTR = "ALTER TABLE %s ADD CONSTRAINT %s_leaf_val_check CHECK (is_leaf BETWEEN 0 and 1)";
     private static final String SQL_INSERT_RESULT_INFO = "INSERT INTO result_data_mapper (model_id, company_list_id, table_name) VALUES (?,?,?)";
 
-    @Resource(name="dataSource")
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+//    @Resource(name="dataSource")
+//    public void setDataSource(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
     
     public void createTempTable(String modelId, String companiesListId) {
         try (

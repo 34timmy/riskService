@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.mifi.service.risk.database.DatabaseSelectAccessor;
 import ru.mifi.service.risk.dto.CalcResultDto;
@@ -23,15 +22,22 @@ public class DataController extends ExceptionHandlerController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataController.class);
 
+    private DataSource dataSource;
+    @Resource(name = "dataSource")
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @ApiOperation(value = "По конкретной таблице")
     @RequestMapping(value = "/byTable", method = RequestMethod.GET)
-    public @ResponseBody
+    public
+    @ResponseBody
     Map<String, Object> byTable(
             @ApiParam(value = "Имя таблицы")
             @RequestParam("tableName") String tableName
     ) throws RestException {
         try {
-            Set<CalcResultDto> result = new DatabaseSelectAccessor().getDataFromTable(tableName);
+            Set<CalcResultDto> result = new DatabaseSelectAccessor(dataSource).getDataFromTable(tableName);
             return ResponseHelper.successResponse(result);
         } catch (Exception e) {
             throw new RestException(e);
@@ -40,7 +46,8 @@ public class DataController extends ExceptionHandlerController {
 
     @ApiOperation(value = "По модели и листу компаний (получаем список таблиц)")
     @RequestMapping(value = "/byModelAndListId", method = RequestMethod.GET)
-    public @ResponseBody
+    public
+    @ResponseBody
     Map<String, Object> byModelAndList(
             @ApiParam(value = "Id модели")
             @RequestParam("modelId") String modelId,
@@ -48,7 +55,7 @@ public class DataController extends ExceptionHandlerController {
             @RequestParam("companyListId") String companyListId
     ) throws RestException {
         try {
-            Set<String> result = new DatabaseSelectAccessor().getTablesForModelAndList(modelId, companyListId);
+            Set<String> result = new DatabaseSelectAccessor(dataSource).getTablesForModelAndList(modelId, companyListId);
             return ResponseHelper.successResponse(result);
         } catch (Exception e) {
             throw new RestException(e);

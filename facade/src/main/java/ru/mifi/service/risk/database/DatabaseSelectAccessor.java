@@ -17,16 +17,15 @@ import java.util.Set;
  */
 public class DatabaseSelectAccessor {
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseSelectAccessor.class);
+
+    public DatabaseSelectAccessor(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     private DataSource dataSource;
 
     private static final String SQL_GET_RES_TABLES_NAMES = "SELECT table_name FROM result_data_mapper WHERE model_id = ? AND company_list_id = ?";
     private static final String SQL_GET_RES_FROM_TABLE = "SELECT * FROM %s";//TODO пагинация и сортировка
-
-
-    @Resource(name="dataSource")
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     /**
      * Лезем в таблицу с маппингом и достаем таблицы с результатами расчетов по выбранным модели и листу компаний.

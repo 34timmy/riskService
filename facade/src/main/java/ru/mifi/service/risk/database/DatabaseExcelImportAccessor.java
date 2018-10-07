@@ -3,9 +3,7 @@ package ru.mifi.service.risk.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -16,7 +14,7 @@ import java.util.UUID;
  * Запросы на импорт данных из Excel.
  * Created by DenRUS on 06.10.2018.
  */
-public class DatabaseExcelImportAccessor implements AutoCloseable {
+public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseExcelImportAccessor.class);
     private static final int BATCH_SIZE = 100;
     private Integer insertCompanyStmtCounter = 0;
@@ -32,7 +30,6 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
     final PreparedStatement insertFormulaStmt;
     final PreparedStatement insertModelStmt;
     final PreparedStatement insertModelCalcStmt;
-    private boolean hasErrors = false;
 
     private static final String SQL_INSERT_COMPANY = "INSERT INTO company (id, inn) VALUES (?,?)";
     private static final String SQL_INSERT_COMPANY_PARAM = "INSERT INTO company_business_params (company_id, param_code, year, param_value) VALUES (?,?,?,?)";
@@ -53,24 +50,6 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
         this.insertModelCalcStmt = connection.prepareStatement(SQL_INSERT_MODEL_CALC);
     }
 
-    private void tryToClose(AutoCloseable toClose) {
-        try {
-            toClose.close();
-        } catch (Exception ex) {
-            LOG.error("Не удалось закрыть: " + insertCompanyParamStmt);
-        }
-    }
-    private void tryToCloseAndExecute(Statement stmt) throws SQLException {
-        try {
-            stmt.executeBatch();
-        } catch (Exception ex) {
-          LOG.error("Ошибка при выполнении батча: " + ex.getMessage(), ex);
-          hasErrors = true;
-        } finally {
-            tryToClose(stmt);
-        }
-    }
-
     @Override
     public void close() throws Exception {
         tryToCloseAndExecute(insertModelStmt);
@@ -78,12 +57,7 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
         tryToCloseAndExecute(insertCompanyParamStmt);
         tryToCloseAndExecute(insertCompanyStmt);
         tryToCloseAndExecute(insertFormulaStmt);
-        if (hasErrors) {
-            connection.rollback();
-        } else {
-            connection.commit();
-        }
-        tryToClose(connection);
+        tryToCloseConnection(connection, hasErrors);
     }
 
     /**
@@ -166,17 +140,17 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
             String xb,
             String comments
     ) throws SQLException {
-        int counter = 1;
-        insertFormulaStmt.setString(counter++, node);
-        insertFormulaStmt.setString(counter++, calculation);
-        insertFormulaStmt.setString(counter++, descr);
-        insertFormulaStmt.setString(counter++, formulaType);
-        insertFormulaStmt.setString(counter++, a);
-        insertFormulaStmt.setString(counter++, b);
-        insertFormulaStmt.setString(counter++, c);
-        insertFormulaStmt.setString(counter++, d);
-        insertFormulaStmt.setString(counter++, xb);
-        insertFormulaStmt.setString(counter, comments);
+        int paramCounter = 1;
+        insertFormulaStmt.setString(paramCounter++, node);
+        insertFormulaStmt.setString(paramCounter++, calculation);
+        insertFormulaStmt.setString(paramCounter++, descr);
+        insertFormulaStmt.setString(paramCounter++, formulaType);
+        insertFormulaStmt.setString(paramCounter++, a);
+        insertFormulaStmt.setString(paramCounter++, b);
+        insertFormulaStmt.setString(paramCounter++, c);
+        insertFormulaStmt.setString(paramCounter++, d);
+        insertFormulaStmt.setString(paramCounter++, xb);
+        insertFormulaStmt.setString(paramCounter, comments);
         insertFormulaStmtCounter = addReqToStmtBatch(insertFormulaStmtCounter, insertFormulaStmt);
     }
 
@@ -195,17 +169,5 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
         addReqToStmtBatch(insertCompanyParamStmtCounter, insertCompanyParamStmt);
     }
 
-    private Integer addReqToStmtBatch(Integer counter, PreparedStatement stmt) throws SQLException {
-        stmt.addBatch();
-        stmt.clearParameters();
-        if (++counter % 100 == 0) {
-            try {
-                stmt.executeBatch();
-            } catch (Exception ex) {
-                LOG.error("Ошибка при выполнении батча по достижению лимита запросов: " + ex.getMessage(), ex);
-                hasErrors = true;
-            }
-        }
-        return counter;
-    }
+
 }
