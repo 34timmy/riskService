@@ -54,6 +54,8 @@ public class ExcelLoader {
 
             loadData(workbook.getSheet("data"), accessor);
 
+            loadModel(workbook.getSheet("model"), accessor);
+
             loadFormulas(workbook.getSheet("formulas"), accessor);
 
 
@@ -66,6 +68,34 @@ public class ExcelLoader {
             throw new ImportException("Ошибка при работе импорте данных", e);
         }
         return "Всё ок";
+    }
+
+    /**
+     * Загружаем иерархию модели
+     * @param modelSheet    лист с моделью
+     * @param accessor  объект, сохраняющий данные в бд
+     * @throws SQLException если косяк при работе с БД
+     */
+    private void loadModel(XSSFSheet modelSheet, DatabaseExcelImportAccessor accessor) throws SQLException {
+        String modelId = UUID.randomUUID().toString();
+        accessor.insertModel(modelId);
+        ValidationUtil.sheetCheck(modelSheet);
+        for (int r = 1; r <= modelSheet.getLastRowNum(); r++) {
+            Row row = modelSheet.getRow(r);
+            String nodeId = formatCellVal(row.getCell(0));
+            String parentNode = formatCellVal(row.getCell(1));
+            Double weight = Double.valueOf(formatCellVal(row.getCell(2)));               //Weight
+            Integer level = Integer.parseInt(formatCellVal(row.getCell(3)));
+            Integer isLeaf = Integer.parseInt(formatCellVal(row.getCell(4)));
+            accessor.insertModelCalc(
+                    modelId,
+                    nodeId,
+                    parentNode,
+                    weight,
+                    level,
+                    isLeaf
+            );
+        }
     }
 
     /**
@@ -107,8 +137,6 @@ public class ExcelLoader {
      */
     private void loadFormulas(XSSFSheet sheet, DatabaseExcelImportAccessor accessor) throws SQLException {
         ValidationUtil.sheetCheck(sheet);
-        String modelId = UUID.randomUUID().toString();
-        accessor.insertModel(modelId);
         for (int r = 1; r <= sheet.getLastRowNum(); r++) {
             Row row = sheet.getRow(r);
             try {
@@ -124,14 +152,7 @@ public class ExcelLoader {
                     String nodeId = formatCellVal(row.getCell(0));                //id
                     Double weight = Double.valueOf(formatCellVal(row.getCell(11)));               //Weight
                     String parentNode = getParentNode(nodeId);
-                    accessor.insertModelCalc(
-                            modelId,
-                            nodeId,
-                            parentNode,
-                            weight,
-                            1,
-                            1
-                            );
+
                     accessor.insertFormula(
                             nodeId,
                             formatCellVal(row.getCell(1)),                //descr

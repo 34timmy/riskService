@@ -32,6 +32,7 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
     final PreparedStatement insertFormulaStmt;
     final PreparedStatement insertModelStmt;
     final PreparedStatement insertModelCalcStmt;
+    private boolean hasErrors = false;
 
     private static final String SQL_INSERT_COMPANY = "INSERT INTO company (id, inn) VALUES (?,?)";
     private static final String SQL_INSERT_COMPANY_PARAM = "INSERT INTO company_business_params (company_id, param_code, year, param_value) VALUES (?,?,?,?)";
@@ -44,6 +45,7 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
     public DatabaseExcelImportAccessor(DataSource ds) throws SQLException {
         this.ds = ds;
         this.connection = ds.getConnection();
+        connection.setAutoCommit(false);
         this.insertCompanyParamStmt = connection.prepareStatement(SQL_INSERT_COMPANY_PARAM);
         this.insertCompanyStmt = connection.prepareStatement(SQL_INSERT_COMPANY);
         this.insertFormulaStmt = connection.prepareStatement(SQL_INSERT_FORMULA);
@@ -61,6 +63,9 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
     private void tryToCloseAndExecute(Statement stmt) throws SQLException {
         try {
             stmt.executeBatch();
+        } catch (Exception ex) {
+          LOG.error("Ошибка при выполнении батча: " + ex.getMessage(), ex);
+          hasErrors = true;
         } finally {
             tryToClose(stmt);
         }
@@ -73,6 +78,11 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
         tryToCloseAndExecute(insertCompanyParamStmt);
         tryToCloseAndExecute(insertCompanyStmt);
         tryToCloseAndExecute(insertFormulaStmt);
+        if (hasErrors) {
+            connection.rollback();
+        } else {
+            connection.commit();
+        }
         tryToClose(connection);
     }
 
@@ -189,7 +199,12 @@ public class DatabaseExcelImportAccessor implements AutoCloseable {
         stmt.addBatch();
         stmt.clearParameters();
         if (++counter % 100 == 0) {
-            stmt.executeBatch();
+            try {
+                stmt.executeBatch();
+            } catch (Exception ex) {
+                LOG.error("Ошибка при выполнении батча по достижению лимита запросов: " + ex.getMessage(), ex);
+                hasErrors = true;
+            }
         }
         return counter;
     }

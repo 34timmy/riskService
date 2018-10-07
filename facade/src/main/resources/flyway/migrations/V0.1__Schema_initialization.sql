@@ -54,7 +54,7 @@ CREATE TABLE formula (
     comments VARCHAR2(4000) NOT NULL
 );
 ALTER TABLE formula ADD CONSTRAINT formula_pk PRIMARY KEY (node);
-ALTER TABLE formula ADD CONSTRAINT node_fk FOREIGN KEY (node) REFERENCES model_calc (node);
+-- ALTER TABLE formula ADD CONSTRAINT node_fk FOREIGN KEY (node) REFERENCES model_calc (node);
 
 CREATE TABLE company_list(
     id VARCHAR2(255) NOT NULL,
