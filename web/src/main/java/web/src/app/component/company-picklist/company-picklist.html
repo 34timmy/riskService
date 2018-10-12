@@ -1,0 +1,29 @@
+<p-pickList [source]="source" [target]="target" sourceHeader="Список компаний" targetHeader="Список выбранных компаний"
+            dragdrop="true"
+            dragdropScope="companies"
+            [responsive]="true" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}"
+            filterBy="name,INN"
+            sourceFilterPlaceholder="Поиск по названию и ИНН" targetFilterPlaceholder="Поиск по названию и ИНН">
+  <ng-template let-company pTemplate="item">
+    <div class="ui-helper-clearfix">
+      <button type="button" pButton icon="fa fa-edit" class="ui-button-success" style="float:right;margin: 5px 0 0 0"
+              (click)="onEditCompany(company)">
+      </button>
+    </div>
+    <div>
+      <button pButton icon="fa fa-trash" style="float:right;margin: 5px 0 0 0" class="ui-button-danger "
+              (click)="onDelete(company)">
+      </button>
+    </div>
+    <div class="ui-helper-clearfix">
+      <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>ID:</b> {{company.id}}</div>
+    </div>
+    <div class="ui-helper-clearfix">
+      <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>Название:</b> {{company.name}}</div>
+    </div>
+    <div class="ui-helper-clearfix">
+      <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>ИНН:</b> {{company.INN}}</div>
+    </div>
+  </ng-template>
+</p-pickList>
+<app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>

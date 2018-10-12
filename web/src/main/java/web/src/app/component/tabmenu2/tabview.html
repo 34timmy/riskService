@@ -1,0 +1,16 @@
+<div class="content-section implementation">
+  <!--<p-toast [style]="{marginTop: '80px'}"></p-toast>-->
+<!---->
+  <!--<h3 class="first">Сервис</h3>-->
+  <p-tabView>
+    <p-tabPanel header="Компании" leftIcon="fa fa-money">
+      <app-company-picklist></app-company-picklist>
+    </p-tabPanel>
+    <p-tabPanel header="Параметры" rightIcon="pi pi-inbox">
+      <app-params-picklist></app-params-picklist>
+    </p-tabPanel>
+    <p-tabPanel header="Конструктор" rightIcon="pi pi-inbox">
+      <app-treeview></app-treeview>
+    </p-tabPanel>
+  </p-tabView>
+</div>
