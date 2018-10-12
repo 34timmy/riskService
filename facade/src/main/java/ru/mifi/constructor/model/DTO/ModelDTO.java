@@ -18,7 +18,8 @@ public class ModelDTO implements Node {
     private List<RuleDTO> children = new ArrayList<>();
 
     public ModelDTO(Model model) {
-        this.data.put(model.getId(), model.getName());
+        this.data.put("name", model.getName());
+        this.data.put("id", model.getId());
         for (Rule rule : model.getRules()) {
             children.add(new RuleDTO(rule));
         }

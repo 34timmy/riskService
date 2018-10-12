@@ -1,6 +1,5 @@
 package ru.mifi.service.risk.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +14,7 @@ import java.sql.SQLException;
 @NoArgsConstructor
 public class Formula {
     String node;
-    String descr;
+    String name;
     String calculation;
     String formulaType;
     String a;
@@ -28,7 +27,7 @@ public class Formula {
 
     public Formula(ResultSet leafs) throws SQLException {
         this.node = leafs.getString("node");
-        this.descr = leafs.getString(descr);
+        this.name = leafs.getString(name);
         this.calculation = leafs.getString(calculation);
         this.formulaType = leafs.getString(formulaType);
         this.a = leafs.getString(a);
@@ -39,12 +38,12 @@ public class Formula {
         this.comments = leafs.getString(comments);
     }
 
-    public Formula(String node, String descr,
+    public Formula(String node, String name,
                    String calculation, String formulaType,
                    String a, String b, String c, String d, String xb,
                    String comments, String rule_id) {
         this.node = node;
-        this.descr = descr;
+        this.name = name;
         this.calculation = calculation;
         this.formulaType = formulaType;
         this.a = a;

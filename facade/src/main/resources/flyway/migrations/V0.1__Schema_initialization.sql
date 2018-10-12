@@ -7,6 +7,7 @@ DROP TABLE if exists formula;
 DROP TABLE if exists formula_params;
 DROP TABLE if exists company_list;
 DROP TABLE if exists result_data_mapper;
+DROP TABLE IF EXISTS rule;
 
 CREATE TABLE company (
   id  varchar2 (255) NOT NULL,
@@ -35,8 +36,8 @@ ALTER TABLE company_business_params
 
 
 CREATE TABLE model (
-  id    varchar2 (255) NOT NULL,
-  descr varchar2 (250)
+  id   varchar2 (255) NOT NULL,
+  name varchar2 (250)
 );
 ALTER TABLE model
   ADD CONSTRAINT model_pk PRIMARY KEY (id);
@@ -60,7 +61,7 @@ ALTER TABLE model_calc
 
 CREATE TABLE formula (
   node         VARCHAR2 (255) NOT NULL,
-  descr        VARCHAR2 (4000) NOT NULL,
+  name        VARCHAR2 (4000) NOT NULL,
   calculation  VARCHAR2 (4000) NOT NULL,
   formula_type VARCHAR2 (255) NOT NULL,
   a            varchar2 (4000) NOT NULL,
@@ -82,10 +83,13 @@ CREATE TABLE formula_params (
 );
 ALTER TABLE formula_params
   ADD CONSTRAINT formula_params_pk PRIMARY KEY (node, param_code);
+
 CREATE INDEX formula_params_node_idx
   ON formula_params (node);
+
 ALTER TABLE formula_params
   ADD CONSTRAINT formula_params_formula_fk FOREIGN KEY (node) REFERENCES formula (node);
+
 ALTER TABLE formula_params
   ADD CONSTRAINT formula_params_bus_param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code);
 
@@ -109,6 +113,21 @@ ALTER TABLE result_data_mapper
 ALTER TABLE result_data_mapper
   ADD CONSTRAINT company_list_fk FOREIGN KEY (company_list_id) REFERENCES company_list (id);
 
+CREATE TABLE rule
+(
+  id       varchar(255) NOT NULL,
+  name     varchar(255),
+  model_id varchar(255)
+);
+
+ALTER TABLE rule
+  ADD CONSTRAINT rule_pk PRIMARY KEY (id);
+
+ALTER TABLE rule
+  ADD CONSTRAINT model_fk FOREIGN KEY (model_id) REFERENCES MODEL (id);
+
+ALTER TABLE FORMULA
+  ADD CONSTRAINT rule_fk FOREIGN KEY (rule_id) REFERENCES rule (id);
 -- h2 не поддерживает хранимки. Закоменчено до тестов на оракле
 -- CREATE OR REPLACE PROCEDURE create_temp_result_table(table_name VARCHAR2) IS
 --     v_column VARCHAR2(30);

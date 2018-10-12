@@ -155,7 +155,7 @@ public class ExcelLoader {
 
                     accessor.insertFormula(
                             nodeId,
-                            formatCellVal(row.getCell(1)),                //descr
+                            formatCellVal(row.getCell(1)),                //name
                             editInput(formatCellVal(row.getCell(2))),                   //calculation
                             formatCellVal(row.getCell(3)),                              //formula_type
                             formatCellVal(row.getCell(4)),                              //A
