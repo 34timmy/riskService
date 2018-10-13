@@ -9,18 +9,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mifi.service.risk.database.DatabaseExcelImportAccessor;
+import ru.mifi.service.risk.domain.FormulaParam;
 import ru.mifi.service.risk.exception.DatabaseException;
 import ru.mifi.service.risk.exception.ImportException;
 import ru.mifi.service.risk.exception.WrongFormulaValueException;
 import ru.mifi.service.risk.utils.validation.ValidationUtil;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -72,8 +71,9 @@ public class ExcelLoader {
 
     /**
      * Загружаем иерархию модели
-     * @param modelSheet    лист с моделью
-     * @param accessor  объект, сохраняющий данные в бд
+     *
+     * @param modelSheet лист с моделью
+     * @param accessor   объект, сохраняющий данные в бд
      * @throws SQLException если косяк при работе с БД
      */
     private void loadModel(XSSFSheet modelSheet, DatabaseExcelImportAccessor accessor) throws SQLException {
@@ -150,7 +150,8 @@ public class ExcelLoader {
                         }
                     }
                     String nodeId = formatCellVal(row.getCell(0));                //id
-                    Double weight = Double.valueOf(formatCellVal(row.getCell(11)));               //Weight
+                    String params = formatCellVal(row.getCell(11));               //params
+                    parseAndSaveParams(nodeId, params, accessor);
                     String parentNode = getParentNode(nodeId);
 
                     accessor.insertFormula(
@@ -164,7 +165,7 @@ public class ExcelLoader {
                             formatCellVal(row.getCell(7)),                              //D
                             formatCellVal(row.getCell(9)),                              //_XB
                             comments.toString()
-                            );
+                    );
 
                 }
             } catch (WrongFormulaValueException e) {
@@ -176,8 +177,23 @@ public class ExcelLoader {
         }
     }
 
+    private void parseAndSaveParams(String nodeId, String params, DatabaseExcelImportAccessor accessor) {
+        Arrays.stream(params.split(";"))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .map(FormulaParam::new)
+                .forEach(elem -> {
+                    try {
+                        accessor.insertFormulaParam(nodeId, elem.getParamCode(), elem.getYearShift());
+                    } catch (SQLException e) {
+                        throw new DatabaseException("Ошибка при импорте параметра формулы: " + e.getMessage(), e);
+                    }
+                });
+    }
+
     /**
      * Определяем есть ли в идентификаторе родительский узел.
+     *
      * @param nodeId узел
      * @return родительский узел
      */
@@ -195,6 +211,7 @@ public class ExcelLoader {
         }
         return value;
     }
+
     /**
      * Форматируем входную формулу - удаляем лишние пробелы, энтеры и т.д.
      *

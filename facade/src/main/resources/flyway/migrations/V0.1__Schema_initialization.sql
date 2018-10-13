@@ -59,12 +59,12 @@ ALTER TABLE formula ADD CONSTRAINT formula_pk PRIMARY KEY (node);
 CREATE TABLE formula_params(
     node VARCHAR2(255) NOT NULL,
     param_code VARCHAR2(4000) NOT NULL,
-    year_shift INTEGER DEFAULT 0
+    year_shift INTEGER NOT NULL DEFAULT 0
 );
-ALTER TABLE formula_params ADD CONSTRAINT formula_params_pk PRIMARY KEY (node, param_code);
+ALTER TABLE formula_params ADD CONSTRAINT formula_params_pk PRIMARY KEY (node, param_code, year_shift);
 CREATE INDEX formula_params_node_idx ON formula_params(node);
 ALTER TABLE formula_params ADD CONSTRAINT formula_params_formula_fk FOREIGN KEY (node) REFERENCES formula (node);
-ALTER TABLE formula_params ADD CONSTRAINT formula_params_bus_param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code);
+-- ALTER TABLE formula_params ADD CONSTRAINT formula_params_bus_param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code);
 
 
 CREATE TABLE company_list(
