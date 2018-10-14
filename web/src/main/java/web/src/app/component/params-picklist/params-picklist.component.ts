@@ -57,7 +57,7 @@ export class ParamsPicklistComponent implements OnInit {
   }
 
   onSave(params: ParamsModel) {
-    this.paramsService.saveParams(params)
+    this.paramsService.save(params)
       .subscribe(
         res => {
           this.reloadParams();

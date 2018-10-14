@@ -1,23 +1,22 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {TreeNode} from 'primeng/api';
 import {TreeService} from '../../service/tree.service';
 import {FormulaEditComponent} from '../formula/formula-edit.component';
-import {ParamsModel} from '../../model/params.model';
-import {SomenodeModel} from '../../model/somenode.model';
-import {RiskModelModel} from '../../model/risk-model.model';
-import {Observable} from "rxjs";
-import {CompanyModel} from "../../model/company.model";
+import {NavigationEnd, Router} from "@angular/router";
+import {ParamsModel} from "../../model/params.model";
 
 @Component({
   selector: 'app-treeview',
   templateUrl: 'treeview.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 export class TreeViewComponent implements OnInit {
+
   treemodels: TreeNode[];
   cols: any[];
   selectedNode: TreeNode;
+  navigationSubscription;
 
   constructor(private treeService: TreeService) {
   }
@@ -26,7 +25,7 @@ export class TreeViewComponent implements OnInit {
   private formulaEditChild: FormulaEditComponent;
 
   ngOnInit() {
-    this.reloadTree();
+    this.treemodels = this.treeService.getModelsAndConvert();
     this.cols = [
       {field: 'id', header: 'Id'},
       {field: 'name', header: 'Name'},
@@ -45,7 +44,7 @@ export class TreeViewComponent implements OnInit {
       this.showModelCreateDialog(node);
     }
     if (node.name.toLowerCase().includes('formula')) {
-      this.showFormulaEditDialogModal();
+      this.showFormulaEditDialog();
       this.formulaEditChild.fillFormulaForm(node);
     }
   }
@@ -56,17 +55,13 @@ export class TreeViewComponent implements OnInit {
       this.showModelCreateDialog(node);
     }
     if (node.name.toLowerCase().includes('formula')) {
-      this.showFormulaEditDialogModal();
+      this.showFormulaEditDialog();
       this.formulaEditChild.fillFormulaFormWithRuleId(node);
 
     }
   }
 
-  // TODO
-  onDelete(row) {
-  }
-
-  addNodeToParent(rowData) {
+  private addNodeToParent(rowData) {
     this.onAdd(rowData);
     // let node: TreeNode = {
     //   parent: rowData.parent,
@@ -84,17 +79,7 @@ export class TreeViewComponent implements OnInit {
     // }
   }
 
-
-  private showModelCreateDialog(node) {
-
-  }
-
-  showFormulaEditDialogModal() {
-    this.formulaEditChild.resetForm();
-    this.formulaEditChild.showToggle = true;
-  }
-
-  addNodeToChildren(rowData) {
+  private addNodeToChildren(rowData) {
     this.onAdd(rowData);
     // node = this.selectedNode;
     // console.log(node);
@@ -112,8 +97,15 @@ export class TreeViewComponent implements OnInit {
     // }
   }
 
-  //onSaveFormula.... rule..etc methods
-  //return some object
+  private showModelCreateDialog(node) {
+    //TODO
+  }
+
+  private showFormulaEditDialog() {
+    this.formulaEditChild.resetForm();
+    this.formulaEditChild.showToggle = true;
+  }
+
   onSaveFormula(node) {
     console.log('node ', node);
     this.treeService.saveFormula(node)
@@ -122,5 +114,13 @@ export class TreeViewComponent implements OnInit {
           this.reloadTree();
         }
       );
+  }
+
+  onDeleteFormula(formula) {
+    this.treeService.delete(formula).subscribe(
+      res => {
+        this.reloadTree();
+      }
+    );
   }
 }

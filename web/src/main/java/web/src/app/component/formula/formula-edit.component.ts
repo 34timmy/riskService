@@ -49,6 +49,12 @@ export class FormulaEditComponent implements OnInit {
     });
   }
 
+  fillFormulaFormWithRuleId(formula) {
+    this.formulaForm.patchValue({
+      rule_id: formula.rule_id
+    });
+  }
+
   onSaveFormula() {
     console.log('formula value ', this.formulaForm.value);
     this.onSaveEvent.emit(this.formulaForm.value);
@@ -64,10 +70,5 @@ export class FormulaEditComponent implements OnInit {
     this.formulaForm.reset();
   }
 
-  fillFormulaFormWithRuleId(formula) {
-    this.formulaForm.patchValue({
-      rule_id: formula.rule_id
-    });
 
-  }
 }

@@ -33,24 +33,19 @@ export class ParamsService {
     return this.http.delete(basePath + companiesPath + '/' + params.id, reqOptions);
   }
 
-  saveParams(params: ParamsModel): Observable<Response> {
+  save(params: ParamsModel): Observable<Response> {
     if (params.id) {
-      return this.updateParams(params);
+      return this.update(params);
     } else {
-      return this.createParams(params);
+      return this.create(params);
     }
   }
 
-  //
-  // changeActiveStatus(params: ParamsModel): Observable<Response> {
-  //     return this.http.patch(basePath + companiesPath + '/' + params.id + '/' + params.enabled, null);
-  // }
-
-  private updateParams(params: ParamsModel): Observable<Response> {
+  private update(params: ParamsModel): Observable<Response> {
     return this.http.put(basePath + companiesPath + '/' + params.id, JSON.stringify(params), reqOptionsJson);
   }
 
-  private createParams(params: ParamsModel): Observable<Response> {
+  private create(params: ParamsModel): Observable<Response> {
 
     return this.http.post(basePath + companiesPath, JSON.stringify(params), reqOptionsJson);
   }

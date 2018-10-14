@@ -11,11 +11,13 @@ import {
   reqOptionsJson
 } from '../shared/config';
 import {TreeNode} from "primeng/api";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class TreeService {
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private router: Router) {
+
   }
 
   models: any;
@@ -24,40 +26,48 @@ export class TreeService {
   saveFormula(formula) {
     console.log('service save formula ', formula);
     if (formula.id) {
-      return this.updateFormula(formula);
+      return this.update(formula);
     } else {
-      return this.createFormula(formula);
+      return this.create(formula);
     }
   }
 
-  private updateFormula(formula) {
+  delete(formula) {
+    return this.http.delete(basePath + constructorPath + formulaPath + '/' + formula.id, reqOptions);
+
+  }
+
+  private update(formula) {
     return this.http.post(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
   }
 
-  private createFormula(formula) {
+  private create(formula) {
     return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
   }
 
-  getModels() {
-    return this.http.get(basePath + constructorPath + modelPath, reqOptions).toPromise()
-      .then(res => <RiskModelModel[]> res.json());
-  }
+  // getModels() {
+  //   return this.http.get(basePath + constructorPath + modelPath, reqOptions).toPromise()
+  //     .then(res => <RiskModelModel[]> res.json());
+  // }
 
   getModelsAndConvert() {
-     this.http.get(basePath + constructorPath + modelPath, reqOptions).toPromise()
+    this.modelsNodes = [];
+    console.log('modelnodes', this.modelsNodes);
+    this.http.get(basePath + constructorPath + modelPath, reqOptions).toPromise()
       .then(res => {
         this.modelsToTreeNode(res.json());
+        console.log('json', res.json())
       });
     return this.modelsNodes;
   }
 
-  modelsToTreeNode(models) {
+  private modelsToTreeNode(models) {
     for (let mod of models) {
       this.modelsNodes.push(this.modelToTreeNode(mod));
     }
   }
 
-  modelToTreeNode(mod): TreeNode {
+  private modelToTreeNode(mod): TreeNode {
     let rulesTreeNodes: TreeNode[] = [];
     if (mod.rules !== undefined) {
       for (let rule of mod.rules) {
@@ -71,7 +81,7 @@ export class TreeService {
     };
   }
 
-  ruleToTreeNode(rule, parent) {
+  private ruleToTreeNode(rule, parent) {
     let formulaTreeNodes: TreeNode[] = [];
     if (rule.formulas !== undefined) {
       for (let formula of rule.formulas) {
@@ -86,8 +96,7 @@ export class TreeService {
     }
   }
 
-
-  formulaToTreeNode(formula, parent): TreeNode {
+  private formulaToTreeNode(formula, parent): TreeNode {
     return {
       label: formula.nom,
       parent: parent,
