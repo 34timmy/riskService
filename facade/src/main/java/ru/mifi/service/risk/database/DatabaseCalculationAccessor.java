@@ -23,7 +23,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     //TODO надо сортировать формулы и потом доставать по 1000 для расчета. Чтоб не все сразу
     private static final String SQL_GET_MODEL_LEAFS =
             "SELECT " +
-                    "   f.node, f.descr, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, f.comments " +
+                    "   f.node, f.name, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, f.comments " +
                     "FROM " +
                     "   model_calc mc " +
                     "JOIN formula f ON (f.node = mc.node)" +
