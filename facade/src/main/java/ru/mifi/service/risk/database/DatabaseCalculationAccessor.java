@@ -8,9 +8,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Работа с базой при непосредственном расчете.
@@ -27,6 +29,12 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                     "JOIN formula f ON (f.node = mc.node)" +
                     "WHERE mc.model_id = ? AND mc.is_leaf = '1'";
 
+    private static final String SQL_GET_COMPANY_IDS_BY_LIST_ID =
+            "SELECT " +
+                    "   company_ids" +
+                    "FROM " +
+                    "   company_list " +
+                    "WHERE id = ?";
     private static final String SQL_GET_FORMULA_PARAMS =
             "SELECT " +
                     "   cbp.company_id, cbp.param_code, cbp.year, cbp.param_value " +
@@ -37,6 +45,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
 
     private final PreparedStatement getModelLeafsStmt;
     private final PreparedStatement getFuncParamsStmt;
+    private final PreparedStatement getCompanyIdsByListId;
 
     public DatabaseCalculationAccessor(DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
@@ -44,15 +53,34 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         connection.setAutoCommit(false);
         this.getModelLeafsStmt = connection.prepareStatement(SQL_GET_MODEL_LEAFS);
         this.getFuncParamsStmt = connection.prepareStatement(SQL_GET_FORMULA_PARAMS);
+        this.getCompanyIdsByListId = connection.prepareStatement(SQL_GET_COMPANY_IDS_BY_LIST_ID);
     }
 
     private DataSource dataSource;
     private Connection connection;
 
+
+    /**
+     * На основании идентификатора списка компаний получаем набор идентификаторов самих компаний.
+     *
+     * @param companyListId идентификатор списка компаний
+     * @return идентификаторы компаний
+     */
+    public Set<String> getCompanyIdsByListId(String companyListId) throws SQLException {
+        getCompanyIdsByListId.setObject(1, companyListId);
+        ResultSet rs = getCompanyIdsByListId.executeQuery();
+        if (rs.next()) {
+            return Arrays.stream(rs.getString("company_ids").split(";"))
+                    .collect(Collectors.toSet());
+        }
+        throw new IllegalArgumentException("Результат не найден.");
+    }
+
     /**
      * Достаем все формулы-листья, которые нужно рассчитать для этой модели
-     * @param modelId   идентификатор модели
-     * @return  набор формул
+     *
+     * @param modelId идентификатор модели
+     * @return набор формул
      * @throws SQLException если косяк при работе с БД
      */
     public Set<Formula> getFormulasForCalc(String modelId) throws SQLException {
@@ -69,9 +97,10 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
 
     /**
      * Получаем параметры по всем компаниям, необходимые для расчета конкретной формулы
+     *
      * @param formulaNode идентификатор формулы (узла)
-     * @param companyIds список идентификаторов компаний
-     * @return  набор параметров
+     * @param companyIds  список идентификаторов компаний
+     * @return набор параметров
      */
     public Set<CompanyParam> getParamsForFormula(String formulaNode, Set<String> companyIds) throws SQLException {
         Set<CompanyParam> result = new HashSet<>();
@@ -88,6 +117,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     public void close() throws Exception {
         tryToClose(getModelLeafsStmt);
         tryToClose(getFuncParamsStmt);
+        tryToClose(getCompanyIdsByListId);
         tryToCloseConnection(connection, hasErrors);
     }
 }

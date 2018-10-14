@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
 
 /**
@@ -22,21 +21,23 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
     private Integer insertFormulaStmtCounter = 0;
     private Integer insertModelStmtCounter = 0;
     private Integer insertModelCalcStmtCounter = 0;
-
+    private Integer insertFormulaParamStmtCounter = 0;
     final DataSource ds;
-    final Connection connection;
-    final PreparedStatement insertCompanyStmt;
-    final PreparedStatement insertCompanyParamStmt;
-    final PreparedStatement insertFormulaStmt;
-    final PreparedStatement insertModelStmt;
-    final PreparedStatement insertModelCalcStmt;
+
+    private final Connection connection;
+    private final PreparedStatement insertCompanyStmt;
+    private final PreparedStatement insertCompanyParamStmt;
+    private final PreparedStatement insertFormulaStmt;
+    private final PreparedStatement insertModelStmt;
+    private final PreparedStatement insertModelCalcStmt;
+    private final PreparedStatement insertFormulaParamStmt;
 
     private static final String SQL_INSERT_COMPANY = "INSERT INTO company (id, inn) VALUES (?,?)";
     private static final String SQL_INSERT_COMPANY_PARAM = "INSERT INTO company_business_params (company_id, param_code, year, param_value) VALUES (?,?,?,?)";
     private static final String SQL_INSERT_FORMULA = "INSERT INTO formula (node, calculation, descr, formula_type, a, b, c, d, xb,comments) VALUES (?,?,?,?,?,?,?,?,?,?)";
     private static final String SQL_INSERT_MODEL = "INSERT INTO model (id, descr) VALUES (?,'Загружено из Excel')";
     private static final String SQL_INSERT_MODEL_CALC = "INSERT INTO model_CALC (model_id, node, parent_node, weight, level, is_leaf) VALUES (?,?,?,?,?,?)";
-
+    private static final String SQL_INSERT_FORMULA_PARAMS = "INSERT INTO formula_params (node, param_code, year_shift) VALUES (?,?,?)";
 
 
     public DatabaseExcelImportAccessor(DataSource ds) throws SQLException {
@@ -48,6 +49,7 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
         this.insertFormulaStmt = connection.prepareStatement(SQL_INSERT_FORMULA);
         this.insertModelStmt = connection.prepareStatement(SQL_INSERT_MODEL);
         this.insertModelCalcStmt = connection.prepareStatement(SQL_INSERT_MODEL_CALC);
+        this.insertFormulaParamStmt = connection.prepareStatement(SQL_INSERT_FORMULA_PARAMS);
     }
 
     @Override
@@ -57,13 +59,22 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
         tryToCloseAndExecute(insertCompanyParamStmt);
         tryToCloseAndExecute(insertCompanyStmt);
         tryToCloseAndExecute(insertFormulaStmt);
+        tryToCloseAndExecute(insertFormulaParamStmt);
         tryToCloseConnection(connection, hasErrors);
+    }
+
+    public void insertFormulaParam(String id, String paramCode, Integer yearShift) throws SQLException {
+        insertFormulaParamStmt.setString(1, id);
+        insertFormulaParamStmt.setString(2, paramCode);
+        insertFormulaParamStmt.setInt(3, yearShift);
+        insertFormulaParamStmtCounter = addReqToStmtBatch(insertFormulaParamStmtCounter, insertFormulaParamStmt);
     }
 
     /**
      * Добавляем компанию для инсерта
-     * @param inn   инн
-     * @return  присвоенный идентификатор
+     *
+     * @param inn инн
+     * @return присвоенный идентификатор
      * @throws SQLException при косяке работы со стейтментами
      */
     public String insertCompany(String inn) throws SQLException {
@@ -73,8 +84,10 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
         insertCompanyStmtCounter = addReqToStmtBatch(insertCompanyStmtCounter, insertCompanyStmt);
         return id;
     }
+
     /**
      * Добавляем узел модель расчетов для инсерта
+     *
      * @throws SQLException при косяке работы со стейтментами
      */
     public void insertModelCalc(
@@ -96,16 +109,19 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
 
     /**
      * Добавляем модель для инсерта
+     *
      * @throws SQLException при косяке работы со стейтментами
      */
     public void insertModel(String id) throws SQLException {
         insertModelStmt.setString(1, id);
-        insertModelStmtCounter= addReqToStmtBatch(insertModelStmtCounter, insertModelStmt);
+        insertModelStmtCounter = addReqToStmtBatch(insertModelStmtCounter, insertModelStmt);
     }
+
     /**
      * Добавляем компанию для инсерта
-     * @param inn   инн
-     * @return  присвоенный идентификатор
+     *
+     * @param inn инн
+     * @return присвоенный идентификатор
      * @throws SQLException при косяке работы со стейтментами
      */
     public String insertCompany(String id, String inn) throws SQLException {
@@ -117,15 +133,16 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
 
     /**
      * Добавляем формулу для сохранения в базу.
-     * @param node имя узла иерархии расчета
+     *
+     * @param node        имя узла иерархии расчета
      * @param calculation способ подсчета входного значения
-     * @param descr описание формулы
+     * @param descr       описание формулы
      * @param formulaType тип формулы
-     * @param a параметр А
-     * @param b параметр B
-     * @param c параметр C
-     * @param d параметр D
-     * @param xb параметр XB
+     * @param a           параметр А
+     * @param b           параметр B
+     * @param c           параметр C
+     * @param d           параметр D
+     * @param xb          параметр XB
      * @throws SQLException если че-то не так с БД
      */
     public void insertFormula(
@@ -156,6 +173,7 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
 
     /**
      * Добавляем параметр компании для сохранения в базу.
+     *
      * @param companyId  идентификатор компании
      * @param param_code код параметра
      * @param year       год
@@ -166,7 +184,7 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
         insertCompanyParamStmt.setString(2, param_code);
         insertCompanyParamStmt.setInt(3, year);
         insertCompanyParamStmt.setDouble(4, paramValue);
-        addReqToStmtBatch(insertCompanyParamStmtCounter, insertCompanyParamStmt);
+        insertCompanyParamStmtCounter = addReqToStmtBatch(insertCompanyParamStmtCounter, insertCompanyParamStmt);
     }
 
 
