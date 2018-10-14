@@ -23,9 +23,9 @@ public class Formula {
     public final static String D_NAME = "D";
     public final static String CALCULATION_INPUT_NAME = "calculationFormula";
 
-    public Formula(String node, String descr, String calculation, String formulaType, String a, String b, String c, String d, String xb, String comments) {
+    public Formula(String node, String name, String calculation, String formulaType, String a, String b, String c, String d, String xb, String comments) {
         this.node = node;
-        this.descr = descr;
+        this.name = name;
         this.calculation = calculation;
         this.formulaType = formulaType;
         this.a = a;
@@ -36,45 +36,6 @@ public class Formula {
         this.comments = comments;
     }
 
-    public String getNode() {
-        return node;
-    }
-
-    public String getDescr() {
-        return descr;
-    }
-
-    public String getCalculation() {
-        return calculation;
-    }
-
-    public String getFormulaType() {
-        return formulaType;
-    }
-
-    public String getA() {
-        return a;
-    }
-
-    public String getB() {
-        return b;
-    }
-
-    public String getC() {
-        return c;
-    }
-
-    public String getD() {
-        return d;
-    }
-
-    public String getXb() {
-        return xb;
-    }
-
-    public String getComments() {
-        return comments;
-    }
 
     String node;
     String name;
