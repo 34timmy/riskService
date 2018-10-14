@@ -8,6 +8,22 @@ import java.sql.SQLException;
  * Created by DenRUS on 08.10.2018.
  */
 public class CompanyParam {
+    public String getParamCode() {
+        return paramCode;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public String getParamValue() {
+        return paramValue;
+    }
+
     String paramCode;
     String companyId;
     Integer year;

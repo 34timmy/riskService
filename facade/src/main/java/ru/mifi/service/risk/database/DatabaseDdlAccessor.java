@@ -44,7 +44,7 @@ public class DatabaseDdlAccessor {
 //        this.dataSource = dataSource;
 //    }
     
-    public void createTempTable(String modelId, String companiesListId) {
+    public String createTempTable(String modelId, String companiesListId) {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement prepStmt = conn.prepareStatement(SQL_INSERT_RESULT_INFO)
@@ -74,6 +74,7 @@ public class DatabaseDdlAccessor {
             prepStmt.setString(2, companiesListId);
             prepStmt.setString(3, tableName);
             prepStmt.executeQuery();
+            return tableName;
         } catch (SQLException e) {
             throw new DatabaseException("Ошибка создания временной таблицы для результата");
         }

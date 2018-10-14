@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.mifi.service.risk.exception.RestException;
 import ru.mifi.service.risk.utils.DataService;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.util.Map;
 
 @RestController
@@ -17,6 +19,12 @@ import java.util.Map;
 public class ActionController extends ExceptionHandlerController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActionController.class);
+
+    private DataSource dataSource;
+    @Resource(name="dataSource")
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @ApiOperation(value = "Запустить основной расчет")
     @RequestMapping(value = "/calculation", method = RequestMethod.POST)
@@ -28,7 +36,7 @@ public class ActionController extends ExceptionHandlerController {
             @RequestParam("companyListId") String companyListId
     ) throws RestException {
         try {
-            String result = new DataService().performCalculation(modelId, companyListId);
+            String result = new DataService().performCalculation(modelId, companyListId, dataSource);
             return ResponseHelper.successResponse(result);
         } catch (Exception e) {
             throw new RestException(e);
