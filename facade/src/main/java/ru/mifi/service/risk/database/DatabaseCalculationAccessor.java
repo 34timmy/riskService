@@ -32,7 +32,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     private static final String SQL_GET_COMPANY_IDS_BY_LIST_ID =
             "SELECT " +
                     "   company_ids" +
-                    "FROM " +
+                    " FROM " +
                     "   company_list " +
                     "WHERE id = ?";
     private static final String SQL_GET_FORMULA_PARAMS =
