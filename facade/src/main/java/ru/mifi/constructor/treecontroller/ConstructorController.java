@@ -1,11 +1,11 @@
-package ru.mifi.constructor.controller;
+package ru.mifi.constructor.treecontroller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.mifi.constructor.model.Company;
 import ru.mifi.constructor.model.DTO.ModelDTO;
 import ru.mifi.constructor.model.Model;
-import ru.mifi.constructor.repository.CompanyMapper;
 import ru.mifi.constructor.service.ConstructorService;
 import ru.mifi.service.risk.domain.Formula;
 
@@ -16,38 +16,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/constructor")
+@Api(value = "Контроллер для конструктора моделей", description = "CRUD операции для модели,правила,формулы")
 public class ConstructorController {
-
-    @Autowired
-    CompanyMapper companyMapper;
 
     @Autowired
     ConstructorService constructorService;
 
-    @GetMapping(value = "/company", produces = "application/json")
-    public List<Company> getAll() throws SQLException {
-        return companyMapper.getAll();
-    }
-
+    @ApiOperation(value = "Запустить основной расчет")
+    @ResponseBody
     @GetMapping(value = "/modelDTO", produces = "application/json")
     public List<ModelDTO> getAllModelsDTO() throws SQLException {
         return constructorService.getAllModelsDTO();
     }
 
+    @ResponseBody
     @GetMapping(value = "/model", produces = "application/json")
     public List<Model> getAllModels() throws SQLException {
         return constructorService.getAllModels();
     }
 
-    @PutMapping(value = "/formula", consumes = "application/json")
-    public void createFormula(@Valid @RequestBody Formula formula) {
-//        TODO responseEntity
-        constructorService.createFormula(formula);
-    }
 
-    @PostMapping(value = "/formula", consumes = "application/json")
-    public void updateFormula(@Valid @RequestBody Formula formula) {
-//        TODO responseEntity
-        constructorService.updateFormula(formula);
-    }
 }

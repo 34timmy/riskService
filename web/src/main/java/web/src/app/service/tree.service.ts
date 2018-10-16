@@ -12,16 +12,18 @@ import {
 } from '../shared/config';
 import {TreeNode} from "primeng/api";
 import {Router} from "@angular/router";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable()
 export class TreeService {
 
   constructor(private http: Http, private router: Router) {
-
+    this.modelsLoaded = new BehaviorSubject<boolean>(false);
   }
 
   models: any;
   modelsNodes: TreeNode[] = [];
+  modelsLoaded: BehaviorSubject<boolean>;
 
   saveFormula(formula) {
     console.log('service save formula ', formula);
@@ -45,20 +47,27 @@ export class TreeService {
     return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
   }
 
-  // getModels() {
-  //   return this.http.get(basePath + constructorPath + modelPath, reqOptions).toPromise()
-  //     .then(res => <RiskModelModel[]> res.json());
-  // }
+  private getAll() {
+    return this.http.get(basePath + constructorPath + modelPath, reqOptions);
+  }
 
   getModelsAndConvert() {
     this.modelsNodes = [];
+    this.setTheBoolean(false);
     console.log('modelnodes', this.modelsNodes);
-    this.http.get(basePath + constructorPath + modelPath, reqOptions).toPromise()
-      .then(res => {
-        this.modelsToTreeNode(res.json());
-        console.log('json', res.json())
-      });
+    this.getAll().toPromise().then(res => {
+      this.modelsToTreeNode(res.json());
+      this.setTheBoolean(true);
+    });
     return this.modelsNodes;
+  }
+
+  getTheBoolean(): Observable<boolean> {
+    return this.modelsLoaded.asObservable();
+  }
+
+  private setTheBoolean(newValue: boolean): void {
+    this.modelsLoaded.next(newValue);
   }
 
   private modelsToTreeNode(models) {
@@ -77,7 +86,9 @@ export class TreeService {
     return {
       label: mod.nom,
       data: mod,
-      children: rulesTreeNodes
+      children: rulesTreeNodes,
+      draggable: true,
+      droppable:true
     };
   }
 
@@ -92,7 +103,9 @@ export class TreeService {
       label: rule.nom,
       parent: parent,
       data: rule,
-      children: formulaTreeNodes
+      children: formulaTreeNodes,
+      draggable: true,
+      droppable:true
     }
   }
 
@@ -113,9 +126,10 @@ export class TreeService {
         comments: formula.comments,
         rule_id: parent.id,
       },
-      children: []
+      children: [],
+      draggable: true,
+      droppable:true
     }
   }
-
 
 }

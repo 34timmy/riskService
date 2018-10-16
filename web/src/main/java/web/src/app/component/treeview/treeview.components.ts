@@ -1,31 +1,39 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {TreeNode} from 'primeng/api';
 import {TreeService} from '../../service/tree.service';
 import {FormulaEditComponent} from '../formula/formula-edit.component';
-import {NavigationEnd, Router} from "@angular/router";
-import {ParamsModel} from "../../model/params.model";
+import {Observable, of} from "rxjs";
+import {Draggable, Droppable} from "primeng/primeng";
 
 @Component({
   selector: 'app-treeview',
   templateUrl: 'treeview.html',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  directives: [Draggable,Droppable]
 })
 export class TreeViewComponent implements OnInit {
 
   treemodels: TreeNode[];
   cols: any[];
   selectedNode: TreeNode;
-  navigationSubscription;
+  modelsLoaded: Observable<boolean>;
 
   constructor(private treeService: TreeService) {
+
+
   }
 
   @ViewChild(FormulaEditComponent)
   private formulaEditChild: FormulaEditComponent;
 
   ngOnInit() {
+    this.treeService.getTheBoolean().subscribe(value => {
+      this.modelsLoaded = of(value);
+      console.log('Obs bool val', value);
+      console.log('Obs bool val models loaded', this.modelsLoaded)
+    });
     this.treemodels = this.treeService.getModelsAndConvert();
+    console.log('init Tree', this.treemodels);
+    console.log('modelsLoaded boolean ', this.modelsLoaded);
     this.cols = [
       {field: 'id', header: 'Id'},
       {field: 'name', header: 'Name'},
@@ -60,6 +68,15 @@ export class TreeViewComponent implements OnInit {
 
     }
   }
+
+  onDragEnd(event, child) {
+    this.treemodels.splice(this.treemodels.indexOf(child), 1);
+  }
+
+  onDrop(event, node) {
+    node.subNodes = [...node.children, this.selectedNode];
+  }
+
 
   private addNodeToParent(rowData) {
     this.onAdd(rowData);

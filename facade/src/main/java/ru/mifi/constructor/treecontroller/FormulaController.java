@@ -1,0 +1,36 @@
+package ru.mifi.constructor.treecontroller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import ru.mifi.constructor.service.FormulaService;
+import ru.mifi.service.risk.domain.Formula;
+
+import javax.validation.Valid;
+import javax.websocket.server.PathParam;
+
+@RestController
+@RequestMapping("/formula")
+public class FormulaController {
+
+
+    @Autowired
+    FormulaService formulaService;
+
+    @PutMapping(consumes = "application/json")
+    public void createFormula(@Valid @RequestBody Formula formula) {
+//        TODO responseEntity
+        formulaService.createFormula(formula);
+    }
+
+    @PostMapping(consumes = "application/json")
+    public void updateFormula(@Valid @RequestBody Formula formula) {
+//        TODO responseEntity
+        formulaService.updateFormula(formula);
+    }
+
+    @DeleteMapping()
+    public void deleteFormula(@RequestParam("id") String id) {
+//        TODO responseEntity
+        formulaService.deleteFormula(id);
+    }
+}

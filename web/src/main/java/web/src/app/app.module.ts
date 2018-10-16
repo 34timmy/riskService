@@ -10,7 +10,7 @@ import {CompanyEditComponent} from './component/company-picklist/company-edit.co
 import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
 import {DataTableModule} from 'primeng/components/datatable/datatable';
-import {CodeHighlighterModule, DataListModule, TabViewModule} from 'primeng/primeng';
+import {CodeHighlighterModule, DataListModule, Draggable, Droppable, TabViewModule} from 'primeng/primeng';
 import {GrowlModule} from 'primeng/components/growl/growl';
 import {FooterComponent} from './component/auth/footer.component';
 import {TabMenuModule} from 'primeng/tabmenu';
@@ -36,7 +36,9 @@ import {DialogModule} from 'primeng/dialog';
     ParamsEditComponent, CompanyPicklistComponent,
     ParamsPicklistComponent,
     TreeViewComponent,
-    FormulaEditComponent
+    FormulaEditComponent,
+    Draggable,
+    Droppable
   ],
   imports: [
     BrowserModule,

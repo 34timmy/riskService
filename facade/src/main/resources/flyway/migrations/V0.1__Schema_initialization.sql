@@ -1,26 +1,26 @@
-DROP TABLE if exists company;
-DROP TABLE if exists business_param;
+DROP TABLE if exists companies;
+DROP TABLE if exists business_params;
 DROP TABLE if exists company_business_params;
-DROP TABLE if exists model;
+DROP TABLE if exists models;
 DROP TABLE if exists model_calc;
-DROP TABLE if exists formula;
+DROP TABLE if exists formulas;
 DROP TABLE if exists formula_params;
 DROP TABLE if exists company_list;
 DROP TABLE if exists result_data_mapper;
-DROP TABLE IF EXISTS rule;
+DROP TABLE IF EXISTS rules;
 
-CREATE TABLE company (
+CREATE TABLE companies (
   id  varchar2 (255) NOT NULL,
   inn varchar2 (255)
 );
-ALTER TABLE company
+ALTER TABLE companies
   ADD CONSTRAINT company_pk PRIMARY KEY (id);
 
-CREATE TABLE business_param (
+CREATE TABLE business_params (
   param_code  varchar2 (255) NOT NULL,
   description varchar2 (4000)
 );
-ALTER TABLE business_param
+ALTER TABLE business_params
   ADD CONSTRAINT business_param_pk PRIMARY KEY (param_code);
 
 CREATE TABLE company_business_params (
@@ -36,11 +36,11 @@ ALTER TABLE company_business_params
 -- ALTER TABLE company_business_params ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code);
 
 
-CREATE TABLE model (
+CREATE TABLE models (
   id   varchar2 (255) NOT NULL,
   name varchar2 (250)
 );
-ALTER TABLE model
+ALTER TABLE models
   ADD CONSTRAINT model_pk PRIMARY KEY (id);
 
 CREATE TABLE model_calc (
@@ -54,25 +54,25 @@ CREATE TABLE model_calc (
 ALTER TABLE model_calc
   ADD CONSTRAINT model_calc_pk PRIMARY KEY (model_id, node);
 ALTER TABLE model_calc
-  ADD CONSTRAINT model_calc_model_fk FOREIGN KEY (model_id) REFERENCES model (id);
+  ADD CONSTRAINT model_calc_model_fk FOREIGN KEY (model_id) REFERENCES models (id);
 ALTER TABLE model_calc
   ADD CONSTRAINT weight_val_check CHECK (weight BETWEEN 0 and 100);
 ALTER TABLE model_calc
   ADD CONSTRAINT leaf_val_check CHECK (is_leaf BETWEEN 0 and 1);
 
-CREATE TABLE rule
+CREATE TABLE rules
 (
   id       varchar(255) NOT NULL,
   name     varchar(255),
   model_id varchar(255)
 );
-ALTER TABLE rule
+ALTER TABLE rules
   ADD CONSTRAINT rule_pk PRIMARY KEY (id);
 
-ALTER TABLE rule
-  ADD CONSTRAINT model_fk FOREIGN KEY (model_id) REFERENCES MODEL (id);
+ALTER TABLE rules
+  ADD CONSTRAINT model_fk FOREIGN KEY (model_id) REFERENCES models (id);
 
-CREATE TABLE formula (
+CREATE TABLE formulas (
   node         VARCHAR2 (255) NOT NULL,
   name         VARCHAR2 (4000) NOT NULL,
   calculation  VARCHAR2 (4000) NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE formula (
   comments     VARCHAR2 (4000) NOT NULL,
   rule_id      VARCHAR(255)
 );
-ALTER TABLE formula
+ALTER TABLE formulas
   ADD CONSTRAINT formula_pk PRIMARY KEY (node);
 -- ALTER TABLE formula ADD CONSTRAINT node_fk FOREIGN KEY (node) REFERENCES model_calc (node);
 
@@ -99,10 +99,10 @@ ALTER TABLE formula_params
 CREATE INDEX formula_params_node_idx
   ON formula_params (node);
 ALTER TABLE formula_params
-  ADD CONSTRAINT formula_params_formula_fk FOREIGN KEY (node) REFERENCES formula (node);
+  ADD CONSTRAINT formula_params_formula_fk FOREIGN KEY (node) REFERENCES formulas (node);
 -- ALTER TABLE formula_params ADD CONSTRAINT formula_params_bus_param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code);
-ALTER TABLE FORMULA
-  ADD CONSTRAINT rule_fk FOREIGN KEY (rule_id) REFERENCES rule (id);
+ALTER TABLE formulas
+  ADD CONSTRAINT rule_fk FOREIGN KEY (rule_id) REFERENCES rules (id);
 
 CREATE TABLE company_list (
   id          VARCHAR2 (255) NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE result_data_mapper (
 ALTER TABLE result_data_mapper
   ADD CONSTRAINT result_data_mapper_pk PRIMARY KEY (model_id, company_list_id);
 ALTER TABLE result_data_mapper
-  ADD CONSTRAINT res_data_mapper_model_fk FOREIGN KEY (model_id) REFERENCES model (id);
+  ADD CONSTRAINT res_data_mapper_model_fk FOREIGN KEY (model_id) REFERENCES models (id);
 ALTER TABLE result_data_mapper
   ADD CONSTRAINT company_list_fk FOREIGN KEY (company_list_id) REFERENCES company_list (id);
 -- h2 не поддерживает хранимки. Закоменчено до тестов на оракле

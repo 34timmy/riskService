@@ -1,35 +1,40 @@
-<p-treeTable [value]="treemodels" [columns]="cols" selectionMode="single" [(selection)]="selectedNode">
-  <ng-template pTemplate="header" let-columns>
-    <tr>
-      <th *ngFor="let col of columns" [ttSortableColumn]="col.field">{{col.header}}
-        <p-treeTableSortIcon [field]="col.field"></p-treeTableSortIcon>
-      </th>
-    </tr>
-  </ng-template>
+<div *ngIf="(modelsLoaded | async)">
+  <p-treeTable [value]="treemodels" [columns]="cols" selectionMode="single" [(selection)]="selectedNode">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns" [ttSortableColumn]="col.field">{{col.header}}
+          <p-treeTableSortIcon [field]="col.field"></p-treeTableSortIcon>
+        </th>
+      </tr>
+    </ng-template>
 
-  <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-    <tr [ttSelectableRow]="rowNode">
+    <ng-template pDraggable="dd" (onDragEnd)="onDragEnd($event,child)"
+                 (onDragStart)="onDragStart($event,child)"
 
-      <td>
-        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-        {{rowData.id}}
-      </td>
-      <td>
-        {{rowData.name}}
-      </td>
+                 pTemplate="body" let-rowNode let-rowData="rowData">
+      <tr [ttSelectableRow]="rowNode">
 
-      <td>
-        <p-button type="button" icon="fa fa-level-up" style="margin: 5px 5px 5px 5px" styleClass="ui-button-warning"
-                  (click)="addNodeToParent(rowData)"></p-button>
-        <p-button type="button" icon="fa fa-level-down" style="margin: 5px 5px 5px 5px" styleClass="ui-button-warning"
-                  (click)="addNodeToChildren(rowData)"></p-button>
-        <p-button type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px" styleClass="ui-button-success"
-                  (click)="onEdit(rowData)"></p-button>
-        <p-button icon="fa fa-trash" style="margin: 5px 5px 5px 5px" styleClass="ui-button-danger "
-                  (click)="onDelete(rowData)"></p-button>
+        <td ondrop="onDrop($event,child)">
+          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+          {{rowData.id}}
+        </td>
+        <td>
+          {{rowData.name}}
+        </td>
 
-      </td>
-    </tr>
-  </ng-template>
-</p-treeTable>
-<app-formula-edit (onSaveEvent)="onSaveFormula($event)"></app-formula-edit>
+        <td>
+          <p-button type="button" icon="fa fa-level-up" style="margin: 5px 5px 5px 5px" styleClass="ui-button-warning"
+                    (click)="addNodeToParent(rowData)"></p-button>
+          <p-button type="button" icon="fa fa-level-down" style="margin: 5px 5px 5px 5px" styleClass="ui-button-warning"
+                    (click)="addNodeToChildren(rowData)"></p-button>
+          <p-button type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px" styleClass="ui-button-success"
+                    (click)="onEdit(rowData)"></p-button>
+          <p-button icon="fa fa-trash" style="margin: 5px 5px 5px 5px" styleClass="ui-button-danger "
+                    (click)="onDelete(rowData)"></p-button>
+
+        </td>
+      </tr>
+    </ng-template>
+  </p-treeTable>
+  <app-formula-edit (onSaveEvent)="onSaveFormula($event)"></app-formula-edit>
+</div>
