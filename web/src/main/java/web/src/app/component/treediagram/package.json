@@ -1,0 +1,47 @@
+{
+  "_from": "angular2-tree-diagram@^1.0.6",
+  "_id": "angular2-tree-diagram@1.0.6",
+  "_inBundle": false,
+  "_integrity": "sha512-5G1xGKG96Pvsjv4W+G7S9H81myaA8sRSo5l4EN7jp9gaWprUU3PsUhS8ahNjRpoW/KMpRefmi8yv4bBgPQRTxw==",
+  "_location": "/angular2-tree-diagram",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "angular2-tree-diagram@^1.0.6",
+    "name": "angular2-tree-diagram",
+    "escapedName": "angular2-tree-diagram",
+    "rawSpec": "^1.0.6",
+    "saveSpec": null,
+    "fetchSpec": "^1.0.6"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/angular2-tree-diagram/-/angular2-tree-diagram-1.0.6.tgz",
+  "_shasum": "60ddce1b44cd591bf706b02e821e4f539f8b972b",
+  "_spec": "angular2-tree-diagram@^1.0.6",
+  "_where": "D:\\java\\riskService\\web\\src\\main\\java\\web",
+  "author": {
+    "name": "Artyom Evgrafov"
+  },
+  "bugs": {
+    "url": "https://github.com/artbelikov/angular2-tree-diagram/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "This is Angular 2+ Hierarchical UI module.",
+  "homepage": "https://github.com/artbelikov/angular2-tree-diagram#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "name": "angular2-tree-diagram",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artbelikov/angular2-tree-diagram.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.6"
+}

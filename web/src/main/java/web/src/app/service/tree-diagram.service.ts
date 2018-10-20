@@ -15,37 +15,16 @@ import {Router} from "@angular/router";
 import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable()
-export class TreeService {
+export class TreeDiagramService {
 
   constructor(private http: Http, private router: Router) {
     this.modelsLoaded = new BehaviorSubject<boolean>(false);
   }
 
   models: any;
-  modelsNodes: TreeNode[] = [];
+  modelsNodes;
   modelsLoaded: BehaviorSubject<boolean>;
 
-  saveFormula(formula) {
-    console.log('service save formula ', formula);
-    if (formula.id) {
-      return this.update(formula);
-    } else {
-      return this.create(formula);
-    }
-  }
-
-  delete(formula) {
-    return this.http.delete(basePath + constructorPath + formulaPath + '/' + formula.id, reqOptions);
-
-  }
-
-  private update(formula) {
-    return this.http.post(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
-  }
-
-  private create(formula) {
-    return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
-  }
 
   private getAll() {
     return this.http.get(basePath + constructorPath + modelPath, reqOptions);
@@ -75,43 +54,52 @@ export class TreeService {
     }
   }
 
-  private modelToTreeNode(mod): TreeNode {
-    let rulesTreeNodes: TreeNode[] = [];
+  private modelToTreeNode(mod): any {
+    let rulesTreeNodes = [];
     if (mod.rules !== undefined) {
       for (let rule of mod.rules) {
-        rulesTreeNodes.push(this.ruleToTreeNode(rule, mod))
+        let ruleToTreeNode = this.ruleToTreeNode(rule, mod);
+        rulesTreeNodes.push(ruleToTreeNode.guid);
+        this.modelsNodes.push(ruleToTreeNode)
       }
     }
     return {
-      label: mod.nom,
-      data: mod,
-      children: rulesTreeNodes,
-      draggable: true,
-      droppable:true
+      guid: (mod.id + '_' + mod.name).toString(),
+      displayName: mod.name,
+      data: {
+        id: mod.id,
+        name: mod.name
+      },
+      children: rulesTreeNodes
     };
   }
 
   private ruleToTreeNode(rule, parent) {
-    let formulaTreeNodes: TreeNode[] = [];
+    let formulaTreeNodes = [];
     if (rule.formulas !== undefined) {
       for (let formula of rule.formulas) {
-        formulaTreeNodes.push(this.formulaToTreeNode(formula, rule))
+        let formulaToTreeNode = this.formulaToTreeNode(formula, rule);
+        formulaTreeNodes.push(formulaToTreeNode.guid);
+        this.modelsNodes.push(formulaToTreeNode);
       }
     }
     return {
-      label: rule.nom,
-      parent: parent,
-      data: rule,
-      children: formulaTreeNodes,
-      draggable: true,
-      droppable:true
+      guid: (rule.id + '_' + rule.name).toString(),
+      parentId: (parent.id + '_' + parent.name).toString(),
+      displayName: rule.name,
+      data: {
+        id: rule.id,
+        name: rule.name
+      },
+      children: formulaTreeNodes
     }
   }
 
-  private formulaToTreeNode(formula, parent): TreeNode {
+  private formulaToTreeNode(formula, parent) {
     return {
-      label: formula.nom,
-      parent: parent,
+      guid: (formula.id + '_' + formula.name).toString(),
+      parentId: (parent.id + '_' + parent.name).toString(),
+      displayName: formula.name,
       data: {
         id: formula.node,
         name: formula.name,
@@ -125,9 +113,7 @@ export class TreeService {
         comments: formula.comments,
         rule_id: parent.id,
       },
-      children: [],
-      draggable: true,
-      droppable:true
+      children: []
     }
   }
 

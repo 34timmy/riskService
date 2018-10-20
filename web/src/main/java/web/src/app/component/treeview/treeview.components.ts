@@ -7,8 +7,8 @@ import {Draggable, Droppable} from "primeng/primeng";
 
 @Component({
   selector: 'app-treeview',
-  templateUrl: 'treeview.html',
-  directives: [Draggable,Droppable]
+  templateUrl: 'treeview.html'
+  // directives: [Draggable,Droppable]
 })
 export class TreeViewComponent implements OnInit {
 
@@ -16,6 +16,7 @@ export class TreeViewComponent implements OnInit {
   cols: any[];
   selectedNode: TreeNode;
   modelsLoaded: Observable<boolean>;
+  draggedNode: TreeNode;
 
   constructor(private treeService: TreeService) {
 
@@ -28,12 +29,8 @@ export class TreeViewComponent implements OnInit {
   ngOnInit() {
     this.treeService.getTheBoolean().subscribe(value => {
       this.modelsLoaded = of(value);
-      console.log('Obs bool val', value);
-      console.log('Obs bool val models loaded', this.modelsLoaded)
     });
     this.treemodels = this.treeService.getModelsAndConvert();
-    console.log('init Tree', this.treemodels);
-    console.log('modelsLoaded boolean ', this.modelsLoaded);
     this.cols = [
       {field: 'id', header: 'Id'},
       {field: 'name', header: 'Name'},
@@ -43,7 +40,6 @@ export class TreeViewComponent implements OnInit {
 
   reloadTree() {
     this.treemodels = this.treeService.getModelsAndConvert();
-    console.log('reload Tree', this.treemodels);
   }
 
   onEdit(node) {
@@ -69,6 +65,7 @@ export class TreeViewComponent implements OnInit {
     }
   }
 
+  //-------------------------------------------------------------------------------
   onDragEnd(event, child) {
     this.treemodels.splice(this.treemodels.indexOf(child), 1);
   }
@@ -77,7 +74,44 @@ export class TreeViewComponent implements OnInit {
     node.subNodes = [...node.children, this.selectedNode];
   }
 
+  onNodeDrop(event) {
 
+  }
+
+  dragStart(event, car) {
+    // this.draggedNode = car;
+
+
+  }
+
+  drop(event) {
+    // if (this.draggedNode) {
+    //   let draggedCarIndex = this.findIndex(this.draggedNode);
+    //   this.selectedCars = [...this.selectedCars, this.draggedNode];
+    //   this.availableCars = this.availableCars.filter((val, i) => i != draggedCarIndex);
+    //   this.draggedCar = null;
+    // }
+
+  }
+
+  dragEnd(event) {
+    // this.draggedCar = null;
+
+
+  }
+
+  // findIndex(car: TreeNode) {
+  //   let index = -1;
+  //   for (let i = 0; i < this.treemodels.length; i++) {
+  //     if (car.vin === this.availableCars[i].vin) {
+  //       index = i;
+  //       break;
+  //     }
+  //   }
+  //   return index;
+  // }
+
+  //------------------------------------------------------------------------------------
   private addNodeToParent(rowData) {
     this.onAdd(rowData);
     // let node: TreeNode = {

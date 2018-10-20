@@ -1,7 +1,7 @@
   <!--<p-toast [style]="{marginTop: '80px'}"></p-toast>-->
 <!---->
   <!--<h3 class="first">Сервис</h3>-->
-  <p-tabView>
+  <p-tabView >
     <p-tabPanel header="Компании" leftIcon="fa fa-money">
       <app-company-picklist></app-company-picklist>
     </p-tabPanel>
@@ -10,5 +10,8 @@
     </p-tabPanel>
     <p-tabPanel header="Конструктор" rightIcon="pi pi-inbox">
       <app-treeview></app-treeview>
+    </p-tabPanel>
+    <p-tabPanel  header="SOME" rightIcon="pi pi-inbox">
+      <tree-diagram></tree-diagram>
     </p-tabPanel>
   </p-tabView>

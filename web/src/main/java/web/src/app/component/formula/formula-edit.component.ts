@@ -1,18 +1,22 @@
-import {Component, Output, EventEmitter, OnInit} from '@angular/core';
-import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
-import {FormulaModel} from '../../model/formula.model';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {BehaviorSubject, Observable, of} from "rxjs";
 
 @Component({
-  templateUrl: './formula-edit.html',
-  selector: 'app-formula-edit'
+  selector: 'app-formula-edit',
+  templateUrl: './formula-edit.html'
 })
 export class FormulaEditComponent implements OnInit {
   formulaForm: FormGroup;
-  showToggle = false;
+  showToggle= false;
+  // innerToggle: BehaviorSubject<boolean>;
   @Output()
   onSaveEvent = new EventEmitter();
 
   constructor(private formBuilder: FormBuilder) {
+    // this.innerToggle = new BehaviorSubject<boolean>(false);
+    // this.showToggle = this.getTheBoolean();
+
   }
 
   ngOnInit(): void {
@@ -63,8 +67,20 @@ export class FormulaEditComponent implements OnInit {
   }
 
   closeModal() {
+    // this.setTheBoolean(false);
     this.showToggle = false;
   }
+
+  //
+  // getTheBoolean(): Observable<boolean> {
+  //   console.log('getTheBoolean = ', this.innerToggle)
+  //   return this.innerToggle.asObservable();
+  // }
+  //
+  // setTheBoolean(newValue: boolean): void {
+  //   console.log('setTheBoolean = ', newValue)
+  //   this.innerToggle.next(newValue);
+  // }
 
   resetForm() {
     this.formulaForm.reset();

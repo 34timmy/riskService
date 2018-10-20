@@ -10,7 +10,12 @@ import {CompanyEditComponent} from './component/company-picklist/company-edit.co
 import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
 import {DataTableModule} from 'primeng/components/datatable/datatable';
-import {CodeHighlighterModule, DataListModule, Draggable, Droppable, TabViewModule} from 'primeng/primeng';
+import {
+  CodeHighlighterModule,
+  DataListModule,
+  SharedModule,
+  TabViewModule, TreeModule
+} from 'primeng/primeng';
 import {GrowlModule} from 'primeng/components/growl/growl';
 import {FooterComponent} from './component/auth/footer.component';
 import {TabMenuModule} from 'primeng/tabmenu';
@@ -28,6 +33,12 @@ import {TreeService} from './service/tree.service';
 import {FormulaEditComponent} from './component/formula/formula-edit.component';
 import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
+import {DragDropModule} from 'primeng/dragdrop';
+import {Tree} from "./component/treediagram/tree.component";
+import {Node} from "./component/treediagram/node";
+import {NodesListService} from "./component/treediagram/services/nodesList.service";
+import {TreeDiagramService} from "./service/tree-diagram.service";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,8 +48,8 @@ import {DialogModule} from 'primeng/dialog';
     ParamsPicklistComponent,
     TreeViewComponent,
     FormulaEditComponent,
-    Draggable,
-    Droppable
+    Tree,
+    Node
   ],
   imports: [
     BrowserModule,
@@ -55,11 +66,14 @@ import {DialogModule} from 'primeng/dialog';
     BrowserAnimationsModule,
     TreeTableModule,
     ButtonModule,
-    DialogModule
+    DialogModule,
+    DragDropModule
 
   ],
-  providers: [CompanyService, ParamsService, TreeService],
-  bootstrap: [AppComponent]
+  providers: [CompanyService, ParamsService, TreeService,NodesListService, TreeDiagramService],
+  bootstrap: [AppComponent],
+  exports: [SharedModule, Tree,
+    Node]
 })
 export class AppModule {
 }
