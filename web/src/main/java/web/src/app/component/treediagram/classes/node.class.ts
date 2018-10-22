@@ -1,6 +1,8 @@
 import {TreeDiagramNodesList} from './nodesList.class'
 import {ViewChild, ViewChildren} from "@angular/core";
 import {FormulaEditComponent} from "../../formula/formula-edit.component";
+import {TreeDiagramService} from "../../../service/tree-diagram.service";
+import {ConfirmationService} from "primeng/api";
 
 export class TreeDiagramNode {
   public parentId: string | null;
@@ -13,12 +15,13 @@ export class TreeDiagramNode {
   public children: Set<string>;
   public data;
   public displayName: string;
-
+  treeService: TreeDiagramService;
   @ViewChildren(FormulaEditComponent)
   private formulaEditChild: FormulaEditComponent;
 
 
   constructor(props, config, public getThisNodeList: () => TreeDiagramNodesList) {
+
     if (!props.guid) {
       return;
     }
@@ -38,10 +41,16 @@ export class TreeDiagramNode {
     }
     this.children = new Set(<string[]>props.children)
     this.data = props.data;
+    this.formulaEditChild = config.formulaEditChild;
+    this.treeService = config.treeService;
   }
 
+  public edit()
+  {
+    this.getThisNodeList().edit(this);
+  }
   public destroy() {
-    this.getThisNodeList().destroy(this.guid)
+    this.getThisNodeList().destroy(this)
   }
 
   public get isExpanded() {
@@ -103,35 +112,28 @@ export class TreeDiagramNode {
   }
 
   public addChild() {
-    let newNodeGuid = this.getThisNodeList().newNode(this.guid);
+    //TODO depend on name change edit dialog
+    console.log('addChild method called', this);
+
     if (this.displayName.toLowerCase().includes('rule')) {
-      // this.showFormulaEditDialog();
-      this.formulaEditChild.fillFormulaFormWithRuleId(this.data.id);
-      console.log('formula edit in node class',this.formulaEditChild)
+      this.showFormulaEditDialog();
+      this.formulaEditChild.fillFormulaFormWithRuleId(this.data);
+      this.formulaEditChild.formulaSaved.asObservable().subscribe(value => {
+        if (value) {
+          let newNodeGuid = this.getThisNodeList().newNode(this.guid, this.formulaEditChild.formulaForm.value);
+          this.children.add(newNodeGuid);
+        }
+      });
+      console.log('formula edit in node class', this.formulaEditChild)
 
     }
-    this.children.add(newNodeGuid)
     this.toggle(true)
   }
 
   private showFormulaEditDialog() {
     this.formulaEditChild.resetForm();
-    this.formulaEditChild.showToggle=true;
-    console.log('togle', this.formulaEditChild.showToggle)
+    this.formulaEditChild.showToggle = true;
+    console.log('toggle', this.formulaEditChild.showToggle)
   }
 
-  setFormulaEditChild(child) {
-    this.formulaEditChild = child;
-
-  }
-
-  onSaveFormula(node) {
-    console.log('node ', node);
-    // this.treeService.saveFormula(node)
-    //   .subscribe(
-    //     res => {
-    //       this.reloadTree();
-    //     }
-    //   );
-  }
 }

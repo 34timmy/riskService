@@ -1,16 +1,19 @@
 import {TreeDiagramNode} from './node.class';
 import {TreeDiagramNodeMaker} from "./node-maker.class"
+import {ConfirmationService} from "../../../../../node_modules/primeng/api";
 
 export class TreeDiagramNodesList {
   private _nodesList = new Map();
   public roots: TreeDiagramNode[];
   public makerGuid: string;
   public draggingNodeGuid;
+  private confirmationService: ConfirmationService;
   private _nodeTemplate = {
     displayName: 'New node',
     children: [],
     guid: '',
-    parentId: null
+    parentId: null,
+    data: {}
   }
 
   private uuidv4() {
@@ -36,6 +39,7 @@ export class TreeDiagramNodesList {
     }
     let maker = new TreeDiagramNodeMaker(node, this.config, this.getThisNodeList.bind(this))
     this._nodesList.set(this.makerGuid, maker)
+    this.confirmationService = this.config.confirmationService;
   }
 
   private _makeRoots() {
@@ -130,27 +134,41 @@ export class TreeDiagramNodesList {
     return out
   }
 
-  public destroy(guid: string) {
-    let target = this.getNode(guid);
-    if (target.parentId) {
-      let parent = this.getNode(target.parentId)
-      parent.children.delete(guid)
-    }
-    if (target.hasChildren()) {
-      target.children.forEach((child: string) => {
-        let theNode = this.getNode(child)
-        theNode.parentId = null;
-      })
-    }
-    this._nodesList.delete(guid)
-    this._makeRoots()
-    console.warn(this.values())
+  public edit(node)
+  {
+
+
+  }
+  public destroy(node) {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to perform this action?',
+      accept: () => {
+        if (node.displayName.toLowerCase().includes('formula')) {
+          node.treeService.delete(node.data).subscribe((val) => console.log('deleted ', val));
+          let target = this.getNode(node.guid);
+          if (target.parentId) {
+            let parent = this.getNode(target.parentId)
+            parent.children.delete(node.guid)
+          }
+          if (target.hasChildren()) {
+            target.children.forEach((child: string) => {
+              let theNode = this.getNode(child)
+              theNode.parentId = null;
+            })
+          }
+          this._nodesList.delete(node.guid)
+          this._makeRoots()
+          console.warn(this.values())
+        }
+      }
+    });
   }
 
-  public newNode(parentId = null) {
+  public newNode(parentId = null, value = null) {
     let _nodeTemplate = Object.assign({}, this._nodeTemplate)
     _nodeTemplate.guid = this.uuidv4();
     _nodeTemplate.parentId = parentId;
+    _nodeTemplate.displayName = value.name;
     this._nodesList.set(_nodeTemplate.guid, new TreeDiagramNode(_nodeTemplate, this.config, this.getThisNodeList.bind(this)))
     this._makeRoots()
     return _nodeTemplate.guid

@@ -1,14 +1,17 @@
-<div *ngIf="(modelsLoaded | async)" class="tree-pane"
+<app-formula-edit #formulaChild (onSaveEvent)="onSaveFormula($event)" ></app-formula-edit>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+<div   class="tree-pane"
      (mousedown)="onmousedown($event)"
      (mouseup)="onmouseup($event)"
      (mousemove)="onmousemove($event)"
      (mousewheel)="onmousewheel($event)"
 >
-    <div
+
+  <div *ngIf="(modelsLoaded | async)"
             class="tree-paning-container"
             [style.transform]="paneTransform"
     >
-        <div *ngIf="nodes"
+      <div *ngIf="nodes"
              class="tree-roots-elements"
 
         >
@@ -26,5 +29,6 @@
         </div>
     </div>
 </div>
-<app-formula-edit ></app-formula-edit>
+
+
 

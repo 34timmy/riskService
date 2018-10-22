@@ -8,7 +8,8 @@ import {BehaviorSubject, Observable, of} from "rxjs";
 })
 export class FormulaEditComponent implements OnInit {
   formulaForm: FormGroup;
-  showToggle= false;
+  showToggle = false;
+  formulaSaved: BehaviorSubject<boolean>;
   // innerToggle: BehaviorSubject<boolean>;
   @Output()
   onSaveEvent = new EventEmitter();
@@ -20,6 +21,7 @@ export class FormulaEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.formulaSaved = new BehaviorSubject<boolean>(false);
     this.formulaForm = this.formBuilder.group(
       {
         id: [''],
@@ -38,6 +40,8 @@ export class FormulaEditComponent implements OnInit {
   }
 
   fillFormulaForm(formula) {
+    console.log('fillFormulaForm', formula);
+
     this.formulaForm.patchValue({
       id: formula.id,
       name: formula.name,
@@ -53,15 +57,18 @@ export class FormulaEditComponent implements OnInit {
     });
   }
 
-  fillFormulaFormWithRuleId(formula) {
+  fillFormulaFormWithRuleId(rule) {
+    this.formulaSaved.next(false);
+    console.log('fillFormulaFormWithRuleId', rule);
     this.formulaForm.patchValue({
-      rule_id: formula.rule_id
+      rule_id: rule.id
     });
   }
 
   onSaveFormula() {
     console.log('formula value ', this.formulaForm.value);
     this.onSaveEvent.emit(this.formulaForm.value);
+    this.formulaSaved.next(true);
     this.formulaForm.reset();
     this.closeModal();
   }

@@ -16,6 +16,7 @@ public class FormulaService {
 
     @Transactional
     public void updateFormula(Formula formula) {
+
         constructorMapper.updateFormula(formula);
     }
 

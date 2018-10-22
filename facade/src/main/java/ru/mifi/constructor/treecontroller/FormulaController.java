@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 @RestController
-@RequestMapping("/formula")
+@RequestMapping("/constructor/formulas")
 public class FormulaController {
 
 
@@ -28,8 +28,8 @@ public class FormulaController {
         formulaService.updateFormula(formula);
     }
 
-    @DeleteMapping()
-    public void deleteFormula(@RequestParam("id") String id) {
+    @DeleteMapping("/{id}")
+    public void deleteFormula(@PathVariable("id") String id) {
 //        TODO responseEntity
         formulaService.deleteFormula(id);
     }

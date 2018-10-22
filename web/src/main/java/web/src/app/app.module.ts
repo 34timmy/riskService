@@ -38,6 +38,8 @@ import {Tree} from "./component/treediagram/tree.component";
 import {Node} from "./component/treediagram/node";
 import {NodesListService} from "./component/treediagram/services/nodesList.service";
 import {TreeDiagramService} from "./service/tree-diagram.service";
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ConfirmationService} from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,7 @@ import {TreeDiagramService} from "./service/tree-diagram.service";
     FormulaEditComponent,
     Tree,
     Node
+
   ],
   imports: [
     BrowserModule,
@@ -67,10 +70,12 @@ import {TreeDiagramService} from "./service/tree-diagram.service";
     TreeTableModule,
     ButtonModule,
     DialogModule,
-    DragDropModule
+    DragDropModule,
+    ConfirmDialogModule
 
   ],
-  providers: [CompanyService, ParamsService, TreeService,NodesListService, TreeDiagramService],
+  providers: [CompanyService, ParamsService, TreeService,NodesListService, TreeDiagramService,
+    ConfirmationService],
   bootstrap: [AppComponent],
   exports: [SharedModule, Tree,
     Node]

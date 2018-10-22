@@ -8,7 +8,7 @@ import ru.mifi.constructor.service.RuleService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/rule")
+@RequestMapping("/rules")
 public class RuleController {
 
     @Autowired

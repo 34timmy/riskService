@@ -27,8 +27,8 @@ export class Node {
 
   @Input() set treeDiagramNode(guid) {
     this.node = this.nodesSrv.getNode(guid)
-    console.log('formula edit',this.formulaEditChild)
-    this.node.setFormulaEditChild(this.formulaEditChild);
+    // console.log('formula edit',this.formulaEditChild)
+    // this.node.setFormulaEditChild(this.formulaEditChild);
     this.childrenTransform = this.sanitizer.bypassSecurityTrustStyle(`translate(calc(-50% + ${Math.round(this.node.width / 2)}px), 45px)`)
   }
 }

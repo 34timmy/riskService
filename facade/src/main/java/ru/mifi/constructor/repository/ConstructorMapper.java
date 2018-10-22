@@ -36,7 +36,7 @@ public interface ConstructorMapper {
             " values (#{id},#{name}) ")
     void createModel(Model model);
 
-    @Delete("Delete * from models m where m.id = #{id}")
+    @Delete("Delete from models m where m.id = #{id}")
     void deleteModel(String id);
 
 //        -------------------- Rule Repository --------------------
@@ -58,7 +58,7 @@ public interface ConstructorMapper {
             " values (#{id},#{name}) ")
     void createRule(Rule rule);
 
-    @Delete("Delete * from rules r where r.id = #{id}")
+    @Delete("Delete from rules r where r.id = #{id}")
     void deleteRule(String id);
 
     //  -------------------- Formula Repository --------------------
@@ -73,7 +73,8 @@ public interface ConstructorMapper {
             " values (#{node},#{name},#{calculation},#{formulaType},#{a},#{b},#{c},#{d},#{xb},#{comments},#{rule_id}) ")
     void createFormula(Formula formula);
 
-    @Delete("Delete * from formulas f where f.id = #{id}")
+//    TODO DELETE  CASCADE
+    @Delete("Delete from formulas f where f.node = #{id}")
     void deleteFormula(String id);
 
 }

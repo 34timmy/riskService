@@ -8,7 +8,7 @@ import ru.mifi.constructor.service.ModelService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/model")
+@RequestMapping("/models")
 public class ModelController {
 
     @Autowired

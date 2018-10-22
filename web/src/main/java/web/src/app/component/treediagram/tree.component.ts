@@ -1,10 +1,11 @@
-import {Component, OnInit, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild, ViewChildren} from '@angular/core';
 
 import {NodesListService} from './services/nodesList.service'
 import {DomSanitizer} from "@angular/platform-browser";
 import {TreeDiagramService} from "../../service/tree-diagram.service";
 import {Observable, of} from "rxjs";
 import {FormulaEditComponent} from "../formula/formula-edit.component";
+import {ConfirmationService} from "primeng/api";
 
 @Component({
   selector: 'tree-diagram',
@@ -12,7 +13,13 @@ import {FormulaEditComponent} from "../formula/formula-edit.component";
   templateUrl: './tree.component.html',
 })
 export class Tree implements OnInit {
+  @ViewChild('formulaChild')
+  private formulaEditChild: FormulaEditComponent;
+
   private _config = {
+    confirmationService: this.confirmationService,
+    treeService: this.treeService,
+    formulaEditChild: this.formulaEditChild,
     nodeWidth: 200,
     nodeHeight: 100
   };
@@ -25,8 +32,16 @@ export class Tree implements OnInit {
   nodes;
   modelsLoaded: Observable<boolean>;
 
-  @ViewChildren(FormulaEditComponent)
-  private formulaEditChild: FormulaEditComponent;
+  constructor(
+    private nodesSrv: NodesListService,
+    private sanitizer: DomSanitizer,
+    private treeService: TreeDiagramService,
+    private confirmationService: ConfirmationService
+  ) {
+    this._config.treeService = this.treeService;
+    this._config.confirmationService = this.confirmationService;
+  }
+
 
   ngOnInit() {
     this.treeService.getTheBoolean().subscribe(value => {
@@ -39,21 +54,32 @@ export class Tree implements OnInit {
     // if (typeof _data.config === 'object') {
     //   this._config = Object.assign(this._config, _data.config)
     // }
-    var that = this;
-    setTimeout(() => {
-        this.nodes = this.nodesSrv.loadNodes(_data, this._config);
-      }
-    );
-    console.log('this nodes outer   ', this.nodes);
+    if (_data) {
+      setTimeout(() => {
+          this._config.formulaEditChild = this.formulaEditChild;
+          this.nodes = this.nodesSrv.loadNodes(_data, this._config);
+          this.treeService.setTheBoolean(true)
+        }
+      );
+    }
+    console.log('nodes in tree component', this.nodes)
+  }
+
+  reloadTree() {
+    // this.treeService.setTheBoolean(false);
+    // this.ngOnInit();
+    // let _data = this.treeService.getModelsAndConvert();
+    // if (_data) {
+    //   setTimeout(() => {
+    //       this._config.formulaEditChild = this.formulaEditChild;
+    //       this.nodes = this.nodesSrv.loadNodes(_data, this._config);
+    //       this.treeService.setTheBoolean(true)
+    //     }
+    //   );
+    // }
 
   }
 
-  constructor(
-    private nodesSrv: NodesListService,
-    private sanitizer: DomSanitizer,
-    private treeService: TreeDiagramService
-  ) {
-  }
 
   public newNode() {
     this.nodesSrv.newNode()
@@ -97,4 +123,21 @@ export class Tree implements OnInit {
     this.makeTransform()
   }
 
+  onSaveFormula(node) {
+    console.log('node ', node);
+    this.treeService.saveFormula(node)
+      .subscribe(
+        res => {
+          this.reloadTree();
+        }
+      );
+  }
+
+  onDeleteFormula(formula) {
+    this.treeService.delete(formula).subscribe(
+      res => {
+        this.reloadTree();
+      }
+    );
+  }
 }

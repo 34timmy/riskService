@@ -9,11 +9,9 @@
   left: 0;
   right: 0;
   bottom: -10px;
-  background: #2c4c63;
   margin: 0 auto;
   display: none;
   z-index: 10;
-  @include tree-button;
 }
 .children-count{
   display: none;
@@ -61,8 +59,7 @@
       background-color: #bce5ff !important;
     }
     .toggler {
-      transform: rotateZ(-45deg);
-      background: #427396;
+      transform: rotateZ(90deg);
     }
   }
   &.dragover{
@@ -139,14 +136,14 @@
   display: none;
   .delete{
     @include tree-button;
-    background-color: #a34851;
+    background-color: #ff0d20;
     position: absolute;
     right: -10px;
     top: -10px;
   }
   .add{
     @include tree-button;
-    background-color: #256947;
+    background-color: #00d43f;
     position: absolute;
     right: -10px;
     bottom: -10px;
@@ -160,7 +157,7 @@
       right: 0;
       bottom: 0;
       margin: auto;
-      background-color: #2ba423;
+      background-color: #ffffff;
     }
     &:after{
       content: '';
@@ -172,7 +169,7 @@
       right: 0;
       bottom: 0;
       margin: auto;
-      background-color: #2ba423;
+      background-color: #ffffff;
     }
   }
 }

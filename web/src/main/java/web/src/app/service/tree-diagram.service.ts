@@ -25,6 +25,28 @@ export class TreeDiagramService {
   modelsNodes;
   modelsLoaded: BehaviorSubject<boolean>;
 
+  saveFormula(formula) {
+    console.log('service save formula ', formula);
+    if (formula.id) {
+      return this.update(formula);
+    } else {
+      return this.create(formula);
+    }
+  }
+
+  delete(formula) {
+    console.log('delete fromula method', formula);
+    return this.http.delete(basePath + constructorPath + formulaPath + '/' + formula.id, reqOptions);
+
+  }
+
+  private update(formula) {
+    return this.http.post(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
+  }
+
+  private create(formula) {
+    return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
+  }
 
   private getAll() {
     return this.http.get(basePath + constructorPath + modelPath, reqOptions);
@@ -35,7 +57,7 @@ export class TreeDiagramService {
     this.setTheBoolean(false);
     this.getAll().toPromise().then(res => {
       this.modelsToTreeNode(res.json());
-      this.setTheBoolean(true);
+      // this.setTheBoolean(true);
     });
     return this.modelsNodes;
   }
@@ -44,7 +66,8 @@ export class TreeDiagramService {
     return this.modelsLoaded.asObservable();
   }
 
-  private setTheBoolean(newValue: boolean): void {
+  setTheBoolean(newValue: boolean): void {
+    console.log('boolean in tree-diagr service', newValue);
     this.modelsLoaded.next(newValue);
   }
 
