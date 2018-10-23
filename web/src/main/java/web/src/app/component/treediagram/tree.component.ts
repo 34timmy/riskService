@@ -1,11 +1,14 @@
-import {AfterViewInit, Component, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {NodesListService} from './services/nodesList.service'
 import {DomSanitizer} from "@angular/platform-browser";
 import {TreeDiagramService} from "../../service/tree-diagram.service";
 import {Observable, of} from "rxjs";
 import {FormulaEditComponent} from "../formula/formula-edit.component";
-import {ConfirmationService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {ModelEditComponent} from "../model/model-edit.component";
+import {NotificationService} from "../../shared/notification.service";
+import {Message} from "../../../../node_modules/primeng/api";
 
 @Component({
   selector: 'tree-diagram',
@@ -16,10 +19,15 @@ export class Tree implements OnInit {
   @ViewChild('formulaChild')
   private formulaEditChild: FormulaEditComponent;
 
+  @ViewChild('modelChild')
+  private modelEditChild: ModelEditComponent;
+
   private _config = {
     confirmationService: this.confirmationService,
+    notificationService: this.notificationService,
     treeService: this.treeService,
     formulaEditChild: this.formulaEditChild,
+    modelEditChild: this.modelEditChild,
     nodeWidth: 200,
     nodeHeight: 100
   };
@@ -36,10 +44,12 @@ export class Tree implements OnInit {
     private nodesSrv: NodesListService,
     private sanitizer: DomSanitizer,
     private treeService: TreeDiagramService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private notificationService: MessageService
   ) {
     this._config.treeService = this.treeService;
     this._config.confirmationService = this.confirmationService;
+    this._config.notificationService = this.notificationService;
   }
 
 
@@ -57,6 +67,7 @@ export class Tree implements OnInit {
     if (_data) {
       setTimeout(() => {
           this._config.formulaEditChild = this.formulaEditChild;
+          this._config.modelEditChild = this.modelEditChild;
           this.nodes = this.nodesSrv.loadNodes(_data, this._config);
           this.treeService.setTheBoolean(true)
         }
@@ -134,10 +145,33 @@ export class Tree implements OnInit {
   }
 
   onDeleteFormula(formula) {
-    this.treeService.delete(formula).subscribe(
+    this.treeService.deleteFormula(formula).subscribe(
       res => {
         this.reloadTree();
       }
     );
   }
+
+
+  onSaveModel(node) {
+    console.log('node ', node);
+    this.treeService.saveModel(node)
+      .subscribe(
+        res => {
+          this.reloadTree();
+        }
+      );
+  }
+
+  onDeleteModel(model) {
+    this.treeService.deleteModel(model).subscribe(
+      res => {
+        this.reloadTree();
+      }
+    );
+  }
+
+  // getMessages(): Message[] {
+    // return this.notificationService.message;
+  // }
 }

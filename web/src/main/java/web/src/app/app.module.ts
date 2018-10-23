@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -10,12 +10,7 @@ import {CompanyEditComponent} from './component/company-picklist/company-edit.co
 import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
 import {DataTableModule} from 'primeng/components/datatable/datatable';
-import {
-  CodeHighlighterModule,
-  DataListModule,
-  SharedModule,
-  TabViewModule, TreeModule
-} from 'primeng/primeng';
+import {CodeHighlighterModule, DataListModule, SharedModule, TabViewModule} from 'primeng/primeng';
 import {GrowlModule} from 'primeng/components/growl/growl';
 import {FooterComponent} from './component/auth/footer.component';
 import {TabMenuModule} from 'primeng/tabmenu';
@@ -40,6 +35,9 @@ import {NodesListService} from "./component/treediagram/services/nodesList.servi
 import {TreeDiagramService} from "./service/tree-diagram.service";
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
+import {ModelEditComponent} from "./component/model/model-edit.component";
+import {NotificationService} from "./shared/notification.service";
+import {CustomErrorHandler} from "./shared/custom.errorhandler";
 
 @NgModule({
   declarations: [
@@ -51,7 +49,8 @@ import {ConfirmationService} from 'primeng/api';
     TreeViewComponent,
     FormulaEditComponent,
     Tree,
-    Node
+    Node,
+    ModelEditComponent
 
   ],
   imports: [
@@ -72,10 +71,9 @@ import {ConfirmationService} from 'primeng/api';
     DialogModule,
     DragDropModule,
     ConfirmDialogModule
-
   ],
-  providers: [CompanyService, ParamsService, TreeService,NodesListService, TreeDiagramService,
-    ConfirmationService],
+  providers: [CompanyService, ParamsService, TreeService, NodesListService, TreeDiagramService,
+    ConfirmationService, NotificationService, {provide: ErrorHandler, useClass: CustomErrorHandler}],
   bootstrap: [AppComponent],
   exports: [SharedModule, Tree,
     Node]

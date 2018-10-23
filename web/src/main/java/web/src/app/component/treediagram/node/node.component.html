@@ -26,19 +26,25 @@
          [style.height.px]="node.height"
     >
       <div class="buttons">
-        <p-button type="button" icon="fa fa-info-circle" style="position: absolute;left: -10px;top: -10px;"
-                  styleClass="ui-button-info"
-                  (click)="node.edit()"></p-button>
-        <p-button type="button" icon="fa fa-trash" style="position: absolute;right: -10px;top: -10px;"
-                  styleClass="ui-button-danger"
-                  (click)="node.destroy()"></p-button>
+        <div class="edit">
+          <p-button type="button" icon="fa fa-info-circle"
+                    styleClass="ui-button-info"
+                    (click)="node.edit()"></p-button>
+        </div>
+        <div class="delete">
+          <p-button type="button" icon="fa fa-trash"
+                    styleClass="ui-button-danger"
+                    (click)="node.destroy()"></p-button>
+        </div>
         <div class="toggler">
           <p-button type="button" icon="fa fa-arrow-circle-right" styleClass="ui-button-secondary"
                     (click)="node.toggle()"></p-button>
         </div>
-        <p-button type="button" icon="fa fa-plus" style="position: absolute;right: -10px;bottom: -10px;"
-                  styleClass="ui-button-success"
-                  (click)="node.addChild()"></p-button>
+        <div class="add">
+          <p-button type="button" icon="fa fa-plus"
+                    styleClass="ui-button-success"
+                    (click)="node.addChild()"></p-button>
+        </div>
       </div>
       <div class="tree-text tree-text-non-editable">
         <span>{{node.displayName}}</span>

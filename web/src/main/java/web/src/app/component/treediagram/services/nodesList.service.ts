@@ -19,7 +19,7 @@ export class NodesListService {
   }
 
   public newNode() {
-    this._nodesList.newNode()
+    this._nodesList.addNode()
   }
 
   public makerNode() {

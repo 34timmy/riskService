@@ -28,24 +28,47 @@ export class TreeDiagramService {
   saveFormula(formula) {
     console.log('service save formula ', formula);
     if (formula.id) {
-      return this.update(formula);
+      return this.updateFormula(formula);
     } else {
-      return this.create(formula);
+      return this.createFormula(formula);
     }
   }
 
-  delete(formula) {
+  deleteFormula(formula) {
     console.log('delete fromula method', formula);
     return this.http.delete(basePath + constructorPath + formulaPath + '/' + formula.id, reqOptions);
 
   }
 
-  private update(formula) {
+  private updateFormula(formula) {
     return this.http.post(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
   }
 
-  private create(formula) {
+  private createFormula(formula) {
     return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
+  }
+
+  saveModel(model) {
+    console.log('service save model ', model);
+    if (model.id) {
+      return this.updateModel(model);
+    } else {
+      return this.createModel(model);
+    }
+  }
+
+  deleteModel(model) {
+    console.log('delete fromula method', model);
+    return this.http.delete(basePath + constructorPath + modelPath + '/' + model.id, reqOptions);
+
+  }
+
+  private updateModel(model) {
+    return this.http.post(basePath + constructorPath + modelPath, JSON.stringify(model), reqOptionsJson);
+  }
+
+  private createModel(model) {
+    return this.http.put(basePath + constructorPath + modelPath, JSON.stringify(model), reqOptionsJson);
   }
 
   private getAll() {

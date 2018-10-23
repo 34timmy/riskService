@@ -16,8 +16,8 @@ export class TreeDiagramNode {
   public data;
   public displayName: string;
   treeService: TreeDiagramService;
-  @ViewChildren(FormulaEditComponent)
-  private formulaEditChild: FormulaEditComponent;
+  // @ViewChildren(FormulaEditComponent)
+  // private formulaEditChild: FormulaEditComponent;
 
 
   constructor(props, config, public getThisNodeList: () => TreeDiagramNodesList) {
@@ -41,14 +41,14 @@ export class TreeDiagramNode {
     }
     this.children = new Set(<string[]>props.children)
     this.data = props.data;
-    this.formulaEditChild = config.formulaEditChild;
+    // this.formulaEditChild = config.formulaEditChild;
     this.treeService = config.treeService;
   }
 
-  public edit()
-  {
+  public edit() {
     this.getThisNodeList().edit(this);
   }
+
   public destroy() {
     this.getThisNodeList().destroy(this)
   }
@@ -114,26 +114,7 @@ export class TreeDiagramNode {
   public addChild() {
     //TODO depend on name change edit dialog
     console.log('addChild method called', this);
-
-    if (this.displayName.toLowerCase().includes('rule')) {
-      this.showFormulaEditDialog();
-      this.formulaEditChild.fillFormulaFormWithRuleId(this.data);
-      this.formulaEditChild.formulaSaved.asObservable().subscribe(value => {
-        if (value) {
-          let newNodeGuid = this.getThisNodeList().newNode(this.guid, this.formulaEditChild.formulaForm.value);
-          this.children.add(newNodeGuid);
-        }
-      });
-      console.log('formula edit in node class', this.formulaEditChild)
-
-    }
-    this.toggle(true)
-  }
-
-  private showFormulaEditDialog() {
-    this.formulaEditChild.resetForm();
-    this.formulaEditChild.showToggle = true;
-    console.log('toggle', this.formulaEditChild.showToggle)
+    this.getThisNodeList().addNode(this);
   }
 
 }

@@ -2,7 +2,7 @@ import {RequestOptions, Headers} from '@angular/http';
 
 export const basePath = '';
 export const constructorPath = '/constructor';
-export const modelPath = '/model';
+export const modelPath = '/models';
 export const formulaPath = '/formulas';
 export const profilePath = '/profile';
 export const registerPath = '/register';

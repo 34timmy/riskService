@@ -1,6 +1,10 @@
 import {TreeDiagramNode} from './node.class';
 import {TreeDiagramNodeMaker} from "./node-maker.class"
-import {ConfirmationService} from "../../../../../node_modules/primeng/api";
+import {ConfirmationService, Message, MessageService} from "primeng/api";
+import {ViewChild} from "@angular/core";
+import {FormulaEditComponent} from "../../formula/formula-edit.component";
+import {ModelEditComponent} from "../../model/model-edit.component";
+import {NotificationService} from "../../../shared/notification.service";
 
 export class TreeDiagramNodesList {
   private _nodesList = new Map();
@@ -8,13 +12,19 @@ export class TreeDiagramNodesList {
   public makerGuid: string;
   public draggingNodeGuid;
   private confirmationService: ConfirmationService;
+  public notification: MessageService;
   private _nodeTemplate = {
     displayName: 'New node',
     children: [],
     guid: '',
     parentId: null,
     data: {}
-  }
+  };
+
+  @ViewChild(FormulaEditComponent)
+  private formulaEditChild: FormulaEditComponent;
+  @ViewChild(ModelEditComponent)
+  private modelEditChild: ModelEditComponent;
 
   private uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -40,6 +50,9 @@ export class TreeDiagramNodesList {
     let maker = new TreeDiagramNodeMaker(node, this.config, this.getThisNodeList.bind(this))
     this._nodesList.set(this.makerGuid, maker)
     this.confirmationService = this.config.confirmationService;
+    this.notification = this.config.notificationService;
+    this.formulaEditChild = this.config.formulaEditChild;
+    this.modelEditChild = this.config.modelEditChild;
   }
 
   private _makeRoots() {
@@ -134,44 +147,94 @@ export class TreeDiagramNodesList {
     return out
   }
 
-  public edit(node)
-  {
+  public edit(node) {
 
 
   }
+
   public destroy(node) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
         if (node.displayName.toLowerCase().includes('formula')) {
-          node.treeService.delete(node.data).subscribe((val) => console.log('deleted ', val));
-          let target = this.getNode(node.guid);
-          if (target.parentId) {
-            let parent = this.getNode(target.parentId)
-            parent.children.delete(node.guid)
-          }
-          if (target.hasChildren()) {
-            target.children.forEach((child: string) => {
-              let theNode = this.getNode(child)
-              theNode.parentId = null;
-            })
-          }
-          this._nodesList.delete(node.guid)
-          this._makeRoots()
-          console.warn(this.values())
+          node.treeService.deleteFormula(node.data).subscribe((val) => {
+              if (val.ok) {
+                let target = this.getNode(node.guid);
+                if (target.parentId) {
+                  let parent = this.getNode(target.parentId)
+                  parent.children.delete(node.guid)
+                }
+                if (target.hasChildren()) {
+                  target.children.forEach((child: string) => {
+                    let theNode = this.getNode(child)
+                    theNode.parentId = null;
+                  })
+                }
+                this._nodesList.delete(node.guid)
+                this._makeRoots()
+                console.warn(this.values())
+              }
+            },
+            // err => this.notification.error(err.url + err.cause, err.detail));
+            err => {
+              let errJson = err.json();
+              this.notification.add({
+                severity: 'error',
+                summary: errJson.cause + "\n",
+                detail: errJson.url + '\n' + errJson.detail
+              })
+            }
+          );
+
         }
       }
     });
   }
 
-  public newNode(parentId = null, value = null) {
-    let _nodeTemplate = Object.assign({}, this._nodeTemplate)
+  public addNode(node = null) {
+    let valueForm;
+    let newNodeGuid;
+    if (node === null) {
+      this.showModelEditDialog();
+      this.modelEditChild.fillEmptyModelForm();
+      this.modelEditChild.modelSaved.asObservable().subscribe(value => {
+        if (value) {
+          newNodeGuid = this.newNode(node, this.modelEditChild.modelForm.value)
+        }
+      });
+    } else if (node.displayName.toLowerCase().includes('rule')) {
+      this.showFormulaEditDialog();
+      this.formulaEditChild.fillFormulaFormWithRuleId(node.data);
+      this.formulaEditChild.formulaSaved.asObservable().subscribe(value => {
+        if (value) {
+          newNodeGuid = this.newNode(node, this.formulaEditChild.formulaForm.value)
+          node.children.add(newNodeGuid);
+          node.toggle(true)
+        }
+      });
+      console.log('formula edit in node class', this.formulaEditChild)
+    }
+  }
+
+  public newNode(node = null, value = null) {
+    let _nodeTemplate = Object.assign({}, this._nodeTemplate);
     _nodeTemplate.guid = this.uuidv4();
-    _nodeTemplate.parentId = parentId;
+    _nodeTemplate.parentId = node ? node.parentId : null;
     _nodeTemplate.displayName = value.name;
     this._nodesList.set(_nodeTemplate.guid, new TreeDiagramNode(_nodeTemplate, this.config, this.getThisNodeList.bind(this)))
-    this._makeRoots()
+    this._makeRoots();
     return _nodeTemplate.guid
+
+  }
+
+  private showFormulaEditDialog() {
+    this.formulaEditChild.resetForm();
+    this.formulaEditChild.showToggle = true;
+  }
+
+  private showModelEditDialog() {
+    this.modelEditChild.resetForm();
+    this.modelEditChild.showToggle = true;
   }
 
 }

@@ -136,41 +136,21 @@
   display: none;
   .delete{
     @include tree-button;
-    background-color: #ff0d20;
     position: absolute;
-    right: -10px;
-    top: -10px;
+    right:0;
+    top: -15px;
   }
   .add{
     @include tree-button;
-    background-color: #00d43f;
     position: absolute;
-    right: -10px;
-    bottom: -10px;
-    &:before{
-      content: '';
-      position: absolute;
-      height: 12px;
-      width: 4px;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: auto;
-      background-color: #ffffff;
-    }
-    &:after{
-      content: '';
-      position: absolute;
-      width: 12px;
-      height: 4px;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: auto;
-      background-color: #ffffff;
-    }
+    right: 0;
+    bottom: 0;
+  }
+  .edit{
+    @include tree-button;
+    position: absolute;
+    left: -10px;
+    top: -15px;
   }
 }
 .tree-text{

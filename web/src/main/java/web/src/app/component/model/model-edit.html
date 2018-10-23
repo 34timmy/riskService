@@ -1,0 +1,25 @@
+<p-dialog header="Изменение формулы" [(visible)]="showToggle"
+          [modal]="true" [width]="500" [maximizable]="true">
+  <div class="modal-body" class="ui-dialog-content">
+    <form [formGroup]="modelForm" class="form-horizontal" method="post" id="detailsForm">
+      <input type="text" hidden="hidden" id="id" name="id">
+
+      <div class="form-group row">
+        <label for="name" class="control-label col-xs-3">Название</label>
+        <div class="col-xs-9">
+          <input formControlName="name" type="text" class="form-control" id="name" placeholder="Name">
+        </div>
+      </div>
+      <p-footer>
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-9">
+            <button type="button"
+                    [disabled]="!modelForm.valid"
+                    class="btn btn-primary" (click)="onSaveModel()">Сохранить
+            </button>
+          </div>
+        </div>
+      </p-footer>
+    </form>
+  </div>
+</p-dialog>
