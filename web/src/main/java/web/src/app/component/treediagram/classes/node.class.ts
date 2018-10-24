@@ -112,7 +112,6 @@ export class TreeDiagramNode {
   }
 
   public addChild() {
-    //TODO depend on name change edit dialog
     console.log('addChild method called', this);
     this.getThisNodeList().addNode(this);
   }

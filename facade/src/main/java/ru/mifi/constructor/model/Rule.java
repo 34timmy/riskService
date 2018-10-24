@@ -12,5 +12,5 @@ public class Rule {
     private String id;
     private String name;
     private List<Formula> formulas;
-
+    private String model_id;
 }

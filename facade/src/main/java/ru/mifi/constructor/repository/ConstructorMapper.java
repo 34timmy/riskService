@@ -51,11 +51,11 @@ public interface ConstructorMapper {
     )
     List<Rule> getRules(String id);
 
-    @Update("UPDATE models m SET m.name=#{model.name} where m.id=#{model.id}")
+    @Update("UPDATE rule r SET r.name=#{rule.name} where r.id=#{rule.id}")
     void updateRule(Rule rule);
 
-    @Insert("INSERT INTO models(ID, NAME)" +
-            " values (#{id},#{name}) ")
+    @Insert("INSERT INTO rules(ID, NAME, MODEL_ID)" +
+            " values (#{id},#{name},#{model_id}) ")
     void createRule(Rule rule);
 
     @Delete("Delete from rules r where r.id = #{id}")

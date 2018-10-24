@@ -8,7 +8,7 @@ import {
   formulaPath,
   modelPath,
   reqOptions,
-  reqOptionsJson
+  reqOptionsJson, rulePath
 } from '../shared/config';
 import {TreeNode} from "primeng/api";
 import {Router} from "@angular/router";
@@ -46,6 +46,29 @@ export class TreeDiagramService {
 
   private createFormula(formula) {
     return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
+  }
+
+  saveRule(rule) {
+    console.log('service save rule ', rule);
+    if (rule.id) {
+      return this.updateRule(rule);
+    } else {
+      return this.createRule(rule);
+    }
+  }
+
+  deleteRule(rule) {
+    console.log('delete rule method', rule);
+    return this.http.delete(basePath + constructorPath + rulePath + '/' + rule.id, reqOptions);
+
+  }
+
+  private updateRule(rule) {
+    return this.http.post(basePath + constructorPath + rulePath, JSON.stringify(rule), reqOptionsJson);
+  }
+
+  private createRule(rule) {
+    return this.http.put(basePath + constructorPath + rulePath, JSON.stringify(rule), reqOptionsJson);
   }
 
   saveModel(model) {

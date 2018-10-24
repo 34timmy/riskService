@@ -1,7 +1,8 @@
-<app-formula-edit #formulaChild (onSaveEvent)="onSaveFormula($event)" ></app-formula-edit>
-<app-model-edit #modelChild (onSaveEvent)="onSaveModel($event)" ></app-model-edit>
+<app-formula-edit #formulaChild (onSaveEvent)="onSaveFormula($event)"></app-formula-edit>
+<app-rule-edit #ruleChild (onSaveEvent)="onSaveRule($event)"></app-rule-edit>
+<app-model-edit #modelChild (onSaveEvent)="onSaveModel($event)"></app-model-edit>
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
-<div   class="tree-pane"
+<div class="tree-pane"
      (mousedown)="onmousedown($event)"
      (mouseup)="onmouseup($event)"
      (mousemove)="onmousemove($event)"
@@ -9,27 +10,35 @@
 >
 
   <div *ngIf="(modelsLoaded | async)"
-            class="tree-paning-container"
-            [style.transform]="paneTransform"
+       class="tree-paning-container"
+       [style.transform]="paneTransform"
+  >
+    <div *ngIf="nodes"
+         class="tree-roots-elements"
+
     >
-      <div *ngIf="nodes"
-             class="tree-roots-elements"
 
-        >
-
-            <div [treeDiagramNode]="node.guid"
-                 class="tree-root tree-node"
-                 (mousedown)="preventMouse($event)"
-                 *ngFor="let node of nodes.roots"
-            ></div>
-            <div [treeDiagramNode]="nodeMaker"
-                 (click)="newNode()"
-                 (mousedown)="preventMouse($event)"
-                 class="tree-root tree-new-node tree-node"
-            ></div>
-        </div>
+      <div [treeDiagramNode]="node.guid"
+           class="tree-root tree-node"
+           (mousedown)="preventMouse($event)"
+           *ngFor="let node of nodes.roots"
+      ></div>
+      <div [treeDiagramNode]="nodeMaker"
+           (click)="newNode()"
+           (mousedown)="preventMouse($event)"
+           class="tree-root tree-new-node tree-node"
+      ></div>
     </div>
-  <p-toast ></p-toast>
+  </div>
+  <p-toast position="top-center">
+    <ng-template let-message pTemplate="message">
+      <div style="text-align:center">
+        <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+        <h4>{{message.summary}}</h4>
+        <p>{{message.detail}}</p>
+      </div>
+    </ng-template>
+  </p-toast>
 </div>
 
 

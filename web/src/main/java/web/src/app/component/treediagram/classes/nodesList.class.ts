@@ -1,10 +1,10 @@
 import {TreeDiagramNode} from './node.class';
 import {TreeDiagramNodeMaker} from "./node-maker.class"
-import {ConfirmationService, Message, MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {ViewChild} from "@angular/core";
 import {FormulaEditComponent} from "../../formula/formula-edit.component";
 import {ModelEditComponent} from "../../model/model-edit.component";
-import {NotificationService} from "../../../shared/notification.service";
+import {RuleEditComponent} from "../../rule/rule-edit.component";
 
 export class TreeDiagramNodesList {
   private _nodesList = new Map();
@@ -12,7 +12,7 @@ export class TreeDiagramNodesList {
   public makerGuid: string;
   public draggingNodeGuid;
   private confirmationService: ConfirmationService;
-  public notification: MessageService;
+  public notificationService: MessageService;
   private _nodeTemplate = {
     displayName: 'New node',
     children: [],
@@ -20,9 +20,12 @@ export class TreeDiagramNodesList {
     parentId: null,
     data: {}
   };
+  globalNode;
 
   @ViewChild(FormulaEditComponent)
   private formulaEditChild: FormulaEditComponent;
+  @ViewChild(RuleEditComponent)
+  private ruleEditChild: RuleEditComponent;
   @ViewChild(ModelEditComponent)
   private modelEditChild: ModelEditComponent;
 
@@ -50,8 +53,9 @@ export class TreeDiagramNodesList {
     let maker = new TreeDiagramNodeMaker(node, this.config, this.getThisNodeList.bind(this))
     this._nodesList.set(this.makerGuid, maker)
     this.confirmationService = this.config.confirmationService;
-    this.notification = this.config.notificationService;
+    this.notificationService = this.config.notificationService;
     this.formulaEditChild = this.config.formulaEditChild;
+    this.ruleEditChild = this.config.ruleEditChild;
     this.modelEditChild = this.config.modelEditChild;
   }
 
@@ -175,51 +179,46 @@ export class TreeDiagramNodesList {
                 console.warn(this.values())
               }
             },
-            // err => this.notification.error(err.url + err.cause, err.detail));
+            // err => this.notificationService.error(err.url + err.cause, err.detail));
             err => {
               let errJson = err.json();
-              this.notification.add({
+              this.notificationService.add({
                 severity: 'error',
                 summary: errJson.cause + "\n",
                 detail: errJson.url + '\n' + errJson.detail
               })
             }
           );
-
         }
       }
     });
   }
 
   public addNode(node = null) {
+    //TODO depend on name!
+    this.globalNode = node;
     let valueForm;
     let newNodeGuid;
+    console.log('Метод для добавления записи ', node);
     if (node === null) {
       this.showModelEditDialog();
       this.modelEditChild.fillEmptyModelForm();
-      this.modelEditChild.modelSaved.asObservable().subscribe(value => {
-        if (value) {
-          newNodeGuid = this.newNode(node, this.modelEditChild.modelForm.value)
-        }
-      });
-    } else if (node.displayName.toLowerCase().includes('rule')) {
+    }
+    else if (node.displayName.toLowerCase().includes('model')) {
+      this.showRuleEditDialog();
+      this.ruleEditChild.fillRuleFormWithModelId(node.data);
+    }
+    else if (node.displayName.toLowerCase().includes('rule')) {
       this.showFormulaEditDialog();
       this.formulaEditChild.fillFormulaFormWithRuleId(node.data);
-      this.formulaEditChild.formulaSaved.asObservable().subscribe(value => {
-        if (value) {
-          newNodeGuid = this.newNode(node, this.formulaEditChild.formulaForm.value)
-          node.children.add(newNodeGuid);
-          node.toggle(true)
-        }
-      });
-      console.log('formula edit in node class', this.formulaEditChild)
     }
   }
 
   public newNode(node = null, value = null) {
     let _nodeTemplate = Object.assign({}, this._nodeTemplate);
     _nodeTemplate.guid = this.uuidv4();
-    _nodeTemplate.parentId = node ? node.parentId : null;
+    //TODO guid must be id from DB
+    _nodeTemplate.parentId = node ? node.guid : null;
     _nodeTemplate.displayName = value.name;
     this._nodesList.set(_nodeTemplate.guid, new TreeDiagramNode(_nodeTemplate, this.config, this.getThisNodeList.bind(this)))
     this._makeRoots();
@@ -232,9 +231,31 @@ export class TreeDiagramNodesList {
     this.formulaEditChild.showToggle = true;
   }
 
+  private showRuleEditDialog() {
+    this.ruleEditChild.resetForm();
+    this.ruleEditChild.showToggle = true;
+  }
+
   private showModelEditDialog() {
     this.modelEditChild.resetForm();
     this.modelEditChild.showToggle = true;
   }
+
+  addNodeOnSaveFormula() {
+    let newNodeGuid = this.newNode(this.globalNode, this.formulaEditChild.formulaForm.value)
+    this.globalNode.children.add(newNodeGuid);
+    this.globalNode.toggle(true)
+  }
+
+  addNodeOnSaveRule() {
+    let newNodeGuid = this.newNode(this.globalNode, this.ruleEditChild.ruleForm.value)
+    this.globalNode.children.add(newNodeGuid);
+    this.globalNode.toggle(true)
+  }
+
+  addNodeOnSaveModel() {
+    this.newNode(this.modelEditChild.modelForm.value)
+  }
+
 
 }

@@ -18,17 +18,12 @@ export class Node {
   public node: TreeDiagramNode | TreeDiagramNodeMaker;
   public childrenTransform;
 
-  @ViewChild(FormulaEditComponent)
-  private formulaEditChild: FormulaEditComponent;
-
   constructor(private nodesSrv: NodesListService, private sanitizer: DomSanitizer) {
 
   }
 
   @Input() set treeDiagramNode(guid) {
     this.node = this.nodesSrv.getNode(guid)
-    // console.log('formula edit',this.formulaEditChild)
-    // this.node.setFormulaEditChild(this.formulaEditChild);
     this.childrenTransform = this.sanitizer.bypassSecurityTrustStyle(`translate(calc(-50% + ${Math.round(this.node.width / 2)}px), 45px)`)
   }
 }

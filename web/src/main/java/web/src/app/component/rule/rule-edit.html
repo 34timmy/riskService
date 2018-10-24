@@ -1,7 +1,7 @@
-<p-dialog header="Изменение модели" [(visible)]="showToggle"
+<p-dialog header="Изменение правила" [(visible)]="showToggle"
           [modal]="true" [width]="500" [maximizable]="true">
   <div class="modal-body" class="ui-dialog-content">
-    <form [formGroup]="modelForm" class="form-horizontal" method="post" id="detailsForm">
+    <form [formGroup]="ruleForm" class="form-horizontal" method="post" id="detailsForm">
       <input type="text" hidden="hidden" id="id" name="id">
 
       <div class="form-group row">
@@ -14,8 +14,8 @@
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-9">
             <button type="button"
-                    [disabled]="!modelForm.valid"
-                    class="btn btn-primary" (click)="onSaveModel()">Сохранить
+                    [disabled]="!ruleForm.valid"
+                    class="btn btn-primary" (click)="onSaveRule()">Сохранить
             </button>
           </div>
         </div>

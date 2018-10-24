@@ -38,6 +38,7 @@ import {ConfirmationService} from 'primeng/api';
 import {ModelEditComponent} from "./component/model/model-edit.component";
 import {NotificationService} from "./shared/notification.service";
 import {CustomErrorHandler} from "./shared/custom.errorhandler";
+import {RuleEditComponent} from "./component/rule/rule-edit.component";
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import {CustomErrorHandler} from "./shared/custom.errorhandler";
     FormulaEditComponent,
     Tree,
     Node,
-    ModelEditComponent
+    ModelEditComponent,
+    RuleEditComponent
 
   ],
   imports: [

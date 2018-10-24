@@ -19,6 +19,9 @@ export class Tree implements OnInit {
   @ViewChild('formulaChild')
   private formulaEditChild: FormulaEditComponent;
 
+  @ViewChild('ruleChild')
+  private ruleEditChild: FormulaEditComponent;
+
   @ViewChild('modelChild')
   private modelEditChild: ModelEditComponent;
 
@@ -27,6 +30,7 @@ export class Tree implements OnInit {
     notificationService: this.notificationService,
     treeService: this.treeService,
     formulaEditChild: this.formulaEditChild,
+    ruleEditChild: this.ruleEditChild,
     modelEditChild: this.modelEditChild,
     nodeWidth: 200,
     nodeHeight: 100
@@ -67,6 +71,7 @@ export class Tree implements OnInit {
     if (_data) {
       setTimeout(() => {
           this._config.formulaEditChild = this.formulaEditChild;
+          this._config.ruleEditChild = this.ruleEditChild;
           this._config.modelEditChild = this.modelEditChild;
           this.nodes = this.nodesSrv.loadNodes(_data, this._config);
           this.treeService.setTheBoolean(true)
@@ -75,22 +80,6 @@ export class Tree implements OnInit {
     }
     console.log('nodes in tree component', this.nodes)
   }
-
-  reloadTree() {
-    // this.treeService.setTheBoolean(false);
-    // this.ngOnInit();
-    // let _data = this.treeService.getModelsAndConvert();
-    // if (_data) {
-    //   setTimeout(() => {
-    //       this._config.formulaEditChild = this.formulaEditChild;
-    //       this.nodes = this.nodesSrv.loadNodes(_data, this._config);
-    //       this.treeService.setTheBoolean(true)
-    //     }
-    //   );
-    // }
-
-  }
-
 
   public newNode() {
     this.nodesSrv.newNode()
@@ -139,7 +128,20 @@ export class Tree implements OnInit {
     this.treeService.saveFormula(node)
       .subscribe(
         res => {
-          this.reloadTree();
+          this.nodesSrv.addNodeOnSaveFormula();
+          this.notificationService.add({
+            severity: 'success',
+            summary: 'Запись "' + node.name + '" добавлена',
+            detail: 'detail'
+          })
+        },
+        err => {
+          let errJson = err.json();
+          this.notificationService.add({
+            severity: 'error',
+            summary: errJson.cause,
+            detail: errJson.url + '\n' + errJson.detail
+          })
         }
       );
   }
@@ -147,18 +149,52 @@ export class Tree implements OnInit {
   onDeleteFormula(formula) {
     this.treeService.deleteFormula(formula).subscribe(
       res => {
-        this.reloadTree();
       }
     );
   }
 
+  onSaveRule(node) {
+    console.log('node ', node);
+    this.treeService.saveRule(node)
+      .subscribe(
+        res => {
+          this.nodesSrv.addNodeOnSaveRule();
+          this.notificationService.add({
+            severity: 'success',
+            summary: 'Запись "' + node.name + '" добавлена',
+            detail: 'detail'
+          })
+        },
+        err => {
+          let errJson = err.json();
+          this.notificationService.add({
+            severity: 'error',
+            summary: errJson.cause,
+            detail: errJson.url + '\n' + errJson.detail
+          })
+        }
+      );
+  }
 
   onSaveModel(node) {
     console.log('node ', node);
     this.treeService.saveModel(node)
       .subscribe(
         res => {
-          this.reloadTree();
+          this.nodesSrv.addNodeOnSaveModel();
+          this.notificationService.add({
+            severity: 'success',
+            summary: 'Запись "' + node.name + '" добавлена',
+            detail: 'detail'
+          })
+        },
+        err => {
+          let errJson = err.json();
+          this.notificationService.add({
+            severity: 'error',
+            summary: errJson.cause,
+            detail: errJson.url + '\n' + errJson.detail
+          })
         }
       );
   }
@@ -166,12 +202,7 @@ export class Tree implements OnInit {
   onDeleteModel(model) {
     this.treeService.deleteModel(model).subscribe(
       res => {
-        this.reloadTree();
       }
     );
   }
-
-  // getMessages(): Message[] {
-    // return this.notificationService.message;
-  // }
 }

@@ -26,4 +26,16 @@ export class NodesListService {
     return this._nodesList.makerGuid
   }
 
+  public addNodeOnSaveFormula() {
+    this._nodesList.addNodeOnSaveFormula();
+  }
+
+  addNodeOnSaveModel() {
+    this._nodesList.addNodeOnSaveModel();
+  }
+
+  addNodeOnSaveRule() {
+    this._nodesList.addNodeOnSaveRule();
+
+  }
 }
