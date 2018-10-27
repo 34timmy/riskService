@@ -50,7 +50,9 @@ public class DataService {
                         companies,
                         allCompanies,
                         leafs,
-                        params
+                        params,
+                        accessor,
+                        modelId
                 );
                 finalResult = calculationService.calculateFormulasHierarchy(
                         year
@@ -63,9 +65,5 @@ public class DataService {
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при расчете иерархии: " + e.getMessage(), e);
         }
-    }
-
-    private Set<String> getAllIndustryCompanies(String allIndustryCompanies) {
-        return Arrays.stream(allIndustryCompanies.split(";")).collect(Collectors.toSet());
     }
 }

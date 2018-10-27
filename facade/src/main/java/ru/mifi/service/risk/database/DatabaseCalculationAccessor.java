@@ -3,6 +3,7 @@ package ru.mifi.service.risk.database;
 import ru.mifi.service.risk.domain.CompanyParam;
 import ru.mifi.service.risk.domain.DataKey;
 import ru.mifi.service.risk.domain.Formula;
+import ru.mifi.service.risk.domain.HierarchyNode;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -38,6 +39,12 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                     "JOIN formula_params fp ON (fp.param_code = cbp.param_code) " +
                     "WHERE fp.node in (%s) AND cbp.company_id IN (%s) AND ((%s + fp.year_shift) = cbp.year)";
 
+    private static final String SQL_GET_MODEL_CALC =
+            "SELECT " +
+                    "   mc.node, mc.parent_node, mc.weight, mc.is_leaf, mc.level " +
+                    "FROM model_calc mc " +
+                    "WHERE mc.model_id = ?";
+    private final PreparedStatement getModelCalcStmt;
     private final PreparedStatement getModelLeafsStmt;
     private final Statement getFuncParamsStmt;
     private final PreparedStatement getCompanyIdsByListId;
@@ -49,6 +56,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         this.getModelLeafsStmt = connection.prepareStatement(SQL_GET_MODEL_LEAFS);
         this.getFuncParamsStmt = connection.createStatement();
         this.getCompanyIdsByListId = connection.prepareStatement(SQL_GET_COMPANY_IDS_BY_LIST_ID);
+        this.getModelCalcStmt = connection.prepareStatement(SQL_GET_MODEL_CALC);
     }
 
     private DataSource dataSource;
@@ -107,8 +115,8 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         try (ResultSet params = getFuncParamsStmt.executeQuery(
                 String.format(
                         SQL_GET_FORMULA_PARAMS,
-                        "'" + formulaIds.stream().collect(Collectors.joining("','")) + "'",
-                        "'" + companyIds.stream().collect(Collectors.joining("','")) + "'",
+                        "'" + String.join("','", formulaIds) + "'",
+                        "'" + String.join("','", companyIds) + "'",
                         year
                 )
         )) {
@@ -136,6 +144,24 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         tryToClose(getModelLeafsStmt);
         tryToClose(getFuncParamsStmt);
         tryToClose(getCompanyIdsByListId);
+        tryToClose(getModelCalcStmt);
         tryToCloseConnection(connection, hasErrors);
+    }
+
+    public Map<HierarchyNode, String> getModelCalcHierarchy(String modelId) throws SQLException {
+        Map<HierarchyNode, String> idsMap = new HashMap<>();
+        getModelCalcStmt.setString(1, modelId);
+        try (ResultSet resultSet = getModelCalcStmt.executeQuery()) {
+            while (resultSet.next()) {
+                idsMap.put(
+                        new HierarchyNode(
+                                resultSet.getString("parent_node"),
+                                resultSet.getDouble("weight")
+                                ),
+                        resultSet.getString("node")
+                        );
+            }
+        }
+        return idsMap;
     }
 }

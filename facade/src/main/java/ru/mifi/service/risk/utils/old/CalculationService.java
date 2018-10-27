@@ -1,10 +1,11 @@
 package ru.mifi.service.risk.utils.old;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
 import ru.mifi.service.risk.domain.*;
 import ru.mifi.service.risk.exception.DataLeakException;
 import ru.mifi.service.risk.exception.FormulaCalculationException;
@@ -32,6 +33,8 @@ public class CalculationService {
     private final Set<String> allInns;
     private final Set<Formula> formulas;
     private final Map<DataKey, Map<String, Double>> dataKeyMap;
+    private final DatabaseCalculationAccessor accessor;
+    private final String modelId;
 
 
 //    public Map<String, Double> calculateOnlyExpression(String input, Map<Integer, JSONArray> mapYearInn) throws JSONException, DataLeakException {
@@ -166,7 +169,7 @@ public class CalculationService {
         Map<String, Collection<FormulaResult>> resultMap = new HashMap<>();
         for (String inn : this.innsInDevelop) {
             if (normalizedData.get(inn) != null) {
-                resultMap.put(inn, calculateHierarchy(
+                resultMap.put(inn, calculateHierarchyById(
                         normalizedData.get(inn), inn, year));
             }
         }
@@ -208,6 +211,44 @@ public class CalculationService {
         return result;
     }
 
+    @SneakyThrows
+    private Collection<FormulaResult> calculateHierarchyByModelCalc(
+            Map<String, FormulaResult> formulasData,
+            String inn,
+            int year
+    ) {
+        Map<HierarchyNode, String> idToParent = accessor.getModelCalcHierarchy(modelId);
+        Map<String, List<HierarchyNode>> children = idToParent.entrySet().stream()
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getValue,
+                                entry -> Arrays.asList(entry.getKey()),
+                                (set1, set2) -> {
+                                    set1.addAll(set2);
+                                    return set1;
+                                }));
+        for (String parentId : children.keySet()) {
+            if (formulasData.containsKey(parentId)) {
+                continue;
+            }
+            Double val = calculateNode(children, parentId, formulasData);
+            formulasData.put(parentId, new FormulaResult(inn, parentId, val, val, year));
+
+        }
+        return formulasData.values();
+
+    }
+
+    private Double calculateNode(Map<String, List<HierarchyNode>> children, String nodeId, Map<String, FormulaResult> formulasData) {
+        if (formulasData.containsKey(nodeId)) {
+            return formulasData.get(nodeId).getResult();
+        }
+        return children.get(nodeId).stream()
+                .mapToDouble(fr -> calculateNode(children, fr.getId(), formulasData) * fr.getWeight())
+                .average()
+                .getAsDouble();
+    }
+
     /**
      * Вычисляет итоговый риск по конкретной компании (конкретным данынм)
      *
@@ -216,8 +257,8 @@ public class CalculationService {
      * @param year         год компании
      * @return коллекция результатов формул по иерархии для компании
      */
-    private Collection<FormulaResult> calculateHierarchy(Map<String, FormulaResult> formulasData,
-                                                         String inn, int year) {
+    private Collection<FormulaResult> calculateHierarchyById(Map<String, FormulaResult> formulasData,
+                                                             String inn, int year) {
         List<List<String>> keySet = formulasData.keySet()
                 .stream()
                 .filter(Objects::nonNull)
@@ -244,9 +285,7 @@ public class CalculationService {
                     if (isHierarchical) {
                         amount++;
                         total += formulasData
-                                .get(keySet.get(i)
-                                        .stream()
-                                        .collect(Collectors.joining("."))
+                                .get(String.join(".", keySet.get(i))
                                 ).getResult();
                         keySet.remove(keySet.get(i));
                     }
@@ -255,7 +294,7 @@ public class CalculationService {
                 }
             }
             activeElem.remove(activeElem.size() - 1);
-            String formulaId = activeElem.stream().collect(Collectors.joining("."));
+            String formulaId = String.join(".", activeElem);
             formulasData.put(formulaId, new FormulaResult(inn, formulaId, total / amount,
                     total / amount, year));
             keySet.add(activeElem);
