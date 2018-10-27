@@ -1,17 +1,12 @@
 package ru.mifi.service.risk.database;
 
 import ru.mifi.service.risk.domain.CompanyParam;
+import ru.mifi.service.risk.domain.DataKey;
 import ru.mifi.service.risk.domain.Formula;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +18,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     //TODO надо сортировать формулы и потом доставать по 1000 для расчета. Чтоб не все сразу
     private static final String SQL_GET_MODEL_LEAFS =
             "SELECT " +
-                    "   f.node, f.name, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, f.comments " +
+                    "   f.node, f.descr, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, f.comments, mc.weight " +
                     "FROM " +
                     "   model_calc mc " +
                     "JOIN formula f ON (f.node = mc.node)" +
@@ -41,10 +36,10 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                     "FROM " +
                     "   company_business_params cbp " +
                     "JOIN formula_params fp ON (fp.param_code = cbp.param_code) " +
-                    "WHERE fp.node = ? AND cbp.company_id IN (?)";
+                    "WHERE fp.node in (%s) AND cbp.company_id IN (%s) AND ((%s + fp.year_shift) = cbp.year)";
 
     private final PreparedStatement getModelLeafsStmt;
-    private final PreparedStatement getFuncParamsStmt;
+    private final Statement getFuncParamsStmt;
     private final PreparedStatement getCompanyIdsByListId;
 
     public DatabaseCalculationAccessor(DataSource dataSource) throws SQLException {
@@ -52,7 +47,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         this.connection = dataSource.getConnection();
         connection.setAutoCommit(false);
         this.getModelLeafsStmt = connection.prepareStatement(SQL_GET_MODEL_LEAFS);
-        this.getFuncParamsStmt = connection.prepareStatement(SQL_GET_FORMULA_PARAMS);
+        this.getFuncParamsStmt = connection.createStatement();
         this.getCompanyIdsByListId = connection.prepareStatement(SQL_GET_COMPANY_IDS_BY_LIST_ID);
     }
 
@@ -98,18 +93,41 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     /**
      * Получаем параметры по всем компаниям, необходимые для расчета конкретной формулы
      *
-     * @param formulaNode идентификатор формулы (узла)
+     * @param formulaIds идентификаторы формул
      * @param companyIds  список идентификаторов компаний
+     * @param year  Год расчета
      * @return набор параметров
      */
-    public Set<CompanyParam> getParamsForFormula(String formulaNode, Set<String> companyIds) throws SQLException {
-        Set<CompanyParam> result = new HashSet<>();
-        getFuncParamsStmt.setString(1, formulaNode);
-        getFuncParamsStmt.setObject(1, companyIds);
-        try (ResultSet params = getFuncParamsStmt.executeQuery()) {
-            result.add(new CompanyParam(params));
+    public Map<DataKey, Map<String, Double>> getParamsForFormula(
+            Set<String> formulaIds,
+            Set<String> companyIds,
+            Integer year
+    ) throws SQLException {
+        Map<DataKey, Map<String, Double>> result = new HashMap<>();
+        try (ResultSet params = getFuncParamsStmt.executeQuery(
+                String.format(
+                        SQL_GET_FORMULA_PARAMS,
+                        "'" + formulaIds.stream().collect(Collectors.joining("','")) + "'",
+                        "'" + companyIds.stream().collect(Collectors.joining("','")) + "'",
+                        year
+                )
+        )) {
+            while (params.next()) {
+                Map<String, Double> data = new HashMap<>();
+                data.put(params.getString("param_code"), params.getDouble("param_value"));
+                result.merge(
+                        new DataKey(
+                                params.getInt("year"),
+                                params.getString("company_id")
+                        ),
+                        data,
+                        (map1, map2) -> {
+                            map1.putAll(map2);
+                            return map1;
+                        }
+                );
+            }
         }
-        getFuncParamsStmt.clearParameters();
         return result;
     }
 

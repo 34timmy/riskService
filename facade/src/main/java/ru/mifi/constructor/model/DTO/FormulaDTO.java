@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.mifi.service.risk.domain.Formula;
 
+import java.util.Set;
+
 /**
  * Формула для расчета.
  * Created by DenRUS on 08.10.2018.
@@ -20,13 +22,13 @@ public class FormulaDTO {
     String c;
     String d;
     String xb;
-    String comments;
+    Set<String> comments;
     String rule_id;
 
     public FormulaDTO(String id, String name,
                       String calculation, String formulaType,
                       String a, String b, String c, String d, String xb,
-                      String comments) {
+                      Set<String> comments) {
         this.id = id;
         this.name = name;
         this.calculation = calculation;
@@ -40,15 +42,15 @@ public class FormulaDTO {
     }
 
     public FormulaDTO(Formula formula) {
-        this.id = formula.getNode();
-        this.name = formula.getName();
-        this.calculation = formula.getCalculation();
-        this.formulaType = formula.getFormulaType();
+        this.id = formula.getId();
+        this.name = formula.getDescr();
+        this.calculation = formula.getCalculationFormula();
+        this.formulaType = formula.getFormulaType().name();
         this.a = formula.getA();
         this.b = formula.getB();
         this.c = formula.getC();
         this.d = formula.getD();
-        this.xb = formula.getXb();
+        this.xb = formula.get_XB();
         this.comments = formula.getComments();
 
     }

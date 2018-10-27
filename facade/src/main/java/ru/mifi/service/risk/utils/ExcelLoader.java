@@ -180,7 +180,7 @@ public class ExcelLoader {
     private void parseAndSaveParams(String nodeId, String params, DatabaseExcelImportAccessor accessor) {
         Arrays.stream(params.split(";"))
                 .map(String::trim)
-                .map(String::toLowerCase)
+                .map(String::toUpperCase)
                 .map(FormulaParam::new)
                 .forEach(elem -> {
                     try {

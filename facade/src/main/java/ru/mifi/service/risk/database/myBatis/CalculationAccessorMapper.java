@@ -41,7 +41,7 @@ public interface CalculationAccessorMapper {
     @Select({
             "<script>", "select", " cbp.company_id, cbp.param_code, cbp.year, cbp.param_value ",
             "FROM company_business_params cbp ",
-            "JOIN formula_params fp ON (fp.param_code = cbp.param_code) ",
+            "JOIN formula_param fp ON (fp.param_code = cbp.param_code) ",
             "WHERE  fp.node = #{formulaNode} AND cbp.company_id IN  " +
                     "<foreach item='item' index='index' collection='set' open='(' separator=',' close=')'> #{item} </foreach>" +
                     "</script>"})

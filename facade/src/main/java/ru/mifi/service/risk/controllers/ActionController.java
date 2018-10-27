@@ -3,8 +3,10 @@ package ru.mifi.service.risk.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.mifi.service.risk.exception.RestException;
 import ru.mifi.service.risk.utils.DataService;
@@ -20,23 +22,25 @@ public class ActionController extends ExceptionHandlerController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActionController.class);
 
-    private DataSource dataSource;
-    @Resource(name="dataSource")
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    @Autowired
+    @Setter
+    private DataService dataService;
 
     @ApiOperation(value = "Запустить основной расчет")
-    @RequestMapping(value = "/calculation", method = RequestMethod.POST)
+    @RequestMapping(value = "/calculation", method = {RequestMethod.POST, RequestMethod.GET})
     public @ResponseBody
     Map<String, Object> calculate(
             @ApiParam(value = "Id модели")
             @RequestParam("modelId") String modelId,
             @ApiParam(value = "Id списка компаний")
-            @RequestParam("companyListId") String companyListId
+            @RequestParam("companyListId") String companyListId,
+            @ApiParam(value = "Id списка компаний всей отрасли")
+            @RequestParam("industryCompanyListId") String industryCompanyListId,
+            @ApiParam(value = "Год для расчета")
+            @RequestParam("year") Integer year
     ) throws RestException {
         try {
-            String result = new DataService().performCalculation(modelId, companyListId, dataSource);
+            String result = dataService.performCalculation(modelId, companyListId, industryCompanyListId, year);
             return ResponseHelper.successResponse(result);
         } catch (Exception e) {
             throw new RestException(e);

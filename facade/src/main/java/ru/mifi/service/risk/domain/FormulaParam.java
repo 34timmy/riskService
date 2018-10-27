@@ -19,14 +19,14 @@ public class FormulaParam {
 
     public FormulaParam(String param) {
         int length = param.length();
-        this.paramCode = param.substring(1, length - 2);
+        this.paramCode = param.substring(0, length - 2);
         this.yearShift = Shift.valueOf(param.substring(length-2, length));
     }
 
     private enum Shift {
-        _c(0),
-        _p(-1),
-        _t(-2);
+        _C(0),
+        _P(-1),
+        _T(-2);
 
         public Integer getShiftVal() {
             return shiftVal;

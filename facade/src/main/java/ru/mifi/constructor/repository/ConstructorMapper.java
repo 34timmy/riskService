@@ -63,14 +63,14 @@ public interface ConstructorMapper {
 
     //  -------------------- Formula Repository --------------------
     @Select("SELECT f.node,f.name,f.calculation," +
-            "f.formula_type,f.A,f.B,f.C,f.D,f.XB,f.comments from formulas f where f.rule_id = #{id}")
+            "f.formula_type,f.A,f.B,f.C,f.D,f.XB from formulas f where f.rule_id = #{id}")
     List<Formula> getFormulas(String id);
 
     @Update("UPDATE formulas f SET f.name=#{formula.name} where f.id=#{formula.id}")
     void updateFormula(Formula formula);
 
-    @Insert("INSERT INTO formulas(NODE, NAME, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, COMMENTS, RULE_ID)" +
-            " values (#{node},#{name},#{calculation},#{formulaType},#{a},#{b},#{c},#{d},#{xb},#{comments},#{rule_id}) ")
+    @Insert("INSERT INTO formulas(NODE, NAME, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, RULE_ID)" +
+            " values (#{node},#{name},#{calculation},#{formulaType},#{a},#{b},#{c},#{d},#{xb},#{rule_id}) ")
     void createFormula(Formula formula);
 
 //    TODO DELETE  CASCADE
