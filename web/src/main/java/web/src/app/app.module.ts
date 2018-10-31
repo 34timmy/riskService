@@ -40,6 +40,8 @@ import {NotificationService} from "./shared/notification.service";
 import {CustomErrorHandler} from "./shared/custom.errorhandler";
 import {RuleEditComponent} from "./component/rule/rule-edit.component";
 
+// import {D3testComponent} from "./component/treeview/d3test.component";
+
 @NgModule({
   declarations: [
     AppComponent,

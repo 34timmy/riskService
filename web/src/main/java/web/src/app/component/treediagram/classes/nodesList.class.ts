@@ -15,6 +15,8 @@ export class TreeDiagramNodesList {
   public notificationService: MessageService;
   private _nodeTemplate = {
     displayName: 'New node',
+    updated: false,
+    type: '',
     children: [],
     guid: '',
     parentId: null,
@@ -151,51 +153,89 @@ export class TreeDiagramNodesList {
     return out
   }
 
-  public edit(node) {
-
-
-  }
 
   public destroy(node) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to perform this action?',
       accept: () => {
-        if (node.displayName.toLowerCase().includes('formula')) {
+        if (node.type === 'formula') {
           node.treeService.deleteFormula(node.data).subscribe((val) => {
               if (val.ok) {
-                let target = this.getNode(node.guid);
-                if (target.parentId) {
-                  let parent = this.getNode(target.parentId)
-                  parent.children.delete(node.guid)
-                }
-                if (target.hasChildren()) {
-                  target.children.forEach((child: string) => {
-                    let theNode = this.getNode(child)
-                    theNode.parentId = null;
-                  })
-                }
-                this._nodesList.delete(node.guid)
-                this._makeRoots()
-                console.warn(this.values())
+                this.delete(node);
+                this.successMessage(node, 'удалена')
               }
             },
-            // err => this.notificationService.error(err.url + err.cause, err.detail));
             err => {
-              let errJson = err.json();
-              this.notificationService.add({
-                severity: 'error',
-                summary: errJson.cause + "\n",
-                detail: errJson.url + '\n' + errJson.detail
-              })
+              this.errorMessage(err.json())
+            }
+          );
+        }
+        else if (node.type === 'rule') {
+          node.treeService.deleteRule(node.data).subscribe((val) => {
+              if (val.ok) {
+                this.delete(node);
+                this.successMessage(node, 'удалена')
+              }
+            },
+            err => {
+              this.errorMessage(err.json())
+            }
+          );
+        }
+        else if (node.type === 'model') {
+          node.treeService.deleteModel(node.data).subscribe((val) => {
+              if (val.ok) {
+                this.delete(node);
+                this.successMessage(node, 'удалена')
+              }
+            },
+            err => {
+              this.errorMessage(err.json())
             }
           );
         }
       }
-    });
+    })
+  }
+
+  private delete(node) {
+    let target = this.getNode(node.guid);
+    if (target.parentId) {
+      let parent = this.getNode(target.parentId)
+      parent.children.delete(node.guid)
+    }
+    if (target.hasChildren()) {
+      target.children.forEach((child: string) => {
+        let theNode = this.getNode(child)
+        theNode.parentId = null;
+      })
+    }
+    this._nodesList.delete(node.guid)
+    this._makeRoots()
+    console.warn(this.values())
+  }
+
+  public edit(node) {
+    this.globalNode = node;
+    //TODO depend on type = it's ok
+    if (node.type === 'model') {
+      this.showModelEditDialog();
+      this.modelEditChild.fillModelForm(node.data);
+
+    }
+    else if (node.type === 'rule') {
+      this.showRuleEditDialog();
+      this.ruleEditChild.fillRuleForm(node.data);
+    }
+    else if (node.type === 'formula') {
+      this.showFormulaEditDialog();
+      this.formulaEditChild.fillFormulaForm(node.data);
+    }
+
   }
 
   public addNode(node = null) {
-    //TODO depend on name!
+    //TODO depend on type = it's ok
     this.globalNode = node;
     let valueForm;
     let newNodeGuid;
@@ -204,11 +244,11 @@ export class TreeDiagramNodesList {
       this.showModelEditDialog();
       this.modelEditChild.fillEmptyModelForm();
     }
-    else if (node.displayName.toLowerCase().includes('model')) {
+    else if (node.type.equals('model')) {
       this.showRuleEditDialog();
       this.ruleEditChild.fillRuleFormWithModelId(node.data);
     }
-    else if (node.displayName.toLowerCase().includes('rule')) {
+    else if (node.type.equals('rule')) {
       this.showFormulaEditDialog();
       this.formulaEditChild.fillFormulaFormWithRuleId(node.data);
     }
@@ -220,6 +260,8 @@ export class TreeDiagramNodesList {
     //TODO guid must be id from DB
     _nodeTemplate.parentId = node ? node.guid : null;
     _nodeTemplate.displayName = value.name;
+    _nodeTemplate.updated = value.updated;
+    _nodeTemplate.type = value.type;
     this._nodesList.set(_nodeTemplate.guid, new TreeDiagramNode(_nodeTemplate, this.config, this.getThisNodeList.bind(this)))
     this._makeRoots();
     return _nodeTemplate.guid
@@ -247,10 +289,23 @@ export class TreeDiagramNodesList {
     this.globalNode.toggle(true)
   }
 
+  editNodeOnSaveFormula() {
+    let formValue = this.formulaEditChild.formulaForm.value;
+    this.globalNode.displayName = formValue.descr;
+    this.globalNode.data = formValue;
+
+  }
+
   addNodeOnSaveRule() {
     let newNodeGuid = this.newNode(this.globalNode, this.ruleEditChild.ruleForm.value)
     this.globalNode.children.add(newNodeGuid);
     this.globalNode.toggle(true)
+  }
+
+  editNodeOnSaveRule() {
+    let formValue = this.ruleEditChild.ruleForm.value;
+    this.globalNode.displayName = formValue.name;
+    this.globalNode.data = formValue;
   }
 
   addNodeOnSaveModel() {
@@ -258,4 +313,25 @@ export class TreeDiagramNodesList {
   }
 
 
+  editNodeOnSaveModel() {
+    let formValue = this.modelEditChild.modelForm.value;
+    this.globalNode.displayName = formValue.name;
+    this.globalNode.data = formValue;
+  }
+
+  private successMessage(node, action) {
+    this.notificationService.add({
+      severity: 'success',
+      summary: 'Запись "' + node.name + '" ' + action,
+      detail: JSON.stringify(node,null,2)
+    })
+  }
+
+  private errorMessage(error) {
+    this.notificationService.add({
+      severity: 'error',
+      summary: error.cause,
+      detail: error.url + '\n' + error.detail
+    })
+  }
 }

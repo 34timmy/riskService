@@ -18,7 +18,9 @@ export class ModelEditComponent implements OnInit {
     this.modelForm = this.formBuilder.group(
       {
         id: [''],
-        name: ['', Validators.required]
+        name: ['', Validators.required],
+        updated: false,
+        type: 'model'
       }
     );
   }
@@ -28,19 +30,24 @@ export class ModelEditComponent implements OnInit {
 
     this.modelForm.patchValue({
       id: model.id,
-      name: model.name
+      name: model.name,
+      updated: false,
+      type: 'model'
     });
   }
 
   fillEmptyModelForm() {
     this.modelForm.patchValue({
       id: '',
-      name: ''
+      name: '',
+      updated: false,
+      type: 'model'
     });
   }
 
   onSaveModel() {
     console.log('model value ', this.modelForm.value);
+    this.modelForm.value.updated = true;
     this.onSaveEvent.emit(this.modelForm.value);
     this.closeModal();
   }

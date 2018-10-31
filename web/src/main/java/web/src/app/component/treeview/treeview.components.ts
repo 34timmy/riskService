@@ -4,7 +4,7 @@ import {TreeService} from '../../service/tree.service';
 import {FormulaEditComponent} from '../formula/formula-edit.component';
 import {Observable, of} from "rxjs";
 import {Draggable, Droppable} from "primeng/primeng";
-
+import * as d3 from 'd3';
 @Component({
   selector: 'app-treeview',
   templateUrl: 'treeview.html'
@@ -132,6 +132,7 @@ export class TreeViewComponent implements OnInit {
 
   private addNodeToChildren(rowData) {
     this.onAdd(rowData);
+
     // node = this.selectedNode;
     // console.log(node);
     // let newNode: TreeNode = {
@@ -168,10 +169,13 @@ export class TreeViewComponent implements OnInit {
   }
 
   onDeleteFormula(formula) {
+
     this.treeService.delete(formula).subscribe(
       res => {
         this.reloadTree();
       }
     );
   }
+
+
 }

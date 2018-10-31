@@ -12,6 +12,7 @@ import java.util.Set;
  */
 @Data
 @NoArgsConstructor
+@Deprecated
 public class FormulaDTO {
     String id;
     String name;

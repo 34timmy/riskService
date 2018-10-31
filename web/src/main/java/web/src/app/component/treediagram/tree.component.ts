@@ -42,6 +42,7 @@ export class Tree implements OnInit {
   private paneX = 0
   private paneY = 0
   nodes;
+  updatedNodes;
   modelsLoaded: Observable<boolean>;
 
   constructor(
@@ -64,6 +65,7 @@ export class Tree implements OnInit {
       }
     );
     let _data = this.treeService.getModelsAndConvert();
+    // let _data = this.treeService.HARDCODEDgetModelsAndConvert();
     // if (!_data || !Array.isArray(_data.json)) return
     // if (typeof _data.config === 'object') {
     //   this._config = Object.assign(this._config, _data.config)
@@ -124,24 +126,21 @@ export class Tree implements OnInit {
   }
 
   onSaveFormula(node) {
-    console.log('node ', node);
+    console.log('formula ', node);
     this.treeService.saveFormula(node)
       .subscribe(
         res => {
-          this.nodesSrv.addNodeOnSaveFormula();
-          this.notificationService.add({
-            severity: 'success',
-            summary: 'Запись "' + node.name + '" добавлена',
-            detail: 'detail'
-          })
+          if (node.id) {
+            this.nodesSrv.editNodeOnSaveFormula();
+            this.successMessage(node, 'изменена');
+          }
+          else {
+            this.nodesSrv.addNodeOnSaveFormula();
+            this.successMessage(node, 'добавлена');
+          }
         },
         err => {
-          let errJson = err.json();
-          this.notificationService.add({
-            severity: 'error',
-            summary: errJson.cause,
-            detail: errJson.url + '\n' + errJson.detail
-          })
+          this.errorMessage(err.json());
         }
       );
   }
@@ -154,47 +153,42 @@ export class Tree implements OnInit {
   }
 
   onSaveRule(node) {
-    console.log('node ', node);
+    console.log('rule ', node);
     this.treeService.saveRule(node)
       .subscribe(
         res => {
-          this.nodesSrv.addNodeOnSaveRule();
-          this.notificationService.add({
-            severity: 'success',
-            summary: 'Запись "' + node.name + '" добавлена',
-            detail: 'detail'
-          })
+          if (node.id) {
+            this.nodesSrv.editNodeOnSaveRule();
+            this.successMessage(node, 'изменена');
+          }
+          else {
+            this.nodesSrv.addNodeOnSaveRule();
+            this.successMessage(node, 'добавлена');
+          }
+
         },
         err => {
-          let errJson = err.json();
-          this.notificationService.add({
-            severity: 'error',
-            summary: errJson.cause,
-            detail: errJson.url + '\n' + errJson.detail
-          })
+          this.errorMessage(err.json());
         }
       );
   }
 
   onSaveModel(node) {
-    console.log('node ', node);
+    console.log('model ', node);
     this.treeService.saveModel(node)
       .subscribe(
         res => {
-          this.nodesSrv.addNodeOnSaveModel();
-          this.notificationService.add({
-            severity: 'success',
-            summary: 'Запись "' + node.name + '" добавлена',
-            detail: 'detail'
-          })
+          if (node.id) {
+            this.nodesSrv.editNodeOnSaveModel();
+            this.successMessage(node, 'изменена')
+          }
+          else {
+            this.nodesSrv.addNodeOnSaveModel();
+            this.successMessage(node, 'добавлена')
+          }
         },
         err => {
-          let errJson = err.json();
-          this.notificationService.add({
-            severity: 'error',
-            summary: errJson.cause,
-            detail: errJson.url + '\n' + errJson.detail
-          })
+          this.errorMessage(err.json());
         }
       );
   }
@@ -205,4 +199,27 @@ export class Tree implements OnInit {
       }
     );
   }
+
+  saveChanges(nodes) {
+    this.updatedNodes = Array.from(this.nodesSrv.getNodes())
+      .filter((val) => val.updated === true);
+    console.log('updatedNodes ', this.updatedNodes)
+  }
+
+  successMessage(node, action) {
+    this.notificationService.add({
+      severity: 'success',
+      summary: 'Запись "' + node.name + '" ' + action,
+      detail: JSON.stringify(node,null,2)
+    })
+  }
+
+  errorMessage(error) {
+    this.notificationService.add({
+      severity: 'error',
+      summary: error.cause,
+      detail: error.url + '\n' + error.detail
+    })
+  }
+
 }

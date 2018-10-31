@@ -30,6 +30,13 @@
       ></div>
     </div>
   </div>
+  <footer>
+    <div class="ui-helper-clearfix" style="width:100%">
+      <button type="button" pButton icon="fa fa-save" style="float:right"
+              (click)="saveChanges(updatedNodes)" label="Сохранить">
+      </button>
+    </div>
+  </footer>
   <p-toast position="top-center">
     <ng-template let-message pTemplate="message">
       <div style="text-align:center">

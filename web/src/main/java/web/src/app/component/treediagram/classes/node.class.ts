@@ -16,8 +16,7 @@ export class TreeDiagramNode {
   public data;
   public displayName: string;
   treeService: TreeDiagramService;
-  // @ViewChildren(FormulaEditComponent)
-  // private formulaEditChild: FormulaEditComponent;
+
 
 
   constructor(props, config, public getThisNodeList: () => TreeDiagramNodesList) {
@@ -41,12 +40,7 @@ export class TreeDiagramNode {
     }
     this.children = new Set(<string[]>props.children)
     this.data = props.data;
-    // this.formulaEditChild = config.formulaEditChild;
     this.treeService = config.treeService;
-  }
-
-  public edit() {
-    this.getThisNodeList().edit(this);
   }
 
   public destroy() {
@@ -104,11 +98,16 @@ export class TreeDiagramNode {
   }
 
   public drop(event) {
+    //TODO {treeservice.updateNode (Rule/Formula/Model) change parentId}
     event.preventDefault();
     let guid = this.getThisNodeList().draggingNodeGuid
     this.getThisNodeList().transfer(guid, this.guid)
     console.log('this node list ', this.getThisNodeList());
     return false;
+  }
+
+  public edit() {
+    this.getThisNodeList().edit(this);
   }
 
   public addChild() {

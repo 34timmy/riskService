@@ -34,7 +34,7 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
 
     private static final String SQL_INSERT_COMPANY = "INSERT INTO company (id, inn) VALUES (?,?)";
     private static final String SQL_INSERT_COMPANY_PARAM = "INSERT INTO company_business_params (company_id, param_code, year, param_value) VALUES (?,?,?,?)";
-    private static final String SQL_INSERT_FORMULA = "INSERT INTO formula (node, calculation, descr, formula_type, a, b, c, d, xb,comments) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    private static final String SQL_INSERT_FORMULA = "INSERT INTO formula (id, calculation, descr, formula_type, a, b, c, d, xb,comments) VALUES (?,?,?,?,?,?,?,?,?,?)";
     private static final String SQL_INSERT_MODEL = "INSERT INTO model (id, descr) VALUES (?,'Загружено из Excel')";
     private static final String SQL_INSERT_MODEL_CALC = "INSERT INTO model_CALC (model_id, node, parent_node, weight, level, is_leaf) VALUES (?,?,?,?,?,?)";
     private static final String SQL_INSERT_FORMULA_PARAMS = "INSERT INTO formula_params (node, param_code, year_shift) VALUES (?,?,?)";

@@ -18,7 +18,7 @@ public interface ConstructorMapper {
     List<Company> getAll() throws SQLException;
 
     //    -------------------- Model Repository --------------------
-    @Select("SELECT * from models")
+    @Select("SELECT * from model")
     @Results(
             {
                     @Result(id = true, property = "id", column = "id"),
@@ -29,18 +29,18 @@ public interface ConstructorMapper {
     )
     List<Model> getAllModels() throws SQLException;
 
-    @Update("UPDATE models m SET m.name=#{model.name} where m.id=#{model.id}")
+    @Update("UPDATE model m SET m.name=#{name} where m.id=#{id}")
     void updateModel(Model model);
 
-    @Insert("INSERT INTO models(ID, NAME)" +
+    @Insert("INSERT INTO model(ID, NAME)" +
             " values (#{id},#{name}) ")
     void createModel(Model model);
 
-    @Delete("Delete from models m where m.id = #{id}")
+    @Delete("Delete from model m where m.id = #{id}")
     void deleteModel(String id);
 
 //        -------------------- Rule Repository --------------------
-    @Select("SELECT * from rules r where r.model_id = #{id}")
+    @Select("SELECT * from rule r where r.model_id = #{id}")
     @Results(
             {
                     @Result(id = true, property = "id", column = "id"),
@@ -51,30 +51,30 @@ public interface ConstructorMapper {
     )
     List<Rule> getRules(String id);
 
-    @Update("UPDATE rule r SET r.name=#{rule.name} where r.id=#{rule.id}")
+    @Update("UPDATE rule r SET r.name=#{name} where r.id=#{id}")
     void updateRule(Rule rule);
 
-    @Insert("INSERT INTO rules(ID, NAME, MODEL_ID)" +
+    @Insert("INSERT INTO rule(ID, NAME, MODEL_ID)" +
             " values (#{id},#{name},#{model_id}) ")
     void createRule(Rule rule);
 
-    @Delete("Delete from rules r where r.id = #{id}")
+    @Delete("Delete from rule r where r.id = #{id}")
     void deleteRule(String id);
 
     //  -------------------- Formula Repository --------------------
-    @Select("SELECT f.node,f.name,f.calculation," +
-            "f.formula_type,f.A,f.B,f.C,f.D,f.XB from formulas f where f.rule_id = #{id}")
+    @Select("SELECT f.id,f.descr,f.calculation," +
+            "f.formula_type,f.A,f.B,f.C,f.D,f.XB,f.rule_id from formula f where f.rule_id = #{id}")
     List<Formula> getFormulas(String id);
 
-    @Update("UPDATE formulas f SET f.name=#{formula.name} where f.id=#{formula.id}")
+    @Update("UPDATE formula f SET f.descr=#{descr} where f.id=#{id}")
     void updateFormula(Formula formula);
 
-    @Insert("INSERT INTO formulas(NODE, NAME, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, RULE_ID)" +
-            " values (#{node},#{name},#{calculation},#{formulaType},#{a},#{b},#{c},#{d},#{xb},#{rule_id}) ")
+    @Insert("INSERT INTO formula(id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, RULE_ID)" +
+            " values (#{id},#{descr},#{calculationFormula},#{formulaType},#{a},#{b},#{c},#{d},#{_XB},#{rule_id}) ")
     void createFormula(Formula formula);
 
 //    TODO DELETE  CASCADE
-    @Delete("Delete from formulas f where f.node = #{id}")
+    @Delete("Delete from formula f where f.node = #{id}")
     void deleteFormula(String id);
 
 }

@@ -22,7 +22,7 @@ export class FormulaEditComponent implements OnInit {
     this.formulaForm = this.formBuilder.group(
       {
         id: [''],
-        name: ['', Validators.required],
+        descr: ['', Validators.required],
         calculation: [''],
         formulaType: [''],
         a: [''],
@@ -31,7 +31,9 @@ export class FormulaEditComponent implements OnInit {
         d: [''],
         xb: [''],
         comments: [''],
-        rule_id: ['']
+        rule_id: [''],
+        updated: false,
+        type: 'formula'
       }
     );
   }
@@ -39,7 +41,7 @@ export class FormulaEditComponent implements OnInit {
   fillFormulaForm(formula) {
     this.formulaForm.patchValue({
       id: formula.id,
-      name: formula.name,
+      descr: formula.descr,
       calculation: formula.calculation,
       formulaType: formula.formulaType,
       a: formula.a,
@@ -48,19 +50,24 @@ export class FormulaEditComponent implements OnInit {
       d: formula.d,
       xb: formula.xb,
       comments: formula.comments,
-      rule_id: formula.rule_id
+      rule_id: formula.rule_id,
+      updated: false,
+      type: 'formula'
     });
   }
 
   fillFormulaFormWithRuleId(rule) {
     console.log('fillFormulaFormWithRuleId', rule);
     this.formulaForm.patchValue({
-      rule_id: rule.id
+      rule_id: rule.id,
+      updated: false,
+      type: 'formula'
     });
   }
 
   onSaveFormula() {
     console.log('formula value ', this.formulaForm.value);
+    this.formulaForm.value.updated = true;
     this.onSaveEvent.emit(this.formulaForm.value);
     this.closeModal();
   }

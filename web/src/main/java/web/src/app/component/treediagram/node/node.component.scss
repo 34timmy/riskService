@@ -178,10 +178,10 @@
   }
   & > div:last-of-type {
     & > .line-to {
-      left: 0;
       right: auto;
       width: 50%;
       display: block;
+      left: 0;
     }
   }
   > .tree-child:last-child {

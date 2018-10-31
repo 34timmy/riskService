@@ -30,12 +30,25 @@ export class NodesListService {
     this._nodesList.addNodeOnSaveFormula();
   }
 
-  addNodeOnSaveModel() {
+  public editNodeOnSaveFormula() {
+    this._nodesList.editNodeOnSaveFormula();
+  }
+
+  public addNodeOnSaveRule() {
+    this._nodesList.addNodeOnSaveRule();
+
+  }
+
+  public editNodeOnSaveRule() {
+    this._nodesList.editNodeOnSaveRule();
+
+  }
+
+  public addNodeOnSaveModel() {
     this._nodesList.addNodeOnSaveModel();
   }
 
-  addNodeOnSaveRule() {
-    this._nodesList.addNodeOnSaveRule();
-
+  public editNodeOnSaveModel() {
+   this._nodesList.editNodeOnSaveModel();
   }
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
+@Deprecated
 public class RuleDTO {
 
     private Map<String, String> data = new HashMap<>();

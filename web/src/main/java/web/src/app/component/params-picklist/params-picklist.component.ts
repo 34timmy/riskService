@@ -23,6 +23,7 @@ export class ParamsPicklistComponent implements OnInit {
   target: ParamsModel[];
 
   constructor(private paramsService: ParamsService) {
+    //TODO update models on update constructor's models
     this.models =
       [{label: '1', value: '1'},
         {label: '2', value: '2'},

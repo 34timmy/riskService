@@ -9,6 +9,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Model {
     private String id;
-    private String name;
+    private String descr;
     private List<Rule> rules;
 }

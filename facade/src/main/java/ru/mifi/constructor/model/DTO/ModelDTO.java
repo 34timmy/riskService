@@ -13,12 +13,13 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
+@Deprecated
 public class ModelDTO implements Node {
     private Map<String, String> data = new HashMap<>();
     private List<RuleDTO> children = new ArrayList<>();
 
     public ModelDTO(Model model) {
-        this.data.put("name", model.getName());
+        this.data.put("name", model.getDescr());
         this.data.put("id", model.getId());
         for (Rule rule : model.getRules()) {
             children.add(new RuleDTO(rule));

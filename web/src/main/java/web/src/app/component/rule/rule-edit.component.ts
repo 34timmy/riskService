@@ -19,7 +19,9 @@ export class RuleEditComponent implements OnInit {
     this.ruleForm = this.formBuilder.group(
       {
         id: [''],
-        name: ['', Validators.required]
+        name: ['', Validators.required],
+        updated: false,
+        type: 'rule'
       }
     );
   }
@@ -30,7 +32,9 @@ export class RuleEditComponent implements OnInit {
     this.ruleForm.patchValue({
       id: rule.id,
       name: rule.name,
-      model_id: rule.model_id
+      model_id: rule.model_id,
+      updated: false,
+      type: 'rule'
     });
   }
 
@@ -38,12 +42,15 @@ export class RuleEditComponent implements OnInit {
     this.ruleForm.patchValue({
       id: '',
       name: '',
-      model_id: model.id
+      model_id: model.id,
+      updated: false,
+      type: 'rule'
     });
   }
 
   onSaveRule() {
     console.log('rule value ', this.ruleForm.value);
+    this.ruleForm.value.updated = true;
     this.onSaveEvent.emit(this.ruleForm.value);
     this.closeModal();
   }

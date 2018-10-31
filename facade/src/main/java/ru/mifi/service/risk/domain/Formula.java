@@ -1,6 +1,7 @@
 package ru.mifi.service.risk.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.mifi.service.risk.domain.enums.FormulaTypeEnum;
 import ru.mifi.service.risk.exception.FormulaCalculationException;
 import ru.mifi.service.risk.exception.WrongFormulaValueException;
@@ -12,9 +13,11 @@ import java.util.*;
 
 /**
  * Класс-представление формулы
- * @author  DenRUS on 07.10.2017.
+ *
+ * @author DenRUS on 07.10.2017.
  */
 @Data
+@NoArgsConstructor
 public class Formula {
 
     /**
@@ -28,19 +31,36 @@ public class Formula {
     public final static String CALCULATION_INPUT_NAME = "calculationFormula";
 
 
-    private final String id;
-    private final String descr;
-    private final FormulaTypeEnum formulaType;
-    private final String calculationFormula;
+    private  String id;
+    private  String descr;
+    private  FormulaTypeEnum formulaType;
+    private  String calculationFormula;
     private String a;
     private String b;
     private String c;
     private String d;
     private String _XB;
-    private final double weight;
+    private  double weight;
     private Set<String> comments;
     private double result;
     private double inputValue;
+    private String rule_id;
+
+    // this is for constructor
+    public Formula(String id, String descr, String formulaType, String calculationFormula, String a, String b,
+                   String c, String d, String _XB, String rule_id) {
+        this.id = id;
+        this.descr = descr;
+        this.formulaType = FormulaTypeEnum.valueOf(formulaType);
+        this.calculationFormula = calculationFormula;
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this._XB = _XB;
+        this.weight = 1;
+        this.rule_id = rule_id;
+    }
 
     /**
      * Конструктор на основании данных
@@ -93,6 +113,7 @@ public class Formula {
 
     /**
      * Конструктор для промежуточной формулы иерархии
+     *
      * @param id                 идентификатор формулы
      * @param descr              описание формулы
      * @param calculationFormula входное значение
@@ -104,7 +125,7 @@ public class Formula {
      * @param _XB                коэффициент к второму параметру
      * @param weight             вес значения
      * @param comments           комментарии на значение риска
-     * @throws WrongFormulaValueException   При неверной формуле
+     * @throws WrongFormulaValueException При неверной формуле
      */
     public Formula(String id, String descr, double calculationFormula, String formulaType, String a, String b, String c,
                    String d, String _XB, double weight, Set<String> comments) throws WrongFormulaValueException {
@@ -118,18 +139,19 @@ public class Formula {
         this.d = d;
         this._XB = _XB;
         this.weight = weight;
-        this.comments=comments;
+        this.comments = comments;
         this.calculationFormula = null;
     }
+
 
 
     /**
      * Расчет формулы this.formulaType на основе формулы из входной строки
      *
-     * @param calcFormula   формула со значениями вместо идентификаторов
-     * @param inn           инн для расчета
-     * @param year          год для расчета
-     * @param replacer      объект для замены данных
+     * @param calcFormula формула со значениями вместо идентификаторов
+     * @param inn         инн для расчета
+     * @param year        год для расчета
+     * @param replacer    объект для замены данных
      * @return результат вычисления нечеткой формулы, умноженный на вес
      * @throws FormulaCalculationException При ошибке расчета формулы
      */
@@ -149,7 +171,7 @@ public class Formula {
             this.inputValue = inputValue;
 
             return new FormulaResult(inn, this.id, inputValue, result, year, descr, formulaType,
-                    a, b, c, d,  xb,  comments);
+                    a, b, c, d, xb, comments);
 
         } catch (Exception ex) {
             throw new FormulaCalculationException("Ошибка при расчете: " + ex);
@@ -158,6 +180,7 @@ public class Formula {
 
     /**
      * Обновление параметров формулы
+     *
      * @param params новые параметры
      */
     public void updateParams(String... params) {
