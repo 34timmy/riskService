@@ -1,14 +1,24 @@
 package ru.mifi.service.risk.database;
 
 import lombok.SneakyThrows;
-import ru.mifi.service.risk.domain.CompanyParam;
 import ru.mifi.service.risk.domain.DataKey;
 import ru.mifi.service.risk.domain.Formula;
+import ru.mifi.service.risk.domain.FormulaResult;
 import ru.mifi.service.risk.domain.HierarchyNode;
+import ru.mifi.service.risk.domain.HierarchyResult;
 
 import javax.sql.DataSource;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +42,18 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                     " FROM " +
                     "   company_list " +
                     "WHERE id = ?";
+    private static final String SQL_SAVE_FORMULA_TO_TEMP_TABLE =
+            "INSERT INTO " +
+                    "   %s" +
+                    "       (company_id, node, value, comment)" +
+                    "   VALUES" +
+                    "       (?,         ?,      ?,      ?)";
+    private static final String SQL_SAVE_RESULT_TABLE_NAME =
+            "INSERT INTO " +
+                    "   result_data_mapper" +
+                    "       (model_id, company_list_id, all_company_list_id, table_name)" +
+                    "   VALUES" +
+                    "       (?,?,?,?)";
     private static final String SQL_GET_NORMATIVE_VALUE_STMT =
             "SELECT " +
                     "   value, descr " +
@@ -47,16 +69,25 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                     "JOIN formula_params fp ON (fp.param_code = cbp.param_code) " +
                     "WHERE fp.node in (%s) AND cbp.company_id IN (%s) AND ((%s + fp.year_shift) = cbp.year)";
 
+    private static final String SQL_MERGE_RESULT_DATA =
+            "MERGE INTO";
     private static final String SQL_GET_MODEL_CALC =
             "SELECT " +
                     "   mc.node, mc.parent_node, mc.weight, mc.is_leaf, mc.level " +
                     "FROM model_calc mc " +
                     "WHERE mc.model_id = ?";
+    private static final int SQL_BATCH_SIZE = 100;
+    private static final String SQL_UPDATE_WEIGHT = "UPDATE %s t1 set t1.weight = (select weight from model_calc mc where mc.node=t1.node)";
+    private static final String SQL_UPDATE_IS_LEAF = "UPDATE %s t1 set t1.is_leaf = (select is_leaf from model_calc mc where mc.node=t1.node)";
+    private static final String SQL_UPDATE_PARENT_NODE = "UPDATE %s t1 set t1.parent_node = (select parent_node from model_calc mc where mc.node=t1.node)";
     private final PreparedStatement getModelCalcStmt;
     private final PreparedStatement getModelLeafsStmt;
     private final Statement getFuncParamsStmt;
     private final PreparedStatement getCompanyIdsByListId;
     private final PreparedStatement getNormativeValueStmt;
+    private final PreparedStatement saveResultToMapperTableStmt;
+    private DataSource dataSource;
+    private Connection connection;
 
     public DatabaseCalculationAccessor(DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
@@ -67,11 +98,8 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         this.getCompanyIdsByListId = connection.prepareStatement(SQL_GET_COMPANY_IDS_BY_LIST_ID);
         this.getModelCalcStmt = connection.prepareStatement(SQL_GET_MODEL_CALC);
         this.getNormativeValueStmt = connection.prepareStatement(SQL_GET_NORMATIVE_VALUE_STMT);
+        this.saveResultToMapperTableStmt = connection.prepareStatement(SQL_SAVE_RESULT_TABLE_NAME);
     }
-
-    private DataSource dataSource;
-    private Connection connection;
-
 
     /**
      * На основании идентификатора списка компаний получаем набор идентификаторов самих компаний.
@@ -112,8 +140,8 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
      * Получаем параметры по всем компаниям, необходимые для расчета конкретной формулы
      *
      * @param formulaIds идентификаторы формул
-     * @param companyIds  список идентификаторов компаний
-     * @param year  Год расчета
+     * @param companyIds список идентификаторов компаний
+     * @param year       Год расчета
      * @return набор параметров
      */
     public Map<DataKey, Map<String, Double>> getParamsForFormula(
@@ -156,6 +184,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         tryToClose(getFuncParamsStmt);
         tryToClose(getCompanyIdsByListId);
         tryToClose(getModelCalcStmt);
+        tryToClose(saveResultToMapperTableStmt);
         tryToCloseConnection(connection, hasErrors);
     }
 
@@ -168,9 +197,9 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                         new HierarchyNode(
                                 resultSet.getString("node"),
                                 resultSet.getDouble("weight")
-                                ),
+                        ),
                         resultSet.getString("parent_node")
-                        );
+                );
             }
         }
         return idsMap;
@@ -184,6 +213,74 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                 return null;
             }
             return data.getDouble("value");
+        }
+    }
+
+    /**
+     * Сохраняем результат расчета иерархии в базу
+     *
+     * @param finalResult                результат расчета иерархии
+     * @param modelId                    идентификатор модели
+     * @param companyListId              идентификатор списка компаний для расчета
+     * @param allIndustryCompaniesListId @return имя таблицы с данными
+     */
+    @SneakyThrows
+    public String saveDataToDb(
+            HierarchyResult finalResult,
+            String modelId,
+            String companyListId,
+            String allIndustryCompaniesListId
+    ) {
+        String tableName = new DatabaseDdlAccessor().createTempTable(
+                modelId,
+                companyListId,
+                allIndustryCompaniesListId,
+                connection
+        );
+        Map<String, Collection<FormulaResult>> hierarchyData = finalResult.getHierarchyData();
+        try (PreparedStatement saveFormulaStmt = connection.prepareStatement(
+                String.format(
+                        SQL_SAVE_FORMULA_TO_TEMP_TABLE,
+                        tableName
+                )
+        )) {
+            for (String inn : hierarchyData.keySet()) {
+                int counter = 0;
+                for (FormulaResult node : hierarchyData.get(inn)) {
+                    saveFormulaStmt.setString(1, inn);
+                    saveFormulaStmt.setString(2,
+                            node.getId() == null
+                                    ? "root"
+                                    : node.getId()
+                    );
+                    saveFormulaStmt.setDouble(3, node.getResult());
+                    saveFormulaStmt.setString(4, node.getComment());
+                    saveFormulaStmt.addBatch();
+                    if (++counter == SQL_BATCH_SIZE) {
+                        saveFormulaStmt.executeBatch();
+                    }
+                    saveFormulaStmt.clearParameters();
+                }
+            }
+            saveFormulaStmt.executeBatch();
+        }
+        mergeData(tableName);
+        //Сохраняем данные в таблицу-маппинг результатов
+        saveResultToMapperTableStmt.setString(1, modelId);
+        saveResultToMapperTableStmt.setString(2, companyListId);
+        saveResultToMapperTableStmt.setString(3, allIndustryCompaniesListId);
+        saveResultToMapperTableStmt.setString(4, tableName);
+        saveResultToMapperTableStmt.executeUpdate();
+        saveResultToMapperTableStmt.clearParameters();
+        return tableName;
+    }
+
+    @SneakyThrows
+    private void mergeData(String tableName) {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(String.format(SQL_UPDATE_WEIGHT, tableName));
+            stmt.execute(String.format(SQL_UPDATE_IS_LEAF, tableName));
+            stmt.execute(String.format(SQL_UPDATE_PARENT_NODE, tableName));
         }
     }
 }
