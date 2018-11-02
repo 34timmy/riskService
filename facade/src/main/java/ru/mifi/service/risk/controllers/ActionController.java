@@ -28,7 +28,8 @@ public class ActionController extends ExceptionHandlerController {
 
     @ApiOperation(value = "Запустить основной расчет")
     @RequestMapping(value = "/calculation", method = {RequestMethod.POST, RequestMethod.GET})
-    public @ResponseBody
+    public
+    @ResponseBody
     Map<String, Object> calculate(
             @ApiParam(value = "Id модели")
             @RequestParam("modelId") String modelId,
@@ -40,6 +41,10 @@ public class ActionController extends ExceptionHandlerController {
             @RequestParam("year") Integer year
     ) throws RestException {
         try {
+            LOG.info(String.format(
+                    "Получен запрос на расчет по параметрам: " +
+                            "\n\tmodeId=%s, \n\tcompanyListId=%s, \n\tindustryCompanyListId=%s, \n\tyear=%s",
+                    modelId, companyListId, industryCompanyListId, year));
             String result = dataService.performCalculation(modelId, companyListId, industryCompanyListId, year);
             return ResponseHelper.successResponse(result);
         } catch (Exception e) {

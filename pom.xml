@@ -28,6 +28,7 @@
     <modules>
         <module>facade</module>
         <module>web</module>
+        <module>common</module>
     </modules>
 
 </project>

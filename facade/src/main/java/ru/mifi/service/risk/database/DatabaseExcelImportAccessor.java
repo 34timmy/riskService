@@ -1,5 +1,6 @@
 package ru.mifi.service.risk.database;
 
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +8,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.UUID;
 
 /**
@@ -100,11 +102,20 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
     ) throws SQLException {
         insertModelCalcStmt.setString(1, model_id);
         insertModelCalcStmt.setString(2, node);
-        insertModelCalcStmt.setString(3, parent_node);
+        setNullableString(insertModelCalcStmt, 3, parent_node);
         insertModelCalcStmt.setDouble(4, weight);
         insertModelCalcStmt.setInt(5, level);
         insertModelCalcStmt.setInt(6, isLeaf);
         insertModelCalcStmtCounter = addReqToStmtBatch(insertModelCalcStmtCounter, insertModelCalcStmt);
+    }
+
+    @SneakyThrows
+    private void setNullableString(PreparedStatement stmtToSet, int position, String strValue) {
+        if (strValue == null) {
+            stmtToSet.setNull(position, Types.VARCHAR);
+        }
+        stmtToSet.setString(3, strValue);
+
     }
 
     /**

@@ -27,7 +27,7 @@ ALTER TABLE company_business_params
 
 CREATE TABLE model (
   id    varchar2 (255) NOT NULL,
-  descr varchar2 (250)
+  descr varchar2 (4000)
 );
 ALTER TABLE model
   ADD CONSTRAINT model_pk PRIMARY KEY (id);
@@ -96,15 +96,17 @@ ALTER TABLE formula_params
 
 CREATE TABLE company_list (
   id          VARCHAR2 (255) NOT NULL,
-  company_ids VARCHAR2 (4000) NOT NULL
+  company_ids VARCHAR2 (4000) NOT NULL,
+  descr       VARCHAR2  (4000)
 );
 ALTER TABLE company_list
   ADD CONSTRAINT company_list_pk PRIMARY KEY (id);
 
 CREATE TABLE result_data_mapper (
-  model_id        VARCHAR2 (255) NOT NULL,
-  company_list_id VARCHAR2 (255) NOT NULL,
-  table_name      VARCHAR2 (4000) NOT NULL
+  model_id            VARCHAR2 (255) NOT NULL,
+  company_list_id     VARCHAR2 (255) NOT NULL,
+  all_company_list_id VARCHAR2 (255) NOT NULL,
+  table_name          VARCHAR2 (4000) NOT NULL
 );
 ALTER TABLE result_data_mapper
   ADD CONSTRAINT result_data_mapper_pk PRIMARY KEY (model_id, company_list_id);
@@ -112,6 +114,13 @@ ALTER TABLE result_data_mapper
   ADD CONSTRAINT res_data_mapper_model_fk FOREIGN KEY (model_id) REFERENCES model (id);
 ALTER TABLE result_data_mapper
   ADD CONSTRAINT company_list_fk FOREIGN KEY (company_list_id) REFERENCES company_list (id);
+
+
+CREATE TABLE normative_parameters (
+  param_name    VARCHAR2(4000) NOT NULL,
+  descr         VARCHAR2(4000),
+  value         DOUBLE PRECISION
+)
 -- h2 не поддерживает хранимки. Закоменчено до тестов на оракле
 -- CREATE OR REPLACE PROCEDURE create_temp_result_table(table_name VARCHAR2) IS
 --     v_column VARCHAR2(30);

@@ -97,7 +97,7 @@ public class Formula {
     }
 
     public Formula(ResultSet leafs) throws SQLException {
-        this.id = leafs.getString("node");
+        this.id = leafs.getString("id");
         this.descr = leafs.getString("descr");
         this.calculationFormula = leafs.getString("calculation");
         this.formulaType = FormulaTypeEnum.valueOf(leafs.getString("formula_type"));

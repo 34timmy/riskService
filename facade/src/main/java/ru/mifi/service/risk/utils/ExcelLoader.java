@@ -13,7 +13,9 @@ import ru.mifi.service.risk.domain.FormulaParam;
 import ru.mifi.service.risk.exception.DatabaseException;
 import ru.mifi.service.risk.exception.ImportException;
 import ru.mifi.service.risk.exception.WrongFormulaValueException;
+import ru.mifi.service.risk.utils.params.type.ParamsTypeEnum;
 import ru.mifi.service.risk.utils.validation.ValidationUtil;
+import ru.mifi.utils.StringUtils;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -53,12 +55,13 @@ public class ExcelLoader {
 
             loadData(workbook.getSheet("data"), accessor);
 
-            loadModel(workbook.getSheet("model"), accessor);
+            String modelId = loadModel(workbook.getSheet("model"), accessor);
 
             loadFormulas(workbook.getSheet("formulas"), accessor);
 
 
             LOG.info("Файл успешно обработан.");
+            return "Успешно загружено. Идентификатор загруженной модели: " + modelId;
         } catch (IOException e) {
             throw new ImportException("Ошибка при обработке файла: " + e.getMessage());
         } catch (SQLException e) {
@@ -66,7 +69,6 @@ public class ExcelLoader {
         } catch (Exception e) {
             throw new ImportException("Ошибка при работе импорте данных", e);
         }
-        return "Всё ок";
     }
 
     /**
@@ -76,14 +78,14 @@ public class ExcelLoader {
      * @param accessor   объект, сохраняющий данные в бд
      * @throws SQLException если косяк при работе с БД
      */
-    private void loadModel(XSSFSheet modelSheet, DatabaseExcelImportAccessor accessor) throws SQLException {
+    private String loadModel(XSSFSheet modelSheet, DatabaseExcelImportAccessor accessor) throws SQLException {
         String modelId = UUID.randomUUID().toString();
         accessor.insertModel(modelId);
         ValidationUtil.sheetCheck(modelSheet);
         for (int r = 1; r <= modelSheet.getLastRowNum(); r++) {
             Row row = modelSheet.getRow(r);
             String nodeId = formatCellVal(row.getCell(0));
-            String parentNode = formatCellVal(row.getCell(1));
+            String parentNode = getNullableCellValue(row.getCell(1));
             Double weight = Double.valueOf(formatCellVal(row.getCell(2)));               //Weight
             Integer level = Integer.parseInt(formatCellVal(row.getCell(3)));
             Integer isLeaf = Integer.parseInt(formatCellVal(row.getCell(4)));
@@ -96,6 +98,7 @@ public class ExcelLoader {
                     isLeaf
             );
         }
+        return modelId;
     }
 
     /**
@@ -143,21 +146,21 @@ public class ExcelLoader {
                 if (row.getCell(0) != null && !row.getCell(0).toString().equals("")) {
 
                     StringJoiner comments = new StringJoiner(";");
-                    for (int i = 12; i <= 16; i++) {
+                    for (int i = 11; i <= 15; i++) {
                         if (formatter.formatCellValue(row.getCell(i)) != null &&
                                 !formatter.formatCellValue(row.getCell(i)).equalsIgnoreCase("")) {
                             comments.add(formatter.formatCellValue(row.getCell(i)));
                         }
                     }
-                    String nodeId = formatCellVal(row.getCell(0));                //id
-                    String params = formatCellVal(row.getCell(11));               //params
-                    parseAndSaveParams(nodeId, params, accessor);
+                    String calculation = editInput(formatCellVal(row.getCell(2)));  //calculation
+                    String nodeId = formatCellVal(row.getCell(0));                  //id
+                    parseAndSaveParams(nodeId, calculation, accessor);
                     String parentNode = getParentNode(nodeId);
 
                     accessor.insertFormula(
                             nodeId,
-                            formatCellVal(row.getCell(1)),                //name
-                            editInput(formatCellVal(row.getCell(2))),                   //calculation
+                            formatCellVal(row.getCell(1)),                              //name
+                            calculation,                                                   //calculation
                             formatCellVal(row.getCell(3)),                              //formula_type
                             formatCellVal(row.getCell(4)),                              //A
                             formatCellVal(row.getCell(5)),                              //B
@@ -177,10 +180,8 @@ public class ExcelLoader {
         }
     }
 
-    private void parseAndSaveParams(String nodeId, String params, DatabaseExcelImportAccessor accessor) {
-        Arrays.stream(params.split(";"))
-                .map(String::trim)
-                .map(String::toUpperCase)
+    private void parseAndSaveParams(String nodeId, String calculation, DatabaseExcelImportAccessor accessor) {
+        ParamsTypeEnum.SB.parseCalculationToParams(calculation).stream()
                 .map(FormulaParam::new)
                 .forEach(elem -> {
                     try {
@@ -203,7 +204,13 @@ public class ExcelLoader {
                 ? null
                 : nodeId.substring(0, position);
     }
-
+    private String getNullableCellValue(Cell cell) {
+        String value = formatter.formatCellValue(cell).toUpperCase();
+        if (StringUtils.isNullOrEmpty(value)) {
+            return null;
+        }
+        return value;
+    }
     private String formatCellVal(Cell cell) {
         String value = formatter.formatCellValue(cell).toUpperCase();
         if (value.equalsIgnoreCase("") || value.equalsIgnoreCase("NaN")) {

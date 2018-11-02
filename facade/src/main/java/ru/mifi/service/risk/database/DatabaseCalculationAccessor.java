@@ -155,10 +155,10 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
             while (resultSet.next()) {
                 idsMap.put(
                         new HierarchyNode(
-                                resultSet.getString("parent_node"),
+                                resultSet.getString("node"),
                                 resultSet.getDouble("weight")
                                 ),
-                        resultSet.getString("node")
+                        resultSet.getString("parent_node")
                         );
             }
         }

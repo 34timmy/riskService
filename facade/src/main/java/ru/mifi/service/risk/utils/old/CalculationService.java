@@ -9,7 +9,9 @@ import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
 import ru.mifi.service.risk.domain.*;
 import ru.mifi.service.risk.exception.DataLeakException;
 import ru.mifi.service.risk.exception.FormulaCalculationException;
+import ru.mifi.utils.CollectionUtils;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -169,7 +171,7 @@ public class CalculationService {
         Map<String, Collection<FormulaResult>> resultMap = new HashMap<>();
         for (String inn : this.innsInDevelop) {
             if (normalizedData.get(inn) != null) {
-                resultMap.put(inn, calculateHierarchyById(
+                resultMap.put(inn, calculateHierarchyByModelCalc(
                         normalizedData.get(inn), inn, year));
             }
         }
@@ -218,20 +220,17 @@ public class CalculationService {
             int year
     ) {
         Map<HierarchyNode, String> idToParent = accessor.getModelCalcHierarchy(modelId);
-        Map<String, List<HierarchyNode>> children = idToParent.entrySet().stream()
+        Map<String, List<HierarchyNode>> parents = idToParent.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 Map.Entry::getValue,
                                 entry -> Arrays.asList(entry.getKey()),
-                                (set1, set2) -> {
-                                    set1.addAll(set2);
-                                    return set1;
-                                }));
-        for (String parentId : children.keySet()) {
+                                CollectionUtils::mergeLists));
+        for (String parentId : parents.keySet()) {
             if (formulasData.containsKey(parentId)) {
                 continue;
             }
-            Double val = calculateNode(children, parentId, formulasData);
+            Double val = calculateNode(parents, parentId, formulasData);
             formulasData.put(parentId, new FormulaResult(inn, parentId, val, val, year));
 
         }
@@ -257,6 +256,7 @@ public class CalculationService {
      * @param year         год компании
      * @return коллекция результатов формул по иерархии для компании
      */
+    @Deprecated
     private Collection<FormulaResult> calculateHierarchyById(Map<String, FormulaResult> formulasData,
                                                              String inn, int year) {
         List<List<String>> keySet = formulasData.keySet()
@@ -266,7 +266,6 @@ public class CalculationService {
                 .sorted(Comparator.comparingInt(o -> -o.size()))
                 .collect(Collectors.toCollection(LinkedList::new));
         while (keySet.size() > 1) {
-
 
             List<String> activeElem = keySet.get(0);
             int amount = 0;

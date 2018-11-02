@@ -1,6 +1,8 @@
 package ru.mifi.service.risk.utils;
 
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
 import ru.mifi.service.risk.domain.*;
@@ -24,6 +26,8 @@ public class DataService {
 
     private final DataSource dataSource;
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataService.class);
+
     /**
      * Основной метод расчета.
      *
@@ -46,6 +50,7 @@ public class DataService {
                                 .collect(Collectors.toSet()),
                         companies,
                         year);
+                LOG.info("Данные получены. Начинаем расчет формул.");
                 CalculationService calculationService = new CalculationService(
                         companies,
                         allCompanies,
@@ -54,9 +59,11 @@ public class DataService {
                         accessor,
                         modelId
                 );
+                LOG.info("Формулы расчитаны. Начинаем расчет иерархии.");
                 finalResult = calculationService.calculateFormulasHierarchy(
                         year
                 );
+                LOG.info("Расчет завершен.");
             }
 
             return "Данные: " + finalResult.toString();
