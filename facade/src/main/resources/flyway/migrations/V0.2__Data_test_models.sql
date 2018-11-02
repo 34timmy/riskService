@@ -1,5 +1,6 @@
 insert into company_list (id, company_ids) VALUES ('1', '8602166992;5410786860');
 insert into company_list (id, company_ids) VALUES ('2', '8602166992;5410786860');
+insert into normative_parameters (param_name, value, descr) VALUES ('FIIJJJ', '0.55', 'Testers gonna test');
 
 -- INSERT INTO COMPANY (ID, INN)
 -- values (1, 10),

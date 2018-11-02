@@ -109,7 +109,13 @@ public class CalculationService {
             if (emptyYear.length() != 0) {
                 LOG.error(String.format(" Инн = %s. Отсутствует данные за %s год.", inn, emptyYear));
             }
-            DataReplacer replacer = new DataReplacer(dataKeyMap, this.getInnsInDevelop(), year, this.getAllInns());
+            DataReplacer replacer = new DataReplacer(
+                    dataKeyMap,
+                    this.getInnsInDevelop(),
+                    year,
+                    this.getAllInns(),
+                    accessor
+            );
             Set<FormulaResult> wrongFormulas = new HashSet<>();
 
             replacer.initializeCache();

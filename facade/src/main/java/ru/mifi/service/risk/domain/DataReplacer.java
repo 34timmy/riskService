@@ -3,6 +3,7 @@ package ru.mifi.service.risk.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
 import ru.mifi.service.risk.domain.enums.AggregateTypeEnum;
 import ru.mifi.service.risk.exception.DataLeakException;
 import ru.mifi.service.risk.exception.WrongFormulaValueException;
@@ -19,52 +20,35 @@ import java.util.stream.Stream;
  */
 public class DataReplacer {
     private static final Logger LOG = LoggerFactory.getLogger(ValidationUtil.class);
+    private final DatabaseCalculationAccessor accessor;
 
-    /**
-     * Коллекция иннов в разработке
-     */
     private Set<String> innsInDevelop;
-    /**
-     * Текущий год разработки
-     */
     private int yearInDevelop;
-
-    /**
-     * Коллекция всех инн в данных
-     */
     private Set<String> allInns;
-
-    /**
-     * Кэш
-     */
     private Map<String, String> replacerCache = new HashMap<>();
-
-    /**
-     * Удалить/создать кэш
-     */
     public void initializeCache() {
         replacerCache = new HashMap<>();
     }
 
-    /**
-     * Данные
-     */
     private Map<DataKey, Map<String, Double>> data;
 
+    private static final String NORMATIVE_KEY_WORD = "NORMATIVE";
+    private static final String END_KEY_WORD = "END";
     /**
      * Конструктор
-     *
-     * @param data          данные
+     *  @param data          данные
      * @param innsInDevelop инн в анализа
      * @param yearInDevelop год анализа
      * @param allInns       все инн
+     * @param accessor      объект для доступа к БД
      */
     public DataReplacer(Map<DataKey, Map<String, Double>> data, Set<String> innsInDevelop,
-                        int yearInDevelop, Set<String> allInns) {
+                        int yearInDevelop, Set<String> allInns, DatabaseCalculationAccessor accessor) {
         this.innsInDevelop = innsInDevelop;
         this.yearInDevelop = yearInDevelop;
         this.allInns = allInns;
         this.data = data;
+        this.accessor = accessor;
     }
 
     /**
@@ -85,9 +69,22 @@ public class DataReplacer {
                 prevYearData, prevPrevYearData)
                 .filter(Objects::nonNull)
                 .findAny().orElseThrow(() -> new DataLeakException("Нет данных ни по одному году"));
-
+        while (formula.contains(NORMATIVE_KEY_WORD)) {
+            int actionPos = formula.indexOf(NORMATIVE_KEY_WORD + "(");
+            int endActionPos = getEndIndex(formula, actionPos);
+            String paramCode = formula.substring(
+                    actionPos + NORMATIVE_KEY_WORD.length() + 1,
+                    endActionPos);
+            String normativeValue = accessor.getNormativeValueByCode(paramCode).toString();
+            if (normativeValue == null) {
+                throw new DataLeakException("Нормативный параметр, используемый в формуле, не задан: " + paramCode);
+            }
+            formula = formula.replaceAll(NORMATIVE_KEY_WORD + "\\(" + paramCode + "\\)" + END_KEY_WORD, normativeValue);
+        }
         for (String key : notNullYearData.keySet()) {
-
+            if (!formula.contains("SB")) {
+                break;
+            }
             if (curYearData != null && curYearData.get(key) != null) {
                 String curVal = curYearData.get(key).toString();
 

@@ -1,5 +1,6 @@
 package ru.mifi.service.risk.database;
 
+import lombok.SneakyThrows;
 import ru.mifi.service.risk.domain.CompanyParam;
 import ru.mifi.service.risk.domain.DataKey;
 import ru.mifi.service.risk.domain.Formula;
@@ -31,6 +32,13 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                     " FROM " +
                     "   company_list " +
                     "WHERE id = ?";
+    private static final String SQL_GET_NORMATIVE_VALUE_STMT =
+            "SELECT " +
+                    "   value, descr " +
+                    "FROM " +
+                    "   normative_parameters " +
+                    "WHERE " +
+                    "   param_name = ?";
     private static final String SQL_GET_FORMULA_PARAMS =
             "SELECT " +
                     "   cbp.company_id, cbp.param_code, cbp.year, cbp.param_value " +
@@ -48,6 +56,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     private final PreparedStatement getModelLeafsStmt;
     private final Statement getFuncParamsStmt;
     private final PreparedStatement getCompanyIdsByListId;
+    private final PreparedStatement getNormativeValueStmt;
 
     public DatabaseCalculationAccessor(DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
@@ -57,6 +66,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         this.getFuncParamsStmt = connection.createStatement();
         this.getCompanyIdsByListId = connection.prepareStatement(SQL_GET_COMPANY_IDS_BY_LIST_ID);
         this.getModelCalcStmt = connection.prepareStatement(SQL_GET_MODEL_CALC);
+        this.getNormativeValueStmt = connection.prepareStatement(SQL_GET_NORMATIVE_VALUE_STMT);
     }
 
     private DataSource dataSource;
@@ -142,6 +152,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     @Override
     public void close() throws Exception {
         tryToClose(getModelLeafsStmt);
+        tryToClose(getNormativeValueStmt);
         tryToClose(getFuncParamsStmt);
         tryToClose(getCompanyIdsByListId);
         tryToClose(getModelCalcStmt);
@@ -163,5 +174,16 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
             }
         }
         return idsMap;
+    }
+
+    @SneakyThrows
+    public Double getNormativeValueByCode(String paramCode) {
+        getNormativeValueStmt.setString(1, paramCode);
+        try (ResultSet data = getNormativeValueStmt.executeQuery()) {
+            if (!data.next()) {
+                return null;
+            }
+            return data.getDouble("value");
+        }
     }
 }
