@@ -8,6 +8,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.mifi.service.risk.database.DatabaseExcelImportAccessor;
 import ru.mifi.service.risk.domain.FormulaParam;
 import ru.mifi.service.risk.exception.DatabaseException;
@@ -21,7 +23,8 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -29,6 +32,7 @@ import java.util.UUID;
  * Загружаем данные о модели и(или) списке компаний из Excel-файла в базу
  * Created by DenRUS on 06.10.2018.
  */
+@Component
 public class ExcelLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExcelLoader.class);
@@ -36,6 +40,7 @@ public class ExcelLoader {
 
     private final DataSource ds;
 
+    @Autowired
     public ExcelLoader(DataSource dataSource) {
         this.ds = dataSource;
     }
@@ -47,7 +52,7 @@ public class ExcelLoader {
      * @param inputStream входной файл как стрим
      * @return сообщение о результатах загрузки
      */
-    public String loadExcelFile(InputStream inputStream) {
+    public Map<String, Object> loadExcelFile(InputStream inputStream) {
         XSSFWorkbook workbook;
 
         try (DatabaseExcelImportAccessor accessor = new DatabaseExcelImportAccessor(ds)) {
@@ -61,7 +66,7 @@ public class ExcelLoader {
 
 
             LOG.info("Файл успешно обработан.");
-            return "Успешно загружено. Идентификатор загруженной модели: " + modelId;
+            return returnResultAsMap(modelId);
         } catch (IOException e) {
             throw new ImportException("Ошибка при обработке файла: " + e.getMessage());
         } catch (SQLException e) {
@@ -69,6 +74,13 @@ public class ExcelLoader {
         } catch (Exception e) {
             throw new ImportException("Ошибка при работе импорте данных", e);
         }
+    }
+
+    private Map<String, Object> returnResultAsMap(String modelId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("message", "Документ успешно загружен. ");
+        resultMap.put("modelId", modelId);
+        return resultMap;
     }
 
     /**
@@ -204,6 +216,7 @@ public class ExcelLoader {
                 ? null
                 : nodeId.substring(0, position);
     }
+
     private String getNullableCellValue(Cell cell) {
         String value = formatter.formatCellValue(cell).toUpperCase();
         if (StringUtils.isNullOrEmpty(value)) {
@@ -211,6 +224,7 @@ public class ExcelLoader {
         }
         return value;
     }
+
     private String formatCellVal(Cell cell) {
         String value = formatter.formatCellValue(cell).toUpperCase();
         if (value.equalsIgnoreCase("") || value.equalsIgnoreCase("NaN")) {

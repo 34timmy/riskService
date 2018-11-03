@@ -49,7 +49,7 @@ public class ActionController extends ExceptionHandlerController {
                             "\n\tmodeId=%s, \n\tcompanyListId=%s, \n\tindustryCompanyListId=%s, \n\tyear=%s",
                     modelId, companyListId, industryCompanyListId, year));
             Map<String, Object> result = dataService.performCalculation(modelId, companyListId, industryCompanyListId, year);
-            return ResponseHelper.successResponse(result.toString());
+            return ResponseHelper.successResponse(result);
         } catch (Exception e) {
             throw new RestException(e);
         }
