@@ -6,13 +6,28 @@ import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
-import ru.mifi.service.risk.domain.*;
+import ru.mifi.service.risk.domain.DataKey;
+import ru.mifi.service.risk.domain.DataReplacer;
+import ru.mifi.service.risk.domain.Formula;
+import ru.mifi.service.risk.domain.FormulaResult;
+import ru.mifi.service.risk.domain.HierarchyNode;
+import ru.mifi.service.risk.domain.HierarchyResult;
 import ru.mifi.service.risk.exception.DataLeakException;
 import ru.mifi.service.risk.exception.FormulaCalculationException;
 import ru.mifi.utils.CollectionUtils;
 
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
@@ -23,20 +38,17 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public class CalculationService {
-    /**
-     * Массив неверных формул при вычислении
-     */
-    private Set<FormulaResult> wrongFormulasFromLastExecution = new HashSet<>();
-
     private static final Logger LOG = LoggerFactory.getLogger(CalculationService.class);
-
-
     private final Set<String> innsInDevelop;
     private final Set<String> allInns;
     private final Set<Formula> formulas;
     private final Map<DataKey, Map<String, Double>> dataKeyMap;
     private final DatabaseCalculationAccessor accessor;
     private final String modelId;
+    /**
+     * Массив неверных формул при вычислении
+     */
+    private Set<FormulaResult> wrongFormulasFromLastExecution = new HashSet<>();
 
 
 //    public Map<String, Double> calculateOnlyExpression(String input, Map<Integer, JSONArray> mapYearInn) throws JSONException, DataLeakException {
@@ -191,31 +203,42 @@ public class CalculationService {
      * @return нормализованные результаты расчета
      */
     private Map<String, Map<String, FormulaResult>> normalizeFormulasValue(
-            Map<String, Map<String, FormulaResult>> calculationData) {
+            Map<String, Map<String, FormulaResult>> calculationData
+    ) {
         if (calculationData.keySet().size() <= 1) {
             return calculationData;
         }
         Map<String, Map<String, FormulaResult>> result = new HashMap<>();
-        formulas.forEach(formula -> {
-            final double[] totalValue = {0};
+        for (Formula formula : formulas) {
+            double totalValue = 0;
 //            error here null
-            calculationData.forEach((key, elem) -> {
-                if (elem.get(formula.getId()) != null) {
-                    totalValue[0] += elem.get(formula.getId()).getResult();
+            for (Map<String, FormulaResult> elem : calculationData.values()) {
+                FormulaResult curFormulaResult;
+                if ((curFormulaResult = elem.get(formula.getId())) != null) {
+                    totalValue += curFormulaResult.getResult();
                 }
-            });
-            calculationData.forEach((key, elem) -> {
+            }
+            for (String key : calculationData.keySet()) {
                 //Передать через computeIfAbsent
                 result.putIfAbsent(key, new HashMap<>());
-                FormulaResult curFormulaResultObj = elem.get(formula.getId());
+                FormulaResult curFormulaResultObj = calculationData.get(key).get(formula.getId());
                 if (curFormulaResultObj != null) {
-                    result.get(key).put(formula.getId(), new FormulaResult(key, curFormulaResultObj.getId(),
-                            curFormulaResultObj.getInputeValue(),
-                            curFormulaResultObj.getResult() / totalValue[0], curFormulaResultObj.getYear(),
-                            curFormulaResultObj));
+                    result.get(key).put(
+                            formula.getId(),
+                            new FormulaResult(
+                                    key,
+                                    curFormulaResultObj.getId(),
+                                    curFormulaResultObj.getInputeValue(),
+                                    totalValue == 0
+                                            ? 0
+                                            : curFormulaResultObj.getResult() / totalValue,
+                                    curFormulaResultObj.getYear(),
+                                    curFormulaResultObj
+                            )
+                    );
                 }
-            });
-        });
+            }
+        }
         return result;
     }
 
