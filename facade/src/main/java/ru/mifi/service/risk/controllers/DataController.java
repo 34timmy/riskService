@@ -5,13 +5,18 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import ru.mifi.service.risk.database.DatabaseSelectAccessor;
+import ru.mifi.service.risk.domain.CalculationParamKey;
 import ru.mifi.service.risk.dto.CalcResultDto;
 import ru.mifi.service.risk.exception.RestException;
+import ru.mifi.service.risk.utils.DataService;
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,43 +27,62 @@ public class DataController extends ExceptionHandlerController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataController.class);
 
-    private DataSource dataSource;
-    @Resource(name = "dataSource")
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    @Autowired
+    private DatabaseSelectAccessor accessor;
+
+    @Autowired
+    private DataService service;
 
     @ApiOperation(value = "По конкретной таблице")
     @RequestMapping(value = "/byTable", method = RequestMethod.GET)
     public
     @ResponseBody
-    Map<String, Object> byTable(
+    Map<String, Object> loadResultFromTable(
             @ApiParam(value = "Имя таблицы")
             @RequestParam("tableName") String tableName
     ) throws RestException {
-        try {
-            Set<CalcResultDto> result = new DatabaseSelectAccessor(dataSource).getDataFromTable(tableName);
-            return ResponseHelper.successResponse(result);
-        } catch (Exception e) {
-            throw new RestException(e);
-        }
+        Map<String, CalcResultDto> result = accessor.getDataFromTable(tableName);
+        return ResponseHelper.successResponse(result);
     }
 
-    @ApiOperation(value = "По модели и листу компаний (получаем список таблиц)")
-    @RequestMapping(value = "/byModelAndListId", method = RequestMethod.GET)
-    public
+    @ApiOperation(value = "Получить данные последнего расчета по параметрам")
+    @RequestMapping(value = "/lastCalcByParams", method = RequestMethod.GET)
     @ResponseBody
-    Map<String, Object> byModelAndList(
+    public Map<String, Object> getLastCalculationResult(
             @ApiParam(value = "Id модели")
             @RequestParam("modelId") String modelId,
             @ApiParam(value = "Id списка компаний")
-            @RequestParam("companyListId") String companyListId
+            @RequestParam("companyListId") String companyListId,
+            @ApiParam(value = "Id списка компаний всей отрасли")
+            @RequestParam("industryCompanyListId") String industryCompanyListId,
+            @ApiParam(value = "Год для расчета")
+            @RequestParam("year") Integer year
+    ) {
+        CalculationParamKey curParams = new CalculationParamKey(modelId, companyListId, industryCompanyListId, year);
+        LOG.info("Получен запрос на получение данных расчета: " + curParams);
+        Map<String, CalcResultDto> result = service.getCalculationResultFromDb(curParams);
+        return ResponseHelper.successResponse(result);
+
+    }
+
+    @ApiOperation(value = "По параметрам расчета получаем список таблиц с результатами по этим параметрам")
+    @RequestMapping(value = "/allTablesByParams", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Object> getTableList(
+            @ApiParam(value = "Id модели")
+            @RequestParam("modelId") String modelId,
+            @ApiParam(value = "Id списка компаний")
+            @RequestParam("companyListId") String companyListId,
+            @ApiParam(value = "Id списка компаний всей отрасли")
+            @RequestParam("industryCompanyListId") String industryCompanyListId,
+            @ApiParam(value = "Год для расчета")
+            @RequestParam("year") Integer year
     ) throws RestException {
-        try {
-            Set<String> result = new DatabaseSelectAccessor(dataSource).getTablesForModelAndList(modelId, companyListId);
-            return ResponseHelper.successResponse(result);
-        } catch (Exception e) {
-            throw new RestException(e);
-        }
+        CalculationParamKey curParams = new CalculationParamKey(modelId, companyListId, industryCompanyListId, year);
+        LOG.info("Получен запрос для получения таблиц с результатами по параметрам: " + curParams);
+        Set<String> result = accessor.getTablesForModelAndList(curParams);
+        return ResponseHelper.successResponse(result);
+
     }
 }

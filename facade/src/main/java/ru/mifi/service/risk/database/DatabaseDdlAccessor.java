@@ -1,14 +1,12 @@
 package ru.mifi.service.risk.database;
 
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import ru.mifi.service.risk.domain.CalculationParamKey;
 import ru.mifi.service.risk.exception.DatabaseException;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -25,7 +23,7 @@ public class DatabaseDdlAccessor {
                     "   company_id VARCHAR2(255) NOT NULL," +
                     "   node VARCHAR2(255) NOT NULL," +
                     "   parent_node VARCHAR2(255), " +
-                    "   weight INTEGER, " +
+                    "   weight DOUBLE PRECISION, " +
                     "   is_leaf INTEGER, " +
                     "   comment VARCHAR2(4000), " +
                     "   value DOUBLE " +
@@ -35,20 +33,27 @@ public class DatabaseDdlAccessor {
     private static final String SQL_LEAF_CHECK_TEMP_TABLE_CONSTR = "ALTER TABLE %s ADD CONSTRAINT %s_leaf_val_check CHECK (is_leaf BETWEEN 0 and 1)";
     private static final String SQL_INSERT_RESULT_INFO = "INSERT INTO result_data_mapper (model_id, company_list_id, table_name) VALUES (?,?,?)";
 
+    /**
+     * Создает таблицу для сохранения результатов расчета.
+     *
+     * @param key  объект-ключ для параметров расчета
+     * @param conn подключение к БД
+     * @return имя таблицы
+     */
     public String createTempTable(
-            String modelId,
-            String companiesListId,
-            String industryCompaniesListId,
+            CalculationParamKey key,
             Connection conn
     ) {
         try (
                 Statement prepStmt = conn.createStatement();
         ) {
             String tableName = ("calc_result_"
-                    + modelId
-                    + "_" + companiesListId
-                    + "_" + industryCompaniesListId
-                    + "_" + LocalDateTime.now().toString()).replaceAll("[\\-\\:\\.]","");
+                    + key.getModelId()
+                    + "_" + key.getCompanyListId()
+                    + "_" + key.getAllCompaniesListId()
+                    + "_" + key.getYear()
+                    + "_" + LocalDateTime.now().toString())
+                    .replaceAll("[\\-\\:\\.]", "");
             prepStmt.execute(String.format(
                     SQL_CREATE_TEMP_TABLE,
                     tableName

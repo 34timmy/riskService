@@ -5,8 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
-import ru.mifi.service.risk.domain.*;
+import ru.mifi.service.risk.database.DatabaseSelectAccessor;
+import ru.mifi.service.risk.domain.CalculationParamKey;
+import ru.mifi.service.risk.domain.DataKey;
+import ru.mifi.service.risk.domain.Formula;
+import ru.mifi.service.risk.domain.HierarchyResult;
+import ru.mifi.service.risk.dto.CalcResultDto;
 import ru.mifi.service.risk.exception.DatabaseException;
+import ru.mifi.service.risk.exception.NoCalculationPerformedException;
 import ru.mifi.service.risk.utils.old.CalculationService;
 
 import javax.sql.DataSource;
@@ -24,32 +30,31 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DataService {
 
-    private final DataSource dataSource;
-
     private static final Logger LOG = LoggerFactory.getLogger(DataService.class);
+
+    private final DataSource dataSource;
+    private final DatabaseSelectAccessor accessor;
 
     /**
      * Основной метод расчета.
      *
-     * @param modelId       идентификатор модели
-     * @param companyListId идентификатор листа компаний
-     * @param year          год расчета
+     * @param calcKey Объект с параметрами расчета
      * @return надо подумать: либо id таблицы с данными, либо сообщение-статус расчета.
      */
-    public Map<String, Object> performCalculation(String modelId, String companyListId, String allIndustryCompaniesListId, Integer year) {
+    public Map<String, Object> performCalculation(CalculationParamKey calcKey) {
         try (DatabaseCalculationAccessor accessor = new DatabaseCalculationAccessor(dataSource)) {
             HierarchyResult finalResult;
             {
-                Set<Formula> leafs = accessor.getFormulasForCalc(modelId);
-                Set<String> companies = accessor.getCompanyIdsByListId(companyListId);
-                Set<String> allCompanies = accessor.getCompanyIdsByListId(allIndustryCompaniesListId);
+                Set<Formula> leafs = accessor.getFormulasForCalc(calcKey.getModelId());
+                Set<String> companies = accessor.getCompanyIdsByListId(calcKey.getCompanyListId());
+                Set<String> allCompanies = accessor.getCompanyIdsByListId(calcKey.getAllCompaniesListId());
 
                 Map<DataKey, Map<String, Double>> params = accessor.getParamsForFormula(
                         leafs.stream()
                                 .map(Formula::getId)
                                 .collect(Collectors.toSet()),
                         companies,
-                        year);
+                        calcKey.getYear());
                 LOG.info("Данные получены. Начинаем расчет формул.");
                 CalculationService calculationService = new CalculationService(
                         companies,
@@ -57,15 +62,15 @@ public class DataService {
                         leafs,
                         params,
                         accessor,
-                        modelId
+                        calcKey.getModelId()
                 );
                 LOG.info("Формулы расчитаны. Начинаем расчет иерархии.");
                 finalResult = calculationService.calculateFormulasHierarchy(
-                        year
+                        calcKey.getYear()
                 );
                 LOG.info("Расчет завершен.");
             }
-            String tableName = accessor.saveDataToDb(finalResult, modelId, companyListId, allIndustryCompaniesListId);
+            String tableName = accessor.saveDataToDb(finalResult, calcKey);
             return getResultAsMap(tableName, "Расчет проведен успешно");
         } catch (SQLException e) {
             throw new DatabaseException("Ошибка БД при расчете иерархии: " + e.getMessage(), e);
@@ -74,10 +79,27 @@ public class DataService {
         }
     }
 
-    private Map<String, Object> getResultAsMap(String tableName, String s) {
+    private Map<String, Object> getResultAsMap(String tableName, String str) {
         Map<String, Object> result = new HashMap<>();
-        result.put("message", s);
+        result.put("message", str);
         result.put("tableName", tableName);
         return result;
+    }
+
+    /**
+     * Загружаем результат из БД, кладем его в {@link ru.mifi.service.risk.dto.CalcResultDto} и отдаем
+     *
+     * @param paramKey Объект с параметрами для расчета
+     * @return результат иерархии расчета
+     */
+    public Map<String, CalcResultDto> getCalculationResultFromDb(
+            CalculationParamKey paramKey
+    ) {
+        Set<String> tables = accessor.getTablesForModelAndList(paramKey);
+        String lastTable = tables.stream()
+                .sorted()
+                .findFirst()
+                .orElseThrow(() -> new NoCalculationPerformedException(paramKey));
+        return accessor.getDataFromTable(lastTable);
     }
 }

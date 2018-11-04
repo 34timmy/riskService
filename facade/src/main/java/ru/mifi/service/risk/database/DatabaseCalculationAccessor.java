@@ -1,6 +1,7 @@
 package ru.mifi.service.risk.database;
 
 import lombok.SneakyThrows;
+import ru.mifi.service.risk.domain.CalculationParamKey;
 import ru.mifi.service.risk.domain.DataKey;
 import ru.mifi.service.risk.domain.Formula;
 import ru.mifi.service.risk.domain.FormulaResult;
@@ -51,9 +52,9 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     private static final String SQL_SAVE_RESULT_TABLE_NAME =
             "INSERT INTO " +
                     "   result_data_mapper" +
-                    "       (model_id, company_list_id, all_company_list_id, table_name)" +
+                    "       (model_id, company_list_id, all_company_list_id, year, table_name)" +
                     "   VALUES" +
-                    "       (?,?,?,?)";
+                    "       (?,?,?,?,?)";
     private static final String SQL_GET_NORMATIVE_VALUE_STMT =
             "SELECT " +
                     "   value, descr " +
@@ -219,22 +220,16 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     /**
      * Сохраняем результат расчета иерархии в базу
      *
-     * @param finalResult                результат расчета иерархии
-     * @param modelId                    идентификатор модели
-     * @param companyListId              идентификатор списка компаний для расчета
-     * @param allIndustryCompaniesListId @return имя таблицы с данными
+     * @param finalResult результат расчета иерархии
+     * @param key         объект-ключ для результатов расчета
      */
     @SneakyThrows
     public String saveDataToDb(
             HierarchyResult finalResult,
-            String modelId,
-            String companyListId,
-            String allIndustryCompaniesListId
+            CalculationParamKey key
     ) {
         String tableName = new DatabaseDdlAccessor().createTempTable(
-                modelId,
-                companyListId,
-                allIndustryCompaniesListId,
+                key,
                 connection
         );
         Map<String, Collection<FormulaResult>> hierarchyData = finalResult.getHierarchyData();
@@ -266,10 +261,11 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         }
         mergeData(tableName);
         //Сохраняем данные в таблицу-маппинг результатов
-        saveResultToMapperTableStmt.setString(1, modelId);
-        saveResultToMapperTableStmt.setString(2, companyListId);
-        saveResultToMapperTableStmt.setString(3, allIndustryCompaniesListId);
-        saveResultToMapperTableStmt.setString(4, tableName);
+        saveResultToMapperTableStmt.setString(1, key.getModelId());
+        saveResultToMapperTableStmt.setString(2, key.getCompanyListId());
+        saveResultToMapperTableStmt.setString(3, key.getAllCompaniesListId());
+        saveResultToMapperTableStmt.setInt(4, key.getYear());
+        saveResultToMapperTableStmt.setString(5, tableName);
         saveResultToMapperTableStmt.executeUpdate();
         saveResultToMapperTableStmt.clearParameters();
         return tableName;

@@ -4,7 +4,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.Setter;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.mifi.service.risk.domain.CalculationParamKey;
 import ru.mifi.service.risk.exception.RestException;
 import ru.mifi.service.risk.utils.DataService;
 
@@ -43,16 +43,11 @@ public class ActionController extends ExceptionHandlerController {
             @ApiParam(value = "Год для расчета")
             @RequestParam("year") Integer year
     ) throws RestException {
-        try {
-            LOG.info(String.format(
-                    "Получен запрос на расчет по параметрам: " +
-                            "\n\tmodeId=%s, \n\tcompanyListId=%s, \n\tindustryCompanyListId=%s, \n\tyear=%s",
-                    modelId, companyListId, industryCompanyListId, year));
-            Map<String, Object> result = dataService.performCalculation(modelId, companyListId, industryCompanyListId, year);
-            return ResponseHelper.successResponse(result);
-        } catch (Exception e) {
-            throw new RestException(e);
-        }
+        CalculationParamKey key = new CalculationParamKey(modelId, companyListId, industryCompanyListId, year);
+        LOG.info("Получен запрос на расчет по параметрам: " + key);
+        Map<String, Object> result = dataService.performCalculation(key);
+        return ResponseHelper.successResponse(result);
+
     }
 
 }
