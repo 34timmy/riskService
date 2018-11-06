@@ -18,7 +18,7 @@ export class ModelEditComponent implements OnInit {
     this.modelForm = this.formBuilder.group(
       {
         id: [''],
-        name: ['', Validators.required],
+        descr: ['', Validators.required],
         updated: false,
         type: 'model'
       }
@@ -29,17 +29,19 @@ export class ModelEditComponent implements OnInit {
     console.log('fillModelForm', model);
 
     this.modelForm.patchValue({
-      id: model.id,
-      name: model.name,
+      id: model.guid,
+      descr: model.displayName,
+      parentId: model.parentId,
       updated: false,
-      type: 'model'
+      data: model.data,
+      type: model.type
     });
   }
 
   fillEmptyModelForm() {
     this.modelForm.patchValue({
       id: '',
-      name: '',
+      descr: '',
       updated: false,
       type: 'model'
     });

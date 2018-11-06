@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {CompanyModel} from '../../model/company.model';
 import {CompanyService} from '../../service/company.service';
 import {CompanyEditComponent} from './company-edit.component';
+import {SelectItem} from "../../../../node_modules/primeng/api";
 
 @Component({
   templateUrl: './company-picklist.html',
@@ -13,7 +14,31 @@ export class CompanyPicklistComponent implements OnInit {
 
   target: CompanyModel[];
 
+  stages: SelectItem[];
+
+  selectedStage: string;
+
+  models: SelectItem[];
+
+  selectedModel: string;
+
+  years: SelectItem[];
+
+  selectedYear: string;
+
   constructor(private companyService: CompanyService) {
+    this.models =
+      [{label: '1', value: '1'},
+        {label: '2', value: '2'},
+        {label: '3', value: '3'}];
+
+    this.stages =
+      [{label: 'Тендер', value: 1},
+        {label: 'Закупка', value: 2}];
+
+    this.years =
+      [{label: '2016', value: 2016},
+        {label: '2015', value: 2015}];
   }
 
   @ViewChild(CompanyEditComponent)

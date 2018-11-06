@@ -1,9 +1,8 @@
-import {Routes, RouterModule} from '@angular/router';
+import {RouterModule, Routes} from '@angular/router';
 import {ModuleWithProviders} from '@angular/core';
 import {TabViewComponent} from './component/tabmenu2/tab-view.component';
-import {ParamsPicklistComponent} from './component/params-picklist/params-picklist.component';
 import {CompanyPicklistComponent} from './component/company-picklist/company-picklist.component';
-import {TreeViewComponent} from "./component/treeview/treeview.components";
+import {TreeViewComponent} from "./component/results_view/treeview.components";
 
 
 const appRoutes: Routes = [
@@ -15,10 +14,6 @@ const appRoutes: Routes = [
   {
     path: 'app-tabpanel',
     component: TabViewComponent
-  },
-  {
-    path: 'params',
-    component: ParamsPicklistComponent
   },
   {
     path: 'company',

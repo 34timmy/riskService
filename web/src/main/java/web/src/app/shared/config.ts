@@ -3,6 +3,7 @@ import {RequestOptions, Headers} from '@angular/http';
 export const basePath = '';
 export const constructorPath = '/constructor';
 export const modelPath = '/models';
+export const modelCalcPath = '/modelCalcs';
 export const rulePath = '/rules';
 export const formulaPath = '/formulas';
 export const profilePath = '/profile';

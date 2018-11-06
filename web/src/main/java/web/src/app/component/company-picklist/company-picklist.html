@@ -1,3 +1,45 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12 ui-md-4">
+    <div class="ui-inputgroup">
+      <span class="ui-inputgroup-addon"><i class="fa fa-chevron-right"> Модель</i></span>
+      <p-dropdown [options]="models" [(ngModel)]="selectedModel" [filter]="true"
+                  [style]="{'width':'150px'}">
+        <ng-template let-item pTemplate="selectedItem">
+          <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+            <div style="font-size:14px;float:right;margin-top:4px">{{item.value}}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </div>
+
+  <div class="ui-g-12 ui-md-4">
+    <div class="ui-inputgroup">
+      <span class="ui-inputgroup-addon"><i class="fa fa-list-ol"> Стадия</i></span>
+      <p-dropdown [options]="stages" [(ngModel)]="selectedStage" [filter]="true"
+                  [style]="{'width':'150px'}">
+        <ng-template let-item pTemplate="selectedItem">
+          <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+            <div style="font-size:14px;float:right;margin-top:4px">{{item.label}}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </div>
+  <div class="ui-g-12 ui-md-4">
+    <div class="ui-inputgroup">
+      <span class="ui-inputgroup-addon"><i class="fa fa-list-ol"> Год</i></span>
+      <p-dropdown [options]="stages" [(ngModel)]="selectedStage" [filter]="true"
+                  [style]="{'width':'150px'}">
+        <ng-template let-item pTemplate="selectedItem">
+          <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+            <div style="font-size:14px;float:right;margin-top:4px">{{item.label}}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </div>
+</div>
 <p-pickList [source]="source" [target]="target" sourceHeader="Список компаний" targetHeader="Список выбранных компаний"
             dragdrop="true"
             dragdropScope="companies"
@@ -26,4 +68,11 @@
     </div>
   </ng-template>
 </p-pickList>
+<footer>
+  <div class="ui-helper-clearfix" style="width:100%">
+    <button type="button" pButton icon="fa fa-calculator" style="float:right"
+            (click)="showCreateModal()" label="Рассчитать">
+    </button>
+  </div>
+</footer>
 <app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>

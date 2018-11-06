@@ -1,0 +1,31 @@
+<p-dialog header="Изменение правила" [(visible)]="showToggle"
+          [modal]="true" [width]="500" [maximizable]="true">
+  <div class="modal-body" class="ui-dialog-content">
+    <form [formGroup]="modelcalcForm" class="form-horizontal" method="post" id="detailsForm">
+      <input type="text" hidden="hidden" id="node" name="node">
+
+      <div class="form-group row">
+        <label for="descr" class="control-label col-xs-3">Название</label>
+        <div class="col-xs-9">
+          <input formControlName="descr" type="text" class="form-control" id="descr" placeholder="Name">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="weight" class="control-label col-xs-3">Вес</label>
+        <div class="col-xs-9">
+          <input formControlName="weight" type="text" class="form-control" id="weight" placeholder="0..100">
+        </div>
+      </div>
+      <p-footer>
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-9">
+            <button type="button"
+                    [disabled]="!modelcalcForm.valid"
+                    class="btn btn-primary" (click)="onSaveModelcalc()">Сохранить
+            </button>
+          </div>
+        </div>
+      </p-footer>
+    </form>
+  </div>
+</p-dialog>

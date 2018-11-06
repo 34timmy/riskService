@@ -32,6 +32,7 @@ export class FormulaEditComponent implements OnInit {
         xb: [''],
         comments: [''],
         rule_id: [''],
+        model_calc_id: [''],
         updated: false,
         type: 'formula'
       }
@@ -60,6 +61,15 @@ export class FormulaEditComponent implements OnInit {
     console.log('fillFormulaFormWithRuleId', rule);
     this.formulaForm.patchValue({
       rule_id: rule.id,
+      updated: false,
+      type: 'formula'
+    });
+  }
+
+  fillFormulaFormWithModelCalcId(modelCalc) {
+    console.log('fillFormulaFormWithRuleId', modelCalc);
+    this.formulaForm.patchValue({
+      rule_id: modelCalc.id,
       updated: false,
       type: 'formula'
     });

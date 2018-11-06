@@ -5,7 +5,7 @@ import {
   basePath,
   companiesPath,
   constructorPath,
-  formulaPath,
+  formulaPath, modelCalcPath,
   modelPath,
   reqOptions,
   reqOptionsJson, rulePath
@@ -19,10 +19,12 @@ export class TreeDiagramService {
 
   constructor(private http: Http, private router: Router) {
     this.modelsLoaded = new BehaviorSubject<boolean>(false);
+    this.nodesLoaded = new BehaviorSubject<boolean>(false);
   }
 
   models: any;
   modelsNodes;
+  nodesLoaded: BehaviorSubject<boolean>;
   modelsLoaded: BehaviorSubject<boolean>;
 
   saveFormula(formula) {
@@ -94,8 +96,46 @@ export class TreeDiagramService {
     return this.http.put(basePath + constructorPath + modelPath, JSON.stringify(model), reqOptionsJson);
   }
 
+  saveModelCalc(modelCalc) {
+    if (modelCalc.node) {
+      return this.updateModelCalc(modelCalc);
+    } else {
+      return this.createModelCalc(modelCalc);
+    }
+  }
+
+  deleteModelCalc(modelCalc) {
+    console.log('delete fromula method', modelCalc);
+    return this.http.delete(basePath + constructorPath + modelCalcPath + '/' + modelCalc.id, reqOptions);
+
+  }
+
+  private updateModelCalc(modelCalc) {
+    return this.http.post(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), reqOptionsJson);
+  }
+
+  private createModelCalc(modelCalc) {
+    return this.http.put(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), reqOptionsJson);
+  }
+
   private getAll() {
     return this.http.get(basePath + constructorPath + modelPath, reqOptions);
+  }
+
+  private getAllNodes() {
+    return this.http.get(basePath + constructorPath + modelPath + "/toNodes", reqOptions);
+  }
+
+  getTreeNodeDTOs() {
+    this.modelsNodes = [];
+    this.setTheBooleanNodes(false);
+    this.getAllNodes().toPromise().then(res => {
+      for (let node of res.json()) {
+        this.modelsNodes.push(node);
+      }
+      // this.setTheBooleanNodes(true);
+    });
+    return this.modelsNodes;
   }
 
   getModelsAndConvert() {
@@ -124,6 +164,7 @@ export class TreeDiagramService {
         "displayName": "Insuron",
         updated: false,
         "children": [
+          "85d412c2-ebc1-4d56-96c9-7da433ac9bb2",
           "a2d8ec53-de45-4182-af74-58c27dc8c06c",
           "6ceb08e1-3da5-4532-a5d8-437fe714b685"
         ]
@@ -284,9 +325,18 @@ export class TreeDiagramService {
     return this.modelsLoaded.asObservable();
   }
 
+  getTheBooleanNodes(): Observable<boolean> {
+    return this.nodesLoaded.asObservable();
+  }
+
   setTheBoolean(newValue: boolean): void {
     console.log('boolean in tree-diagr service', newValue);
     this.modelsLoaded.next(newValue);
+  }
+
+  private setTheBooleanNodes(newValue: boolean) {
+    this.nodesLoaded.next(newValue);
+
   }
 
   private modelsToTreeNode(models) {
@@ -296,12 +346,12 @@ export class TreeDiagramService {
   }
 
   private modelToTreeNode(mod): any {
-    let rulesTreeNodes = [];
-    if (mod.rules !== undefined) {
-      for (let rule of mod.rules) {
-        let ruleToTreeNode = this.ruleToTreeNode(rule, mod);
-        rulesTreeNodes.push(ruleToTreeNode.guid);
-        this.modelsNodes.push(ruleToTreeNode)
+    let modelCalcsTreeNodes = [];
+    if (mod.modelCalcs !== undefined) {
+      for (let modelCalc of mod.modelCalcs) {
+        let modelCalcToTreeNode = this.modelCalcToTreeNode(modelCalc, mod);
+        modelCalcsTreeNodes.push(modelCalcToTreeNode.guid);
+        this.modelsNodes.push(modelCalcToTreeNode)
       }
     }
     return {
@@ -313,28 +363,28 @@ export class TreeDiagramService {
         id: mod.id,
         name: mod.descr
       },
-      children: rulesTreeNodes
+      children: modelCalcsTreeNodes
     };
   }
 
-  private ruleToTreeNode(rule, parent) {
+  private modelCalcToTreeNode(modelCalc, parent) {
     let formulaTreeNodes = [];
-    if (rule.formulas !== undefined) {
-      for (let formula of rule.formulas) {
-        let formulaToTreeNode = this.formulaToTreeNode(formula, rule);
+    if (modelCalc.formulas !== undefined) {
+      for (let formula of modelCalc.formulas) {
+        let formulaToTreeNode = this.formulaToTreeNode(formula, modelCalc);
         formulaTreeNodes.push(formulaToTreeNode.guid);
         this.modelsNodes.push(formulaToTreeNode);
       }
     }
     return {
-      guid: (rule.id + '_' + rule.name).toString(),
+      guid: (modelCalc.id + '_' + modelCalc.name).toString(),
       parentId: (parent.id + '_' + parent.descr).toString(),
-      displayName: rule.name,
+      displayName: modelCalc.descr,
       updated: false,
-      type: 'rule',
+      type: 'modelCalc',
       data: {
-        id: rule.id,
-        name: rule.name
+        id: modelCalc.id,
+        name: modelCalc.name
       },
       children: formulaTreeNodes
     }
@@ -363,6 +413,7 @@ export class TreeDiagramService {
       children: []
     }
   }
+
 
 
 }

@@ -1,6 +1,7 @@
 <app-formula-edit #formulaChild (onSaveEvent)="onSaveFormula($event)"></app-formula-edit>
 <app-rule-edit #ruleChild (onSaveEvent)="onSaveRule($event)"></app-rule-edit>
 <app-model-edit #modelChild (onSaveEvent)="onSaveModel($event)"></app-model-edit>
+<app-modelcalc-edit #modelCalcChild (onSaveEvent)="onSaveModelCalc($event)"></app-modelcalc-edit>
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
 <div class="tree-pane"
      (mousedown)="onmousedown($event)"
@@ -9,7 +10,7 @@
      (mousewheel)="onmousewheel($event)"
 >
 
-  <div *ngIf="(modelsLoaded | async)"
+  <div
        class="tree-paning-container"
        [style.transform]="paneTransform"
   >

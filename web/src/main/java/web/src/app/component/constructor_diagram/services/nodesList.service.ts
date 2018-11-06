@@ -51,4 +51,14 @@ export class NodesListService {
   public editNodeOnSaveModel() {
    this._nodesList.editNodeOnSaveModel();
   }
+
+  public addNodeOnSaveModelCalc() {
+    this._nodesList.addNodeOnSaveModelCalc()
+  }
+
+  public editNodeOnSaveModelCalc() {
+    this._nodesList.editNodeOnSaveModelCalc();
+  }
+
+
 }
