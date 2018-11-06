@@ -97,13 +97,15 @@ public class ExcelLoader {
         for (int r = 1; r <= modelSheet.getLastRowNum(); r++) {
             Row row = modelSheet.getRow(r);
             String nodeId = formatCellVal(row.getCell(0));
-            String parentNode = getNullableCellValue(row.getCell(1));
-            Double weight = Double.valueOf(formatCellVal(row.getCell(2)));               //Weight
-            Integer level = Integer.parseInt(formatCellVal(row.getCell(3)));
-            Integer isLeaf = Integer.parseInt(formatCellVal(row.getCell(4)));
+            String descr = formatCellVal(row.getCell(1));
+            String parentNode = getNullableCellValue(row.getCell(2));
+            Double weight = Double.valueOf(formatCellVal(row.getCell(3)));               //Weight
+            Integer level = Integer.parseInt(formatCellVal(row.getCell(4)));
+            Integer isLeaf = Integer.parseInt(formatCellVal(row.getCell(5)));
             accessor.insertModelCalc(
-                    modelId,
                     nodeId,
+                    modelId,
+                    descr,
                     parentNode,
                     weight,
                     level,

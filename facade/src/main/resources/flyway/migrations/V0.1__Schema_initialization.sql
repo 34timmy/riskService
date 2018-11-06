@@ -1,22 +1,26 @@
+CREATE SEQUENCE SEQ_ID
+  start with 1;
+
+
 CREATE TABLE company (
-  id  VARCHAR2(255) NOT NULL,
-  inn VARCHAR2(255)
+  id  VARCHAR2 (255) NOT NULL,
+  inn VARCHAR2 (255)
 );
 ALTER TABLE company
   ADD CONSTRAINT company_pk PRIMARY KEY (id);
 
 CREATE TABLE business_param (
-  param_code  VARCHAR2(255) NOT NULL,
-  description VARCHAR2(4000)
+  param_code  VARCHAR2 (255) NOT NULL,
+  description VARCHAR2 (4000)
 );
 ALTER TABLE business_param
   ADD CONSTRAINT business_param_pk PRIMARY KEY (param_code);
 
 CREATE TABLE company_business_params (
-  company_id  VARCHAR2(255)  NOT NULL,
-  param_code  VARCHAR2(4000) NOT NULL,
-  year        INTEGER        NOT NULL,
-  param_value VARCHAR2(4000)
+  company_id  VARCHAR2 (255) NOT NULL,
+  param_code  VARCHAR2 (4000) NOT NULL,
+  year        INTEGER NOT NULL,
+  param_value VARCHAR2 (4000)
 );
 ALTER TABLE company_business_params
   ADD CONSTRAINT company_bus_param_pk PRIMARY KEY (company_id, param_code, year);
@@ -26,16 +30,17 @@ ALTER TABLE company_business_params
 
 
 CREATE TABLE model (
-  id    VARCHAR2(255) NOT NULL,
-  descr VARCHAR2(4000)
+  id    VARCHAR2 (255) default SEQ_ID.nextval NOT NULL,
+  descr VARCHAR2 (4000)
 );
 ALTER TABLE model
   ADD CONSTRAINT model_pk PRIMARY KEY (id);
 
 CREATE TABLE model_calc (
-  model_id    VARCHAR2(255) NOT NULL,
-  node        VARCHAR2(255) NOT NULL,
-  parent_node VARCHAR2(255),
+  model_id    VARCHAR2 (255) NOT NULL,
+  descr       VARCHAR2 (255),
+  node        VARCHAR2 (255) default SEQ_ID.nextval NOT NULL,
+  parent_node VARCHAR2 (255),
   weight      DOUBLE PRECISION,
   level       INTEGER,
   is_leaf     INTEGER
@@ -60,31 +65,35 @@ ALTER TABLE rule
 
 ALTER TABLE rule
   ADD CONSTRAINT model_fk FOREIGN KEY (model_id) REFERENCES model (id)
-ON DELETE SET NULL;
+  ON DELETE SET NULL;
 
 CREATE TABLE formula (
-  id           VARCHAR2(255)  NOT NULL,
-  descr        VARCHAR2(4000),
-  calculation  VARCHAR2(4000) NOT NULL,
-  formula_type VARCHAR2(255)  NOT NULL,
-  a            VARCHAR2(4000) NOT NULL,
-  b            VARCHAR2(4000) NOT NULL,
-  c            VARCHAR2(4000) NOT NULL,
-  d            VARCHAR2(4000) NOT NULL,
-  xb           VARCHAR2(4000) NOT NULL,
-  comments     VARCHAR2(4000) NOT NULL,
-  rule_id      VARCHAR2(255)
+  id            VARCHAR2 (255)default SEQ_ID.nextval NOT NULL,
+  descr         VARCHAR2 (4000),
+  calculation   VARCHAR2 (4000) NOT NULL,
+  formula_type  VARCHAR2 (255) NOT NULL,
+  a             VARCHAR2 (4000) NOT NULL,
+  b             VARCHAR2 (4000) NOT NULL,
+  c             VARCHAR2 (4000) NOT NULL,
+  d             VARCHAR2 (4000) NOT NULL,
+  xb            VARCHAR2 (4000) NOT NULL,
+  comments      VARCHAR2 (4000) NOT NULL,
+  rule_id       VARCHAR2 (255),
+  model_calc_id VARCHAR2 (255)
 );
 ALTER TABLE formula
   ADD CONSTRAINT formula_pk PRIMARY KEY (id);
 -- ALTER TABLE formula ADD CONSTRAINT node_fk FOREIGN KEY (node) REFERENCES model_calc (node);
+-- ALTER TABLE formula
+--   ADD CONSTRAINT rule_fk FOREIGN KEY (rule_id) REFERENCES rule (id);
+
 ALTER TABLE formula
-  ADD CONSTRAINT rule_fk FOREIGN KEY (rule_id) REFERENCES rule (id);
+  ADD CONSTRAINT model_calc_fk FOREIGN KEY (model_calc_id) REFERENCES model_calc (node);
 
 CREATE TABLE formula_params (
-  node       VARCHAR2(255)  NOT NULL,
-  param_code VARCHAR2(4000) NOT NULL,
-  year_shift INTEGER        NOT NULL DEFAULT 0
+  node       VARCHAR2 (255) NOT NULL,
+  param_code VARCHAR2 (4000) NOT NULL,
+  year_shift INTEGER NOT NULL DEFAULT 0
 );
 ALTER TABLE formula_params
   ADD CONSTRAINT formula_params_pk PRIMARY KEY (node, param_code, year_shift);
@@ -95,19 +104,19 @@ ALTER TABLE formula_params
 -- ALTER TABLE formula_params ADD CONSTRAINT formula_params_bus_param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code);
 
 CREATE TABLE company_list (
-  id          VARCHAR2(255)  NOT NULL,
-  company_ids VARCHAR2(4000) NOT NULL,
-  descr       VARCHAR2(4000)
+  id          VARCHAR2 (255) NOT NULL,
+  company_ids VARCHAR2 (4000) NOT NULL,
+  descr       VARCHAR2 (4000)
 );
 ALTER TABLE company_list
   ADD CONSTRAINT company_list_pk PRIMARY KEY (id);
 
 CREATE TABLE result_data_mapper (
-  model_id            VARCHAR2(255)  NOT NULL,
-  company_list_id     VARCHAR2(255)  NOT NULL,
-  all_company_list_id VARCHAR2(255)  NOT NULL,
-  year                INTEGER        NOT NULL,
-  table_name          VARCHAR2(4000) NOT NULL
+  model_id            VARCHAR2 (255) NOT NULL,
+  company_list_id     VARCHAR2 (255) NOT NULL,
+  all_company_list_id VARCHAR2 (255) NOT NULL,
+  year                INTEGER NOT NULL,
+  table_name          VARCHAR2 (4000) NOT NULL
 );
 ALTER TABLE result_data_mapper
   ADD CONSTRAINT res_data_mapper_model_fk FOREIGN KEY (model_id) REFERENCES model (id);
@@ -118,8 +127,8 @@ ALTER TABLE result_data_mapper
 
 
 CREATE TABLE normative_parameters (
-  param_name VARCHAR2(4000) NOT NULL,
-  descr      VARCHAR2(4000),
+  param_name VARCHAR2 (4000) NOT NULL,
+  descr      VARCHAR2 (4000),
   value      DOUBLE PRECISION
 )
 -- h2 не поддерживает хранимки. Закоменчено до тестов на оракле

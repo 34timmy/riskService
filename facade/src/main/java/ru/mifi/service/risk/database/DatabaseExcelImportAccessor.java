@@ -38,7 +38,7 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
     private static final String SQL_INSERT_COMPANY_PARAM = "INSERT INTO company_business_params (company_id, param_code, year, param_value) VALUES (?,?,?,?)";
     private static final String SQL_INSERT_FORMULA = "INSERT INTO formula (id, calculation, descr, formula_type, a, b, c, d, xb,comments) VALUES (?,?,?,?,?,?,?,?,?,?)";
     private static final String SQL_INSERT_MODEL = "INSERT INTO model (id, descr) VALUES (?,'Загружено из Excel')";
-    private static final String SQL_INSERT_MODEL_CALC = "INSERT INTO model_CALC (model_id, node, parent_node, weight, level, is_leaf) VALUES (?,?,?,?,?,?)";
+    private static final String SQL_INSERT_MODEL_CALC = "INSERT INTO model_CALC (node,model_id, descr, parent_node, weight, level, is_leaf) VALUES (?,?,?,?,?,?,?)";
     private static final String SQL_INSERT_FORMULA_PARAMS = "INSERT INTO formula_params (node, param_code, year_shift) VALUES (?,?,?)";
 
 
@@ -93,19 +93,21 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
      * @throws SQLException при косяке работы со стейтментами
      */
     public void insertModelCalc(
-            String model_id,
             String node,
+            String model_id,
+            String descr,
             String parent_node,
             Double weight,
             Integer level,
             Integer isLeaf
     ) throws SQLException {
-        insertModelCalcStmt.setString(1, model_id);
-        insertModelCalcStmt.setString(2, node);
-        setNullableString(insertModelCalcStmt, 3, parent_node);
-        insertModelCalcStmt.setDouble(4, weight);
-        insertModelCalcStmt.setInt(5, level);
-        insertModelCalcStmt.setInt(6, isLeaf);
+        insertModelCalcStmt.setString(1, node);
+        insertModelCalcStmt.setString(2, model_id);
+        insertModelCalcStmt.setString(3, descr);
+        setNullableString(insertModelCalcStmt, 4, parent_node);
+        insertModelCalcStmt.setDouble(5, weight);
+        insertModelCalcStmt.setInt(6, level);
+        insertModelCalcStmt.setInt(7, isLeaf);
         insertModelCalcStmtCounter = addReqToStmtBatch(insertModelCalcStmtCounter, insertModelCalcStmt);
     }
 

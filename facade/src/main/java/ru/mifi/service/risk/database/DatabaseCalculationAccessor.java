@@ -74,7 +74,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
             "MERGE INTO";
     private static final String SQL_GET_MODEL_CALC =
             "SELECT " +
-                    "   mc.node, mc.parent_node, mc.weight, mc.is_leaf, mc.level " +
+                    "  mc.descr, mc.node, mc.parent_node, mc.weight, mc.is_leaf, mc.level " +
                     "FROM model_calc mc " +
                     "WHERE mc.model_id = ?";
     private static final int SQL_BATCH_SIZE = 100;

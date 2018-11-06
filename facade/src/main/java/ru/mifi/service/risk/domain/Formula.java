@@ -45,10 +45,11 @@ public class Formula {
     private double result;
     private double inputValue;
     private String rule_id;
+    private String model_calc_id;
 
     // this is for constructor
     public Formula(String id, String descr, String formulaType, String calculationFormula, String a, String b,
-                   String c, String d, String _XB, String rule_id) {
+                   String c, String d, String _XB, String rule_id,String model_calc_id) {
         this.id = id;
         this.descr = descr;
         this.formulaType = FormulaTypeEnum.valueOf(formulaType);
@@ -60,6 +61,7 @@ public class Formula {
         this._XB = _XB;
         this.weight = 1;
         this.rule_id = rule_id;
+        this.model_calc_id = model_calc_id;
     }
 
     /**
