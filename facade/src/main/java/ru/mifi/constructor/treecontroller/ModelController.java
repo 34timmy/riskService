@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.mifi.constructor.model.DTO.ModelDTO;
+import ru.mifi.constructor.model.DTO.TreeNodeDTO;
 import ru.mifi.constructor.model.Model;
 import ru.mifi.constructor.service.ModelService;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/constructor/models")
-@Api(value = "Контроллер для конструктора моделей", description = "CRUD операции для модели,правила,формулы")
+@Api(value = "Контроллер для конструктора моделей", description = "CRUD операции для модели")
 public class ModelController {
 
     @Autowired
@@ -32,6 +33,12 @@ public class ModelController {
     @GetMapping(produces = "application/json")
     public List<Model> getAllModels() throws SQLException {
         return modelService.getAllModels();
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/toNodes",produces = "application/json")
+    public List<TreeNodeDTO> getAllTreeNodeDTOs() throws SQLException {
+        return modelService.getAllTreeNodeDTOs();
     }
 
     @PutMapping(consumes = "application/json")

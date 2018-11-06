@@ -21,8 +21,8 @@ public class ModelDTO implements Node {
     public ModelDTO(Model model) {
         this.data.put("name", model.getDescr());
         this.data.put("id", model.getId());
-        for (Rule rule : model.getRules()) {
-            children.add(new RuleDTO(rule));
-        }
+//        for (Rule rule : model.getRules()) {
+//            children.add(new RuleDTO(rule));
+//        }
     }
 }

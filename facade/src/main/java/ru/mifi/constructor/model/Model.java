@@ -10,5 +10,5 @@ import java.util.List;
 public class Model {
     private String id;
     private String descr;
-    private List<Rule> rules;
+    private List<ModelCalc> modelCalcs;
 }

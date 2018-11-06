@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mifi.constructor.model.DTO.ModelDTO;
+import ru.mifi.constructor.model.DTO.TreeNodeDTO;
 import ru.mifi.constructor.model.Model;
 import ru.mifi.constructor.repository.ConstructorMapper;
 
@@ -47,5 +48,10 @@ public class ModelService {
     @Transactional
     public void deleteModel(String id) {
         constructorMapper.deleteModel(id);
+    }
+
+    public List<TreeNodeDTO> getAllTreeNodeDTOs() throws SQLException {
+        TreeNodeDTO treeNodeDTO = new TreeNodeDTO(getAllModels());
+        return treeNodeDTO.getResultList();
     }
 }
