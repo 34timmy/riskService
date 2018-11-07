@@ -70,7 +70,7 @@ public class ExcelLoader {
         } catch (IOException e) {
             throw new ImportException("Ошибка при обработке файла: " + e.getMessage());
         } catch (SQLException e) {
-            throw new DatabaseException("Ошибка при работе с БД", e);
+            throw new DatabaseException("Ошибка при работе с БД: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ImportException("Ошибка при работе импорте данных", e);
         }

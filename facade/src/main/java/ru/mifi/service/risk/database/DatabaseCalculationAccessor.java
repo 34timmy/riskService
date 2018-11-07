@@ -78,9 +78,9 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                     "FROM model_calc mc " +
                     "WHERE mc.model_id = ?";
     private static final int SQL_BATCH_SIZE = 100;
-    private static final String SQL_UPDATE_WEIGHT = "UPDATE %s t1 set t1.weight = (select weight from model_calc mc where mc.node=t1.node)";
-    private static final String SQL_UPDATE_IS_LEAF = "UPDATE %s t1 set t1.is_leaf = (select is_leaf from model_calc mc where mc.node=t1.node)";
-    private static final String SQL_UPDATE_PARENT_NODE = "UPDATE %s t1 set t1.parent_node = (select parent_node from model_calc mc where mc.node=t1.node)";
+    private static final String SQL_UPDATE_WEIGHT = "UPDATE %s t1 set t1.weight = (select weight from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
+    private static final String SQL_UPDATE_IS_LEAF = "UPDATE %s t1 set t1.is_leaf = (select is_leaf from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
+    private static final String SQL_UPDATE_PARENT_NODE = "UPDATE %s t1 set t1.parent_node = (select parent_node from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
     private final PreparedStatement getModelCalcStmt;
     private final PreparedStatement getModelLeafsStmt;
     private final Statement getFuncParamsStmt;
@@ -259,7 +259,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
             }
             saveFormulaStmt.executeBatch();
         }
-        mergeData(tableName);
+        mergeData(tableName, key.getModelId());
         //Сохраняем данные в таблицу-маппинг результатов
         saveResultToMapperTableStmt.setString(1, key.getModelId());
         saveResultToMapperTableStmt.setString(2, key.getCompanyListId());
@@ -272,11 +272,11 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     }
 
     @SneakyThrows
-    private void mergeData(String tableName) {
+    private void mergeData(String tableName, String modelId) {
         try (Statement stmt = connection.createStatement()) {
-            stmt.execute(String.format(SQL_UPDATE_WEIGHT, tableName));
-            stmt.execute(String.format(SQL_UPDATE_IS_LEAF, tableName));
-            stmt.execute(String.format(SQL_UPDATE_PARENT_NODE, tableName));
+            stmt.execute(String.format(SQL_UPDATE_WEIGHT, tableName, modelId));
+            stmt.execute(String.format(SQL_UPDATE_IS_LEAF, tableName, modelId));
+            stmt.execute(String.format(SQL_UPDATE_PARENT_NODE, tableName, modelId));
         }
     }
 }
