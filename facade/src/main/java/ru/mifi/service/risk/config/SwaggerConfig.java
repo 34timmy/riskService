@@ -20,6 +20,7 @@ public class SwaggerConfig {
                 .paths(PathSelectors.regex(
                         ".*getData.*"
                         + "|.*import.*"
+                        + "|.*export.*"
                         + "|.*perform.*"
                         + "|.*2nd_keyword.*"
 
