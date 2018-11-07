@@ -62,15 +62,19 @@ public interface ConstructorMapper {
     void deleteRule(String id);
 
     //  -------------------- Formula Repository --------------------
+//    @Select("SELECT f.id,f.descr,f.calculation," +
+//            "f.formula_type,f.A,f.B,f.C,f.D,f.XB,f.rule_id,f.model_calc_id from formula f where f.model_calc_id = #{id}")
+//    List<Formula> getFormulas(String id);
+
     @Select("SELECT f.id,f.descr,f.calculation," +
-            "f.formula_type,f.A,f.B,f.C,f.D,f.XB,f.rule_id,f.model_calc_id from formula f where f.model_calc_id = #{id}")
-    List<Formula> getFormulas(String id);
+            "f.formula_type,f.A,f.B,f.C,f.D,f.XB,f.rule_id from formula f")
+    List<Formula> getAllFormulas();
 
     @Update("UPDATE formula f SET f.descr=#{descr} where f.id=#{id}")
     void updateFormula(Formula formula);
 
-    @Insert("INSERT INTO formula(id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, RULE_ID,MODEL_CALC_ID)" +
-            " values (#{id},#{descr},#{calculationFormula},#{formulaType},#{a},#{b},#{c},#{d},#{_XB},#{rule_id},${model_calc_id}) ")
+    @Insert("INSERT INTO formula(id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, RULE_ID)" +
+            " values (#{id},#{descr},#{calculationFormula},#{formulaType},#{a},#{b},#{c},#{d},#{_XB},#{rule_id}) ")
     void createFormula(Formula formula);
 
 //    TODO DELETE  CASCADE
@@ -88,8 +92,8 @@ public interface ConstructorMapper {
 //                    @Result(property = "level", column = "level"),
 //                    @Result(property = "parentNode", column = "parent_node"),
 //                    @Result(property = "isLeaf", column = "is_leaf"),
-                    @Result(property = "formulas", javaType = List.class, column = "node",
-                            many = @Many(select = "getFormulas"))
+//                    @Result(property = "formulas", javaType = List.class, column = "node",
+//                            many = @Many(select = "getFormulas"))
             }
     )
         List<ModelCalc> getModelCalcs(String id);

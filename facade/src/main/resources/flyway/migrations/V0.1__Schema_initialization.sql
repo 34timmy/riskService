@@ -78,17 +78,13 @@ CREATE TABLE formula (
   d             VARCHAR2 (4000) NOT NULL,
   xb            VARCHAR2 (4000) NOT NULL,
   comments      VARCHAR2 (4000) NOT NULL,
-  rule_id       VARCHAR2 (255),
-  model_calc_id VARCHAR2 (255)
+  rule_id       VARCHAR2 (255)
 );
 ALTER TABLE formula
   ADD CONSTRAINT formula_pk PRIMARY KEY (id);
 -- ALTER TABLE formula ADD CONSTRAINT node_fk FOREIGN KEY (node) REFERENCES model_calc (node);
 -- ALTER TABLE formula
 --   ADD CONSTRAINT rule_fk FOREIGN KEY (rule_id) REFERENCES rule (id);
-
-ALTER TABLE formula
-  ADD CONSTRAINT model_calc_fk FOREIGN KEY (model_calc_id) REFERENCES model_calc (node);
 
 CREATE TABLE formula_params (
   node       VARCHAR2 (255) NOT NULL,

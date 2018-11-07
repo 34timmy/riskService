@@ -3,6 +3,7 @@ import {CompanyModel} from '../../model/company.model';
 import {CompanyService} from '../../service/company.service';
 import {CompanyEditComponent} from './company-edit.component';
 import {SelectItem} from "../../../../node_modules/primeng/api";
+import {CompanySaveComponent} from "./company-save.component";
 
 @Component({
   templateUrl: './company-picklist.html',
@@ -43,6 +44,9 @@ export class CompanyPicklistComponent implements OnInit {
 
   @ViewChild(CompanyEditComponent)
   private companyEditChild: CompanyEditComponent;
+
+  @ViewChild(CompanySaveComponent)
+  private companySaveChild: CompanySaveComponent;
 
   ngOnInit() {
     this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);

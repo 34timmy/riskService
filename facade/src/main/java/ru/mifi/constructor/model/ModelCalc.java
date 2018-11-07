@@ -16,5 +16,4 @@ public class ModelCalc {
     private double weight;
     private int level;
     private boolean is_leaf;
-    private List<Formula> formulas;
 }

@@ -14,18 +14,23 @@ VALUES (1, 'Model 1'),
        (2, 'Model 2');
 
 INSERT INTO MODEL_CALC (MODEL_ID, DESCR, NODE, PARENT_NODE, WEIGHT, LEVEL, IS_LEAF)
-values (1, 'Calc 1', 3, null, 4, 1, 1),
-       (1, 'Calc 2', 4, 3, 4, 2, 1),
-       (1, 'Calc 3', 5, 3, 4, 2, 1);
+values (1, 'Agr 1', 3, null, 4, 1, 0),
+       (1, 'Agr 1.1', 5, 3, 4, 2, 0),
+       (1, 'Agr 1.2', 7, 3, 4, 2, 0),
+       (1, 'Formula 1', 8, 5, 4, 2, 1),
+       (1, 'Formula 2', 9, 5, 4, 2, 1),
+       (2, 'Agr 2', 4, null, 4, 1, 0),
+       (2, 'Agr 2.1', 6, 4, 4, 2, 0),
+       (2, 'Formula 3', 10, 6, 4, 2, 1);
 --
 -- INSERT INTO rule (ID, NAME, MODEL_ID)
 -- VALUES (1, 'rule 1', '1'),
 --        (2, 'rule_2', '2'),
 --        (3, 'rule_3', '2');
-INSERT into FORMULA (id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, COMMENTS, RULE_ID, model_calc_id)
-VALUES (6, 'Formula1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm', 1, 3),
-       (7, 'Formula2', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm', 2, 4)
-;
+INSERT into FORMULA (id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, COMMENTS, RULE_ID)
+VALUES (8, 'Formula 1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm', 1),
+       (9, 'Formula 2', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm', 2),
+       (10, 'Formula 3', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm', 2);
 -- INSERT INTO BUSINESS_PARAM (PARAM_CODE, DESCRIPTION)
 -- VALUES (10, 'Code 10');
 -- INSERT INTO FORMULA_PARAMS (NODE, PARAM_CODE)

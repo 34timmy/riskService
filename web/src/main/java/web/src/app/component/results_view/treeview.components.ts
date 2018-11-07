@@ -30,7 +30,7 @@ export class TreeViewComponent implements OnInit {
     this.treeService.getTheBoolean().subscribe(value => {
       this.modelsLoaded = of(value);
     });
-    this.treemodels = this.treeService.getModelsAndConvert();
+    this.treemodels = this.treeService.getResults();
     this.cols = [
       {field: 'id', header: 'Id'},
       {field: 'name', header: 'Name'},

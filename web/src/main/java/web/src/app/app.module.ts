@@ -38,6 +38,7 @@ import {NotificationService} from "./shared/notification.service";
 import {CustomErrorHandler} from "./shared/custom.errorhandler";
 import {RuleEditComponent} from "./component/rule/rule-edit.component";
 import {ModelcalcEditComponent} from "./component/modelcalc/modelcalc-edit.component";
+import {CompanySaveComponent} from "./component/company-picklist/company-save.component";
 
 // import {D3testComponent} from "./component/treeview/d3test.component";
 
@@ -53,7 +54,8 @@ import {ModelcalcEditComponent} from "./component/modelcalc/modelcalc-edit.compo
     Node,
     ModelEditComponent,
     RuleEditComponent,
-    ModelcalcEditComponent
+    ModelcalcEditComponent,
+    CompanySaveComponent
 
   ],
   imports: [

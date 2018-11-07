@@ -51,6 +51,23 @@ export class TreeService {
     return this.http.get(basePath + constructorPath + modelPath, reqOptions);
   }
 
+  private getCalcResultDTOs() {
+    return this.http.get(basePath + "/getData" + "/byTable"+"", reqOptions);
+  }
+
+  getResults()
+  {
+    this.modelsNodes = [];
+    this.setTheBoolean(false);
+    this.getCalcResultDTOs().toPromise().then(res => {
+      this.modelsToTreeNode(res.json());
+      this.setTheBoolean(true);
+    });
+    return this.modelsNodes;
+
+  }
+
+
   getModelsAndConvert() {
     this.modelsNodes = [];
     this.setTheBoolean(false);
@@ -60,6 +77,7 @@ export class TreeService {
     });
     return this.modelsNodes;
   }
+
 
   getTheBoolean(): Observable<boolean> {
     return this.modelsLoaded.asObservable();

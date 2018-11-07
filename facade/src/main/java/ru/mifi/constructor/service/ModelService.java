@@ -7,6 +7,7 @@ import ru.mifi.constructor.model.DTO.ModelDTO;
 import ru.mifi.constructor.model.DTO.TreeNodeDTO;
 import ru.mifi.constructor.model.Model;
 import ru.mifi.constructor.repository.ConstructorMapper;
+import ru.mifi.service.risk.domain.Formula;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -51,7 +52,10 @@ public class ModelService {
     }
 
     public List<TreeNodeDTO> getAllTreeNodeDTOs() throws SQLException {
-        TreeNodeDTO treeNodeDTO = new TreeNodeDTO(getAllModels());
+        List<Formula> allFormulas = constructorMapper.getAllFormulas();
+        List<Model> allModels = getAllModels();
+        TreeNodeDTO treeNodeDTO = new TreeNodeDTO(allModels,allFormulas);
+
         return treeNodeDTO.getResultList();
     }
 }

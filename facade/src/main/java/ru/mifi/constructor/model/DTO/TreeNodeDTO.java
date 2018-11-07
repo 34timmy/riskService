@@ -6,10 +6,9 @@ import ru.mifi.constructor.model.Model;
 import ru.mifi.constructor.model.ModelCalc;
 import ru.mifi.service.risk.domain.Formula;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class TreeNodeDTO {
         }
     }
 
-    public TreeNodeDTO(List<ModelCalc> modelCalcList, ModelCalc modelCalc) {
+    public TreeNodeDTO(List<ModelCalc> modelCalcList, ModelCalc modelCalc, Map<String, Formula> formulas) {
         this.guid = modelCalc.getNode();
         if ((modelCalc.getParent_node()) != null) {
             this.parentId = modelCalc.getParent_node();
@@ -47,13 +46,13 @@ public class TreeNodeDTO {
         }
         this.displayName = modelCalc.getDescr();
         this.type = modelCalc.getClass().getSimpleName().toLowerCase();
-        this.data = modelCalc;
+
+        if (modelCalc.is_leaf()) {
+            this.data = formulas.get(this.guid);
+        }
         for (ModelCalc mc : modelCalcList) {
             if (this.getGuid().equals(mc.getParent_node()))
                 this.children.add(mc.getNode());
-        }
-        for (Formula formula : modelCalc.getFormulas()) {
-            this.children.add(formula.getId());
         }
     }
 
@@ -65,15 +64,13 @@ public class TreeNodeDTO {
         this.data = formula;
     }
 
-    public TreeNodeDTO(List<Model> models) {
+    public TreeNodeDTO(List<Model> models, List<Formula> formulas) {
         resultList = new ArrayList<TreeNodeDTO>();
         for (Model model : models) {
             resultList.add(new TreeNodeDTO(model));
             for (ModelCalc modelCalc : model.getModelCalcs()) {
-                resultList.add(new TreeNodeDTO(model.getModelCalcs(), modelCalc));
-                for (Formula formula : modelCalc.getFormulas()) {
-                    resultList.add(new TreeNodeDTO(formula));
-                }
+                resultList.add(new TreeNodeDTO(model.getModelCalcs(), modelCalc,
+                        formulas.stream().collect(Collectors.toMap(Formula::getId, Function.identity()))));
             }
         }
     }

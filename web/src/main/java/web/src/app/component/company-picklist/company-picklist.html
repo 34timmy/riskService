@@ -28,8 +28,8 @@
   </div>
   <div class="ui-g-12 ui-md-4">
     <div class="ui-inputgroup">
-      <span class="ui-inputgroup-addon"><i class="fa fa-list-ol"> Год</i></span>
-      <p-dropdown [options]="stages" [(ngModel)]="selectedStage" [filter]="true"
+      <span class="ui-inputgroup-addon"><i class="fa fa-calendar"> Год</i></span>
+      <p-dropdown [options]="years" [(ngModel)]="selectedYear" [filter]="true"
                   [style]="{'width':'150px'}">
         <ng-template let-item pTemplate="selectedItem">
           <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
@@ -67,8 +67,14 @@
       <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>ИНН:</b> {{company.INN}}</div>
     </div>
   </ng-template>
+
 </p-pickList>
 <footer>
+  <div class="ui-helper-clearfix" style="width:100%">
+    <button type="button" pButton icon="fa fa-save" style="float:right;margin: 5px 0px 5px 5px "
+            (click)="showCreateModal()" label="Сохранить список компаний">
+    </button>
+  </div>
   <div class="ui-helper-clearfix" style="width:100%">
     <button type="button" pButton icon="fa fa-calculator" style="float:right"
             (click)="showCreateModal()" label="Рассчитать">
