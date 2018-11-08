@@ -115,8 +115,9 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
     private void setNullableString(PreparedStatement stmtToSet, int position, String strValue) {
         if (strValue == null) {
             stmtToSet.setNull(position, Types.VARCHAR);
+        } else {
+            stmtToSet.setString(position, strValue);
         }
-        stmtToSet.setString(3, strValue);
 
     }
 

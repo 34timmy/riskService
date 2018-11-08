@@ -34,6 +34,20 @@ public class DatabaseDdlAccessor {
     private static final String SQL_INSERT_RESULT_INFO = "INSERT INTO result_data_mapper (model_id, company_list_id, table_name) VALUES (?,?,?)";
 
     /**
+     * Логика формирования названия таблицы с данными расчета
+     * @param key ключ данных
+     * @return имя таблицы
+     */
+    public static String getTableNameByDataKey(CalculationParamKey key) {
+        return ("calc_result_"
+                + key.getModelId()
+                + "_" + key.getCompanyListId()
+                + "_" + key.getAllCompaniesListId()
+                + "_" + key.getYear()
+                + "_" + LocalDateTime.now().toString())
+                .replaceAll("[\\-\\:\\.]", "");
+    }
+    /**
      * Создает таблицу для сохранения результатов расчета.
      *
      * @param key  объект-ключ для параметров расчета
@@ -47,13 +61,7 @@ public class DatabaseDdlAccessor {
         try (
                 Statement prepStmt = conn.createStatement();
         ) {
-            String tableName = ("calc_result_"
-                    + key.getModelId()
-                    + "_" + key.getCompanyListId()
-                    + "_" + key.getAllCompaniesListId()
-                    + "_" + key.getYear()
-                    + "_" + LocalDateTime.now().toString())
-                    .replaceAll("[\\-\\:\\.]", "");
+            String tableName = getTableNameByDataKey(key);
             prepStmt.execute(String.format(
                     SQL_CREATE_TEMP_TABLE,
                     tableName
