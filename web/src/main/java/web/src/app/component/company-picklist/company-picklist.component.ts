@@ -29,6 +29,7 @@ export class CompanyPicklistComponent implements OnInit {
   selectedYear: string;
 
   constructor(private companyService: CompanyService) {
+
     this.models =
       [{label: '1', value: '1'},
         {label: '2', value: '2'},
@@ -54,6 +55,7 @@ export class CompanyPicklistComponent implements OnInit {
 
   ngOnInit() {
     this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
+    this.companyListChild.setAllCompanyList(this.source);
     this.target = [];
   }
 
@@ -72,7 +74,7 @@ export class CompanyPicklistComponent implements OnInit {
   }
 
   showSaveModal(target) {
-    this.companySaveChild.setCompanyList(target);
+    this.companySaveChild.setSelectedCompanyList(target);
     this.companySaveChild.showToggle = true;
   }
 

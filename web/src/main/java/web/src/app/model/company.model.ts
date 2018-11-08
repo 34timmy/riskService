@@ -1,12 +1,12 @@
 export class CompanyModel {
 
   id: number;
-  name: string;
+  descr: string;
   INN: string;
 
   constructor(id: number, name: string, INN: string) {
     this.id = id;
-    this.name = name;
+    this.descr = name;
     this.INN = INN;
   }
 }

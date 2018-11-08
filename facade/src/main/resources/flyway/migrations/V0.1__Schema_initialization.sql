@@ -117,9 +117,11 @@ CREATE TABLE result_data_mapper (
 ALTER TABLE result_data_mapper
   ADD CONSTRAINT res_data_mapper_model_fk FOREIGN KEY (model_id) REFERENCES model (id);
 ALTER TABLE result_data_mapper
-  ADD CONSTRAINT company_list_fk FOREIGN KEY (company_list_id) REFERENCES company_list (id);
+  ADD CONSTRAINT company_list_fk FOREIGN KEY (company_list_id)
+REFERENCES company_list (id);
 ALTER TABLE result_data_mapper
-  ADD CONSTRAINT all_company_list_id_fk FOREIGN KEY (all_company_list_id) REFERENCES company_list (id);
+  ADD CONSTRAINT all_company_list_id_fk FOREIGN KEY (all_company_list_id)
+REFERENCES company_list (id);
 
 
 CREATE TABLE normative_parameters (

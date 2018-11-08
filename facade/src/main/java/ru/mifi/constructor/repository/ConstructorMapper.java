@@ -2,10 +2,7 @@ package ru.mifi.constructor.repository;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
-import ru.mifi.constructor.model.Company;
-import ru.mifi.constructor.model.Model;
-import ru.mifi.constructor.model.ModelCalc;
-import ru.mifi.constructor.model.Rule;
+import ru.mifi.constructor.model.*;
 import ru.mifi.service.risk.domain.Formula;
 
 import java.sql.SQLException;
@@ -86,14 +83,6 @@ public interface ConstructorMapper {
     @Results(
             {
                     @Result(id = true, property = "node", column = "node"),
-//                    @Result(property = "descr", column = "descr"),
-//                    @Result(property = "modelId", column = "model_id"),
-//                    @Result(property = "weight", column = "weight"),
-//                    @Result(property = "level", column = "level"),
-//                    @Result(property = "parentNode", column = "parent_node"),
-//                    @Result(property = "isLeaf", column = "is_leaf"),
-//                    @Result(property = "formulas", javaType = List.class, column = "node",
-//                            many = @Many(select = "getFormulas"))
             }
     )
         List<ModelCalc> getModelCalcs(String id);
@@ -107,4 +96,10 @@ public interface ConstructorMapper {
 
     @Delete("Delete from model_calc mc where mc.node = #{node}")
     void deleteModelCalc(String id);
+
+//        -------------------- CompanyList Repository --------------------
+
+    @Select("SELECT * from company_list")
+    List<CompanyList> getAllCompanyLists();
 }
+

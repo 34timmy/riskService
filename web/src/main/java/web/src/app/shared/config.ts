@@ -6,10 +6,8 @@ export const modelPath = '/models';
 export const modelCalcPath = '/modelCalcs';
 export const rulePath = '/rules';
 export const formulaPath = '/formulas';
-export const profilePath = '/profile';
-export const registerPath = '/register';
-export const companiesPath = '/admin/users';
-export const restaurantPath = '/profile/restaurants';
+export const companiesPath = '/company';
+export const companyLists = '/companyLists';
 export const i18nPath = '/i18n';
 
 

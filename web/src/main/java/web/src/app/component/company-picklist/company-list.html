@@ -1,7 +1,7 @@
 <p-dialog header="Изменение модели" [(visible)]="showToggle"
           [modal]="true" [width]="700" [maximizable]="true">
   <div class="modal-body">
-    <p-treeTable [value]="companiesLists" [columns]="cols" selectionMode="single" [(selection)]="selectedNode"
+    <p-treeTable [value]="companiesListNodes" [columns]="cols" selectionMode="single" [(selection)]="selectedNode"
     >
       <ng-template pTemplate="header" let-columns>
         <tr>
@@ -21,7 +21,7 @@
             {{rowData.id}}
           </td>
           <td>
-            {{rowData.name}}
+            {{rowData.descr || rowData.name }}
           </td>
           <td>
             <p-button type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px" styleClass="ui-button-success"

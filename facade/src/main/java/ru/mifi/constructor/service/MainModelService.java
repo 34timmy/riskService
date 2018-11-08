@@ -3,6 +3,7 @@ package ru.mifi.constructor.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mifi.constructor.model.CompanyList;
 import ru.mifi.constructor.model.DTO.ModelDTO;
 import ru.mifi.constructor.model.DTO.TreeNodeDTO;
 import ru.mifi.constructor.model.Model;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class ModelService {
+public class MainModelService {
 
     @Autowired
     ConstructorMapper constructorMapper;
@@ -54,8 +55,12 @@ public class ModelService {
     public List<TreeNodeDTO> getAllTreeNodeDTOs() throws SQLException {
         List<Formula> allFormulas = constructorMapper.getAllFormulas();
         List<Model> allModels = getAllModels();
-        TreeNodeDTO treeNodeDTO = new TreeNodeDTO(allModels,allFormulas);
+        TreeNodeDTO treeNodeDTO = new TreeNodeDTO(allModels, allFormulas);
 
         return treeNodeDTO.getResultList();
+    }
+
+    public List<CompanyList> getAllCompanyLists() throws SQLException {
+        return constructorMapper.getAllCompanyLists();
     }
 }

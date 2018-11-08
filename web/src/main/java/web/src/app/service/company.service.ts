@@ -3,7 +3,14 @@ import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
 import {of} from 'rxjs';
-import {reqOptions, basePath, reqOptionsJson, registerPath, companiesPath} from '../shared/config';
+import {
+  reqOptions,
+  basePath,
+  reqOptionsJson,
+  companiesPath,
+  constructorPath,
+  companyLists
+} from '../shared/config';
 import {CompanyModel} from '../model/company.model';
 
 
@@ -14,9 +21,6 @@ export class CompanyService {
   constructor(private http: Http) {
   }
 
-  registerCompany(value: CompanyModel): Observable<Response> {
-    return this.http.post(basePath + registerPath, JSON.stringify(value), reqOptionsJson);
-  }
 
 
   getCompanies(): Observable<CompanyModel[]> {
@@ -58,11 +62,16 @@ export class CompanyService {
 
   createCompanyList(name, companies) {
     //TODO create PAth
-    this.http.post(basePath+"",JSON.stringify(name,companies),reqOptionsJson);
+    this.http.post(basePath + "", JSON.stringify(name, companies), reqOptionsJson);
   }
 
   updateCompanyList(name, companies) {
 //TODO create PAth
-    this.http.put(basePath+"",JSON.stringify(name,companies),reqOptionsJson);
+    this.http.put(basePath + "", JSON.stringify(name, companies), reqOptionsJson);
+  }
+
+  getAllCompanyLists() {
+    return this.http.get(basePath + constructorPath + companyLists, reqOptions);
+
   }
 }
