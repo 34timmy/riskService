@@ -60,6 +60,7 @@ export class CompanyPicklistComponent implements OnInit {
   }
 
   private reloadCompanies() {
+    //TODO subscribe again?
     this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
   }
 
@@ -79,6 +80,7 @@ export class CompanyPicklistComponent implements OnInit {
   }
 
   showCompanyList() {
+    this.companyListChild.reloadCompanyLists();
     this.companyListChild.showToggle = true;
   }
 

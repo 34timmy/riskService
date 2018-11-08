@@ -1,7 +1,9 @@
-import {Component, Output, EventEmitter, OnInit} from '@angular/core';
+import {Component, Output, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CompanyModel} from '../../model/company.model';
 import {CompanyService} from "../../service/company.service";
+import {MessageService} from "../../../../node_modules/primeng/api";
+import {CompanyListComponent} from "./company-list.component";
 
 @Component({
   templateUrl: './company-save.html',
@@ -13,19 +15,29 @@ export class CompanySaveComponent implements OnInit {
   allCompanies = [];
   selectedCompanies = [];
   text: string;
+  companyLists;
+
 
   @Output()
   onSaveEvent: EventEmitter<CompanyModel> = new EventEmitter<CompanyModel>();
+  @Output()
+  onSaveCompanyListEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor(private companyService: CompanyService) {
+  @ViewChild(CompanyListComponent)
+  private companyListChild: CompanyListComponent;
+
+  constructor(private companyService: CompanyService,
+              private notificationService: MessageService
+  ) {
   }
 
   ngOnInit(): void {
   }
 
   search(event) {
-    //TODO
-    this.autoCompleteResults = [{
+    //TODO load
+
+    this.companyLists = [{
       id: 1,
       companiesIds: ['1;2;3'],
       descr: 'Список 1'
@@ -39,21 +51,71 @@ export class CompanySaveComponent implements OnInit {
         id: 3,
         companiesIds: ['1;'],
         descr: 'Список 11'
-      }].map(val => {
-      return val.descr
-    })
+      }];
+
+    //TODO list from service
     // this.companyService.getAllCompanyLists().pipe(map(data => {
-    //   this.autoCompleteResults = data;
+    //   this.companyLists = data;
     // }));
+    this.autoCompleteResults = this.companyLists.map(val => {
+      return val.descr
+    });
   }
 
-  onSaveCompanyList(name) {
-    console.log('text', name)
-    if (this.autoCompleteResults.indexOf(name) !== -1) {
-      this.companyService.updateCompanyList(name, this.selectedCompanies);
+  onSaveCompanyListName(name: string) {
+    if (name === undefined || name === '') {
+      this.errorMessage({
+        cause: 'Введите название списка!',
+        url: '',
+        detail: ''
+      })
     }
-    else {
-      this.companyService.createCompanyList(name, this.selectedCompanies);
+    if (this.selectedCompanies === undefined || this.selectedCompanies.length === 0)
+    {
+      this.errorMessage({
+        cause: 'Список выбранных компаний пуст!',
+        url: '',
+        detail: ''
+      })
+    }else
+    {
+      let collectToCompanyList = this.collectToCompanyList(name, this.selectedCompanies);
+      if (this.autoCompleteResults.indexOf(name) !== -1) {
+        //TODO set id from existing lists
+        this.companyService.updateCompanyList(collectToCompanyList).subscribe(
+          res => {
+          },
+          err => {
+          }
+        );
+
+      }
+      else {
+        this.companyService.createCompanyList(collectToCompanyList).subscribe(
+          res => {
+            this.companyListChild.reloadCompanyLists();
+            this.closeModal();
+            this.successMessage(collectToCompanyList, 'создан.');
+          },
+          err => {
+            //TODO delete
+            this.companyListChild.reloadCompanyLists();
+            this.closeModal();
+            // this.errorMessage(err.json());
+          }
+        );
+      }
+    }
+  }
+
+
+  private collectToCompanyList(name, companies) {
+    return {
+      id: null,
+      descr: name,
+      companiesIds: companies.map(val => {
+        return val.id
+      }).toString()
     }
   }
 
@@ -63,6 +125,26 @@ export class CompanySaveComponent implements OnInit {
 
   setAllCompanyList(companies) {
     this.allCompanies = companies;
+  }
+
+  closeModal() {
+    this.showToggle = false;
+  }
+
+  successMessage(node, action) {
+    this.notificationService.add({
+      severity: 'success',
+      summary: 'Запись "' + node.descr + '" ' + action,
+      detail: JSON.stringify(node, null, 2)
+    })
+  }
+
+  errorMessage(error) {
+    this.notificationService.add({
+      severity: 'error',
+      summary: error.cause,
+      detail: error.url + '\n' + error.detail
+    })
   }
 
 }

@@ -49,12 +49,39 @@ export class CompanyListComponent implements OnInit {
         descr: 'Список 11'
       }];
 
+    //TODO list from service
     this.companiesListNodes = this.resultsWithCompanies(this.companyLists);
     // this.companyService.getAllCompanyLists().pipe(map(data => {
     //   this.companyLists = data;
     // }));
   }
 
+  reloadCompanyLists() {
+    this.companyLists = [{
+      id: 1,
+      companiesIds: ['1;2;3'],
+      descr: 'Список 1'
+    },
+      {
+        id: 2,
+        companiesIds: ['1;2;3;4'],
+        descr: 'Список 2'
+      },
+      {
+        id: 3,
+        companiesIds: ['1;'],
+        descr: 'Список 11'
+      },
+      {
+        id: 4,
+        companiesIds: ['2;3'],
+        descr: 'Список 23'
+      }];
+    this.companiesListNodes = this.resultsWithCompanies(this.companyLists);
+    // this.companyService.getAllCompanyLists().pipe(map(data => {
+    //   this.companyLists = data;
+    // }));
+  }
 
   onEdit(data) {
 
@@ -91,10 +118,6 @@ export class CompanyListComponent implements OnInit {
             .map(Number).includes(val.id)).map(val => {
           return {data: val}
         });
-      // list.companiesIds.toString().split(";").forEach(id => {
-      //   companyObjs.push(this.allCompanies.find(x =>
-      //     x.id === id))
-      // });
 
       companyListsWithCompanies.push({
         data: {

@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
 import {of} from 'rxjs';
-import {reqOptions, basePath, reqOptionsJson, registerPath, companiesPath} from '../shared/config';
+import {reqOptions, basePath, reqOptionsJson, companiesPath} from '../shared/config';
 import {ParamsModel} from '../model/params.model';
 
 
@@ -14,9 +14,6 @@ export class ParamsService {
   constructor(private http: Http) {
   }
 
-  registerParams(value: ParamsModel): Observable<Response> {
-    return this.http.post(basePath + registerPath, JSON.stringify(value), reqOptionsJson);
-  }
 
 
   getParams(): Observable<ParamsModel[]> {

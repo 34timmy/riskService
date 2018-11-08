@@ -22,7 +22,6 @@ export class CompanyService {
   }
 
 
-
   getCompanies(): Observable<CompanyModel[]> {
     // return this.http.get(basePath + companiesPath, reqOptions).pipe(map(res => res.json()));
     const companyModel = new CompanyModel(1, 'Company', '9999');
@@ -60,17 +59,17 @@ export class CompanyService {
     return this.http.post(basePath + companiesPath, JSON.stringify(company), reqOptionsJson);
   }
 
-  createCompanyList(name, companies) {
+  createCompanyList(companiesList): Observable<Response> {
     //TODO create PAth
-    this.http.post(basePath + "", JSON.stringify(name, companies), reqOptionsJson);
+    return this.http.post(basePath + "", JSON.stringify(companiesList), reqOptionsJson);
   }
 
-  updateCompanyList(name, companies) {
+  updateCompanyList(companiesList): Observable<Response> {
 //TODO create PAth
-    this.http.put(basePath + "", JSON.stringify(name, companies), reqOptionsJson);
+    return this.http.put(basePath + "", JSON.stringify(companiesList), reqOptionsJson);
   }
 
-  getAllCompanyLists() {
+  getAllCompanyLists(): Observable<Response> {
     return this.http.get(basePath + constructorPath + companyLists, reqOptions);
 
   }

@@ -36,7 +36,7 @@ public interface ConstructorMapper {
     @Delete("Delete from model m where m.id = #{id}")
     void deleteModel(String id);
 
-//        -------------------- Rule Repository --------------------
+    //        -------------------- Rule Repository --------------------
     @Select("SELECT * from rule r where r.model_id = #{id}")
     @Results(
             {
@@ -74,18 +74,18 @@ public interface ConstructorMapper {
             " values (#{id},#{descr},#{calculationFormula},#{formulaType},#{a},#{b},#{c},#{d},#{_XB},#{rule_id}) ")
     void createFormula(Formula formula);
 
-//    TODO DELETE  CASCADE
+    //    TODO DELETE  CASCADE
     @Delete("Delete from formula f where f.node = #{id}")
     void deleteFormula(String id);
 
-//        -------------------- ModelCalc Repository --------------------
+    //        -------------------- ModelCalc Repository --------------------
     @Select("SELECT * from model_calc mc where mc.model_id = #{id}")
     @Results(
             {
                     @Result(id = true, property = "node", column = "node"),
             }
     )
-        List<ModelCalc> getModelCalcs(String id);
+    List<ModelCalc> getModelCalcs(String id);
 
     @Update("UPDATE model_calc mc SET mc.descr=#{descr}, mc.weight=#{weight} where mc.node=#{node}")
     void updateModelCalc(ModelCalc modelCalc);
@@ -101,5 +101,9 @@ public interface ConstructorMapper {
 
     @Select("SELECT * from company_list")
     List<CompanyList> getAllCompanyLists();
+
+    @Insert("INSERT INTO company_list(id,descr,company_ids)" +
+            " values (#(id),#(descr),#(companiesIds)")
+    void createCompanyList(CompanyList companyList);
 }
 

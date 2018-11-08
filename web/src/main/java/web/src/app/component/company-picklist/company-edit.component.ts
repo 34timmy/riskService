@@ -30,7 +30,7 @@ export class CompanyEditComponent implements OnInit {
   fillCompanyForm(company: CompanyModel) {
     this.companyForm.patchValue({
       id: company.id,
-      name: company.name,
+      name: company.descr,
       INN: company.INN
     });
   }

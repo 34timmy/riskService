@@ -1,11 +1,10 @@
-<div *ngIf="showToggle">
   <p-dialog [(visible)]=showToggle [minWidth]="600" [contentStyle]="{'overflow':'visible'}">
-    <h3>Введите название списка</h3>
-    <p-autoComplete  [(ngModel)]="text" [suggestions]="autoCompleteResults"
+    <h3 >Введите название списка</h3>
+    <p-autoComplete [size]="50"  [(ngModel)]="text" [suggestions]="autoCompleteResults"
                     (completeMethod)="search($event)"></p-autoComplete>
       <p-footer>
-        <p-button type="button" style="margin: 5px 5px 5px 5px" (click)="onSaveCompanyList(text)"
+        <p-button type="button" style="margin: 5px 5px 5px 5px" (click)="onSaveCompanyListName(text)"
                   label="Сохранить"></p-button>
       </p-footer>
   </p-dialog>
-</div>
+  <app-company-list></app-company-list>

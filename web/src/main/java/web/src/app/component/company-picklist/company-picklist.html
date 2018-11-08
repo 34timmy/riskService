@@ -78,4 +78,14 @@
 </footer>
 <app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
 <app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
-<app-company-save (onSaveEvent)="showCompanyList()"></app-company-save>
+<app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
+
+<p-toast position="top-center">
+  <ng-template let-message pTemplate="message">
+    <div style="text-align:center">
+      <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+      <h4>{{message.summary}}</h4>
+      <p>{{message.detail}}</p>
+    </div>
+  </ng-template>
+</p-toast>

@@ -63,4 +63,8 @@ public class MainModelService {
     public List<CompanyList> getAllCompanyLists() throws SQLException {
         return constructorMapper.getAllCompanyLists();
     }
+
+    public void createCompanyList(CompanyList companyList) {
+        constructorMapper.createCompanyList(companyList);
+    }
 }
