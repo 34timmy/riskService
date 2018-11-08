@@ -4,6 +4,7 @@ import {CompanyService} from '../../service/company.service';
 import {CompanyEditComponent} from './company-edit.component';
 import {SelectItem} from "../../../../node_modules/primeng/api";
 import {CompanySaveComponent} from "./company-save.component";
+import {CompanyListComponent} from "./company-list.component";
 
 @Component({
   templateUrl: './company-picklist.html',
@@ -45,6 +46,9 @@ export class CompanyPicklistComponent implements OnInit {
   @ViewChild(CompanyEditComponent)
   private companyEditChild: CompanyEditComponent;
 
+  @ViewChild(CompanyListComponent)
+  private companyListChild: CompanyListComponent;
+
   @ViewChild(CompanySaveComponent)
   private companySaveChild: CompanySaveComponent;
 
@@ -57,15 +61,34 @@ export class CompanyPicklistComponent implements OnInit {
     this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
   }
 
+  onEditCompany(company) {
+    this.showCreateModal();
+    this.companyEditChild.fillCompanyForm(company);
+  }
+
   showCreateModal() {
     this.companyEditChild.resetForm();
     this.companyEditChild.showToggle = true;
   }
 
-  onEditCompany(company) {
-    this.showCreateModal();
-    this.companyEditChild.fillCompanyForm(company);
+  showSaveModal(target) {
+    this.companySaveChild.setCompanyList(target);
+    this.companySaveChild.showToggle = true;
   }
+
+  showCompanyList() {
+    this.companyListChild.showToggle = true;
+  }
+
+
+  onSaveCompanyList(company) {
+    //TODO
+    // this.showCreateModal();
+    // this.companyListChild.fillCompanyForm(company);
+  }
+
+
+
 
   onSave(company: CompanyModel) {
     this.companyService.saveCompany(company)

@@ -1,0 +1,37 @@
+<p-dialog header="Изменение модели" [(visible)]="showToggle"
+          [modal]="true" [width]="700" [maximizable]="true">
+  <div class="modal-body">
+    <p-treeTable [value]="companiesLists" [columns]="cols" selectionMode="single" [(selection)]="selectedNode"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [ttSortableColumn]="col.field">{{col.header}}
+            <p-treeTableSortIcon [field]="col.field"></p-treeTableSortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body" let-rowNode let-rowData="rowData"
+        pDraggable="dd" (onDragEnd)="dragEnd($event,rowData)"
+        (onDragStart)="dragStart($event,rowData)">
+        <tr [ttSelectableRow]="rowNode">
+
+          <td>
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            {{rowData.id}}
+          </td>
+          <td>
+            {{rowData.name}}
+          </td>
+          <td>
+            <p-button type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px" styleClass="ui-button-success"
+                      (click)="onEdit(rowData)"></p-button>
+            <p-button icon="fa fa-trash" style="margin: 5px 5px 5px 5px" styleClass="ui-button-danger "
+                      (click)="onDelete(rowData)"></p-button>
+
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+  </div>
+</p-dialog>

@@ -38,8 +38,9 @@ import {NotificationService} from "./shared/notification.service";
 import {CustomErrorHandler} from "./shared/custom.errorhandler";
 import {RuleEditComponent} from "./component/rule/rule-edit.component";
 import {ModelcalcEditComponent} from "./component/modelcalc/modelcalc-edit.component";
-import {CompanySaveComponent} from "./component/company-picklist/company-save.component";
-
+import { CompanySaveComponent} from "./component/company-picklist/company-save.component";
+import {AutoCompleteModule} from 'primeng/autocomplete';
+import {CompanyListComponent} from "./component/company-picklist/company-list.component";
 // import {D3testComponent} from "./component/treeview/d3test.component";
 
 @NgModule({
@@ -55,7 +56,9 @@ import {CompanySaveComponent} from "./component/company-picklist/company-save.co
     ModelEditComponent,
     RuleEditComponent,
     ModelcalcEditComponent,
+    CompanyListComponent,
     CompanySaveComponent
+
 
   ],
   imports: [
@@ -75,7 +78,8 @@ import {CompanySaveComponent} from "./component/company-picklist/company-save.co
     ButtonModule,
     DialogModule,
     DragDropModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    AutoCompleteModule
   ],
   providers: [CompanyService, ParamsService, TreeService, NodesListService, TreeDiagramService,
     ConfirmationService, NotificationService, {provide: ErrorHandler, useClass: CustomErrorHandler}],

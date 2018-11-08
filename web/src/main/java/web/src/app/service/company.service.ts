@@ -55,4 +55,14 @@ export class CompanyService {
 
     return this.http.post(basePath + companiesPath, JSON.stringify(company), reqOptionsJson);
   }
+
+  createCompanyList(name, companies) {
+    //TODO create PAth
+    this.http.post(basePath+"",JSON.stringify(name,companies),reqOptionsJson);
+  }
+
+  updateCompanyList(name, companies) {
+//TODO create PAth
+    this.http.put(basePath+"",JSON.stringify(name,companies),reqOptionsJson);
+  }
 }
