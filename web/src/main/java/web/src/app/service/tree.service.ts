@@ -51,12 +51,29 @@ export class TreeService {
     return this.http.get(basePath + constructorPath + modelPath, reqOptions);
   }
 
-  private getCalcResultDTOs() {
-    return this.http.get(basePath + "/getData" + "/byTable"+"", reqOptions);
+  getListOfResults() {
+    return this.http.get(basePath +
+      "/getData" +
+      "/getListOfResults"
+      , reqOptions)
   }
 
-  getResults()
-  {
+  getResultTable(modelId, companyListId, allCompaniesListId, year) {
+    return this.getResultTableRequest(modelId, companyListId, allCompaniesListId, year)
+  }
+
+  private getResultTableRequest(modelId, companyListId, allCompaniesListId, year) {
+    return this.http.get(basePath +
+      "/getData" +
+      "/allTablesByParams?" +
+      "modelId=" + modelId +
+      "&companyListId=" + companyListId +
+      "&allCompaniesListId=" + allCompaniesListId +
+      "&year=" + year
+      , reqOptions);
+  }
+
+  private getResults() {
     this.modelsNodes = [];
     this.setTheBoolean(false);
     this.getCalcResultDTOs().toPromise().then(res => {
@@ -64,9 +81,13 @@ export class TreeService {
       this.setTheBoolean(true);
     });
     return this.modelsNodes;
-
   }
 
+  private getCalcResultDTOs() {
+    return this.http.get(basePath +
+      "/getData" +
+      "/byTable" + "", reqOptions);
+  }
 
   getModelsAndConvert() {
     this.modelsNodes = [];
@@ -105,7 +126,7 @@ export class TreeService {
       data: mod,
       children: rulesTreeNodes,
       draggable: true,
-      droppable:true
+      droppable: true
     };
   }
 
@@ -122,7 +143,7 @@ export class TreeService {
       data: rule,
       children: formulaTreeNodes,
       draggable: true,
-      droppable:true
+      droppable: true
     }
   }
 
@@ -145,7 +166,7 @@ export class TreeService {
       },
       children: [],
       draggable: true,
-      droppable:true
+      droppable: true
     }
   }
 

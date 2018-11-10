@@ -6,11 +6,7 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.mifi.service.risk.database.DatabaseSelectAccessor;
 import ru.mifi.service.risk.domain.CalculationParamKey;
 import ru.mifi.service.risk.dto.CalcResultDto;
@@ -84,5 +80,13 @@ public class DataController extends ExceptionHandlerController {
         Set<String> result = accessor.getTablesForModelAndList(curParams);
         return ResponseHelper.successResponse(result);
 
+    }
+
+    @ApiOperation(value = "Получить список всех названий таблиц с расчётами")
+    @GetMapping(value = "/getListOfResults")
+    @ResponseBody
+    public Map<String, Object> getListOfResults() {
+        Set<String> result = accessor.getTableNamesForCalcResult();
+        return ResponseHelper.successResponse(result);
     }
 }

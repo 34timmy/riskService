@@ -52,7 +52,7 @@
       <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>ID:</b> {{company.id}}</div>
     </div>
     <div class="ui-helper-clearfix">
-      <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>Название:</b> {{company.name}}</div>
+      <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>Название:</b> {{company.descr}}</div>
     </div>
     <div class="ui-helper-clearfix">
       <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>ИНН:</b> {{company.INN}}</div>
@@ -80,7 +80,7 @@
 <app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
 <app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
 
-<p-toast position="top-center">
+<p-toast position="top-right">
   <ng-template let-message pTemplate="message">
     <div style="text-align:center">
       <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>

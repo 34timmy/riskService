@@ -9,7 +9,6 @@ import {HeaderComponent} from './component/auth/header.component';
 import {CompanyEditComponent} from './component/company-picklist/company-edit.component';
 import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
-import {DataTableModule} from 'primeng/components/datatable/datatable';
 import {CodeHighlighterModule, DataListModule, SharedModule, TabViewModule} from 'primeng/primeng';
 import {GrowlModule} from 'primeng/components/growl/growl';
 import {FooterComponent} from './component/auth/footer.component';
@@ -38,9 +37,13 @@ import {NotificationService} from "./shared/notification.service";
 import {CustomErrorHandler} from "./shared/custom.errorhandler";
 import {RuleEditComponent} from "./component/rule/rule-edit.component";
 import {ModelcalcEditComponent} from "./component/modelcalc/modelcalc-edit.component";
-import { CompanySaveComponent} from "./component/company-picklist/company-save.component";
+import {CompanySaveComponent} from "./component/company-picklist/company-save.component";
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {CompanyListComponent} from "./component/company-picklist/company-list.component";
+import {TableNamesComponent} from "./component/results_view/table-names.component";
+import {GroupByPipe} from "./shared/groupBy.pipe";
+import {TableModule} from "primeng/table";
+
 // import {D3testComponent} from "./component/treeview/d3test.component";
 
 @NgModule({
@@ -57,7 +60,9 @@ import {CompanyListComponent} from "./component/company-picklist/company-list.co
     RuleEditComponent,
     ModelcalcEditComponent,
     CompanyListComponent,
-    CompanySaveComponent
+    CompanySaveComponent,
+    TableNamesComponent,
+    GroupByPipe
 
 
   ],
@@ -66,7 +71,7 @@ import {CompanyListComponent} from "./component/company-picklist/company-list.co
     FormsModule,
     HttpModule, FormsModule,
     ReactiveFormsModule, HttpModule,
-    routing, CommonModule, DataTableModule,
+    routing, CommonModule, TableModule,
     DataListModule, GrowlModule, TabMenuModule, CommonModule,
     ToastModule,
     TabViewModule,

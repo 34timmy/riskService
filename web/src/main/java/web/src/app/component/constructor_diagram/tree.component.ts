@@ -73,7 +73,6 @@ export class Tree implements OnInit {
 
     let _data = this.treeService.getTreeNodeDTOs();
     // let _data2 = this.treeService.getModelsAndConvert();
-    console.log('data', _data)
     // console.log('data2', _data2)
     // let _data = this.treeService.HARDCODEDgetModelsAndConvert();
     // if (!_data || !Array.isArray(_data.json)) return
@@ -238,7 +237,7 @@ export class Tree implements OnInit {
   }
 
   saveChanges(nodes) {
-    //TODO
+    //TODO save changes after drag and drop
     this.updatedNodes = Array.from(this.nodesSrv.getNodes())
       .filter((val) => val.updated === true);
     console.log('updatedNodes ', this.updatedNodes)

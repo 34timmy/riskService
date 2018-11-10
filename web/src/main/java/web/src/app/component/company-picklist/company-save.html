@@ -1,10 +1,24 @@
-  <p-dialog [(visible)]=showToggle [minWidth]="600" [contentStyle]="{'overflow':'visible'}">
-    <h3 >Введите название списка</h3>
-    <p-autoComplete [size]="50"  [(ngModel)]="text" [suggestions]="autoCompleteResults"
-                    (completeMethod)="search($event)"></p-autoComplete>
-      <p-footer>
-        <p-button type="button" style="margin: 5px 5px 5px 5px" (click)="onSaveCompanyListName(text)"
-                  label="Сохранить"></p-button>
-      </p-footer>
-  </p-dialog>
-  <app-company-list></app-company-list>
+<div *ngIf="showToggle"
+     [style.display]="'block'"
+     [style.background-color]="'rgba(0,0,0,0.4)'"
+     class="modal fade in" role="dialog" id="editRow">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()">&times;
+        </button>
+        <h2 class="modal-title">Введите название списка</h2>
+      </div>
+      <div class="modal-body">
+
+        <p-autoComplete [size]="50" [(ngModel)]="text" [suggestions]="autoCompleteResults"
+                        (completeMethod)="search($event)"></p-autoComplete>
+        <p-footer>
+          <p-button type="button" style="margin: 5px 5px 5px 5px" (click)="onSaveCompanyListName(text)"
+                    label="Сохранить"></p-button>
+        </p-footer>
+      </div>
+    </div>
+  </div>
+</div>
+<app-company-list></app-company-list>

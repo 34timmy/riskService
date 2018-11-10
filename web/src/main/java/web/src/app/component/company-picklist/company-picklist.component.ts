@@ -80,6 +80,7 @@ export class CompanyPicklistComponent implements OnInit {
   }
 
   showCompanyList() {
+    //TODO delete reload here
     this.companyListChild.reloadCompanyLists();
     this.companyListChild.showToggle = true;
   }

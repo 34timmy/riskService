@@ -10,11 +10,7 @@ import ru.mifi.service.risk.exception.DatabaseException;
 import ru.mifi.service.risk.utils.ExcelLoader;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +38,7 @@ public class DatabaseSelectAccessor {
     /**
      * Лезем в таблицу с маппингом и достаем таблицы с результатами расчетов по выбранным модели и листу компаний.
      *
-     * @param key                 сущность с необходимыми параметрами для расчета
+     * @param key сущность с необходимыми параметрами для расчета
      * @return список таблиц с результатом
      */
     public Set<String> getTablesForModelAndList(
@@ -89,5 +85,22 @@ public class DatabaseSelectAccessor {
         } catch (Exception ex) {
             throw new DatabaseException("Ошибка при получении имен таблиц с результатами", ex);
         }
+    }
+
+    public Set<String> getTableNamesForCalcResult() {
+        Set<String> tableNames = new HashSet<>();
+        try (Connection conn = dataSource.getConnection()) {
+            DatabaseMetaData md = conn.getMetaData();
+            ResultSet rs = md.getTables(null, null, "%", null);
+            while (rs.next()) {
+                String tableName;
+                if ((tableName = rs.getString(3)).startsWith("calc_result")) {
+                    tableNames.add(tableName);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Ошибка БД при получении имен таблиц с результатами", e);
+        }
+        return tableNames;
     }
 }

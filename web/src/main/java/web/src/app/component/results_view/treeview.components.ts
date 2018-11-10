@@ -1,22 +1,24 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {TreeNode} from 'primeng/api';
 import {TreeService} from '../../service/tree.service';
 import {FormulaEditComponent} from '../formula/formula-edit.component';
 import {Observable, of} from "rxjs";
-import {Draggable, Droppable} from "primeng/primeng";
-import * as d3 from 'd3';
+import {map} from "rxjs/operators";
+
 @Component({
   selector: 'app-treeview',
   templateUrl: 'treeview.html'
-  // directives: [Draggable,Droppable]
 })
 export class TreeViewComponent implements OnInit {
 
-  treemodels: TreeNode[];
+  treeCompanyListResult: TreeNode[];
+  resultList;
+  items;
   cols: any[];
   selectedNode: TreeNode;
   modelsLoaded: Observable<boolean>;
   draggedNode: TreeNode;
+  showToggle;
 
   constructor(private treeService: TreeService) {
 
@@ -27,10 +29,15 @@ export class TreeViewComponent implements OnInit {
   private formulaEditChild: FormulaEditComponent;
 
   ngOnInit() {
-    this.treeService.getTheBoolean().subscribe(value => {
-      this.modelsLoaded = of(value);
-    });
-    this.treemodels = this.treeService.getResults();
+    // this.treeService.getTheBoolean().subscribe(value => {
+    //   this.modelsLoaded = of(value);
+    // });
+    this.showToggle = false;
+    let modelId;
+    let companyListId;
+    let allCompaniesListId;
+    let year;
+    // this.treeCompanyListResult = this.treeService.getResultTable(modelId, companyListId, allCompaniesListId, year);
     this.cols = [
       {field: 'id', header: 'Id'},
       {field: 'name', header: 'Name'},
@@ -39,7 +46,7 @@ export class TreeViewComponent implements OnInit {
   }
 
   reloadTree() {
-    this.treemodels = this.treeService.getModelsAndConvert();
+    this.treeCompanyListResult = this.treeService.getModelsAndConvert();
   }
 
   onEdit(node) {
@@ -65,52 +72,6 @@ export class TreeViewComponent implements OnInit {
     }
   }
 
-  //-------------------------------------------------------------------------------
-  onDragEnd(event, child) {
-    this.treemodels.splice(this.treemodels.indexOf(child), 1);
-  }
-
-  onDrop(event, node) {
-    node.subNodes = [...node.children, this.selectedNode];
-  }
-
-  onNodeDrop(event) {
-
-  }
-
-  dragStart(event, car) {
-    // this.draggedNode = car;
-
-
-  }
-
-  drop(event) {
-    // if (this.draggedNode) {
-    //   let draggedCarIndex = this.findIndex(this.draggedNode);
-    //   this.selectedCars = [...this.selectedCars, this.draggedNode];
-    //   this.availableCars = this.availableCars.filter((val, i) => i != draggedCarIndex);
-    //   this.draggedCar = null;
-    // }
-
-  }
-
-  dragEnd(event) {
-    // this.draggedCar = null;
-
-
-  }
-
-  // findIndex(car: TreeNode) {
-  //   let index = -1;
-  //   for (let i = 0; i < this.treemodels.length; i++) {
-  //     if (car.vin === this.availableCars[i].vin) {
-  //       index = i;
-  //       break;
-  //     }
-  //   }
-  //   return index;
-  // }
-
   //------------------------------------------------------------------------------------
   private addNodeToParent(rowData) {
     this.onAdd(rowData);
@@ -125,8 +86,8 @@ export class TreeViewComponent implements OnInit {
     //   console.log('toParentNode', this.selectedNode.children)
     // }
     // else {
-    //   this.treemodels.push(node);
-    //   console.log('no parent', this.treemodels)
+    //   this.treeCompanyListResult.push(node);
+    //   console.log('no parent', this.treeCompanyListResult)
     // }
   }
 
@@ -178,4 +139,77 @@ export class TreeViewComponent implements OnInit {
   }
 
 
+  showTreeView(data) {
+    let modelId = data.modelId;
+    let companyListId = data.companyListId;
+    let allCompaniesListId = data.allCompaniesListId;
+    let year = data.year;
+    let resultsForList = [{
+      data: {id: 1, name: 'll1'},
+      children: [
+        {
+          data: {id: 2, name: 'll2'},
+          children: [
+            {
+              data: {id: 3, name: 'lll3'},
+              children: []
+            }
+            , {
+              data: {id: 4, name: '11ll'},
+              children: []
+            },
+            {
+              data: {id: 3, name: 'lll3'},
+              children: []
+            }
+            , {
+              data: {id: 4, name: '11ll'},
+              children: []
+            },
+            {
+              data: {id: 3, name: 'lll3'},
+              children: []
+            }
+            , {
+              data: {id: 4, name: '11ll'},
+              children: []
+            },
+            {
+              data: {id: 3, name: 'lll3'},
+              children: []
+            }
+            , {
+              data: {id: 4, name: '11ll'},
+              children: []
+            }]
+        }
+      ]
+    }];
+    // this.treeService.getResultTable(modelId, companyListId, allCompaniesListId, year).pipe(map(data => {
+    //   resultsForList = data;
+    // }, err => {
+    //
+    // }));
+    //TODO
+    // this.treeCompanyListResult = this.convertResultListToTreeNode(resultsForList);
+    this.treeCompanyListResult = resultsForList;
+    this.showToggle = true;
+
+  }
+
+  convertResultListToTreeNode(list) {
+    if (list.children != undefined && list.children.length != 0) {
+      this.convertResultListToTreeNode(list.children);
+    }
+    return list.map(val => {
+      return {
+        data: val,
+        children: val.children
+      }
+    })
+  }
+
+  closeModal() {
+    this.showToggle = false;
+  }
 }
