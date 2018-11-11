@@ -4,6 +4,7 @@ import {CompanyModel} from '../../model/company.model';
 import {TreeNode} from "../../../../node_modules/primeng/api";
 import {Observable} from "rxjs";
 import {CompanyService} from "../../service/company.service";
+import {map} from "rxjs/operators";
 
 @Component({
   templateUrl: './company-list.html',
@@ -33,54 +34,59 @@ export class CompanyListComponent implements OnInit {
       {field: 'actions', header: 'Actions'}
     ];
 
-    this.companyLists = [{
-      id: 1,
-      companiesIds: ['1;2;3'],
-      descr: 'Список 1'
-    }
-      , {
-        id: 2,
-        companiesIds: ['1;2;3;4'],
-        descr: 'Список 2'
-      },
-      {
-        id: 3,
-        companiesIds: ['1;'],
-        descr: 'Список 11'
-      }];
+    // this.companyLists = [{
+    //   id: 1,
+    //   companiesIds: ['1;2;3'],
+    //   descr: 'Список 1'
+    // }
+    //   , {
+    //     id: 2,
+    //     companiesIds: ['1;2;3;4'],
+    //     descr: 'Список 2'
+    //   },
+    //   {
+    //     id: 3,
+    //     companiesIds: ['1;'],
+    //     descr: 'Список 11'
+    //   }];
 
     //TODO list from service
+    this.companyService.getAllCompanyLists().pipe(map(data => {
+      this.companyLists = data;
+    }));
     this.companiesListNodes = this.resultsWithCompanies(this.companyLists);
-    // this.companyService.getAllCompanyLists().pipe(map(data => {
-    //   this.companyLists = data;
-    // }));
+
   }
 
   reloadCompanyLists() {
-    this.companyLists = [{
-      id: 1,
-      companiesIds: ['1;2;3'],
-      descr: 'Список 1'
-    },
-      {
-        id: 2,
-        companiesIds: ['1;2;3;4'],
-        descr: 'Список 2'
-      },
-      {
-        id: 3,
-        companiesIds: ['1;'],
-        descr: 'Список 11'
-      },
-      {
-        id: 4,
-        companiesIds: ['2;3'],
-        descr: 'Список 23'
-      }];
+    // this.companyLists = [{
+    //   id: 1,
+    //   companiesIds: ['1;2;3'],
+    //   descr: 'Список 1'
+    // },
+    //   {
+    //     id: 2,
+    //     companiesIds: ['1;2;3;4'],
+    //     descr: 'Список 2'
+    //   },
+    //   {
+    //     id: 3,
+    //     companiesIds: ['1;'],
+    //     descr: 'Список 11'
+    //   },
+    //   {
+    //     id: 4,
+    //     companiesIds: ['2;3'],
+    //     descr: 'Список 23'
+    //   }];
+
+    this.companyService.getAllCompanyLists().pipe(
+      map(
+        data => {
+          this.companyLists = data;
+        }));
     this.companiesListNodes = this.resultsWithCompanies(this.companyLists);
-    // this.companyService.getAllCompanyLists().pipe(map(data => {
-    //   this.companyLists = data;
-    // }));
+
   }
 
   onEdit(data) {

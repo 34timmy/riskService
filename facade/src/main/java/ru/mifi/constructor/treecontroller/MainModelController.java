@@ -48,7 +48,7 @@ public class MainModelController {
         return mainModelService.getAllCompanyLists();
     }
 
-    @PutMapping(value = "/companyLists",consumes = "application/json")
+    @PutMapping(value = "/companyLists",produces = "application/json")
     public void createCompanyList(@Valid @RequestBody CompanyList companyList) {
 //        TODO responseEntity
         mainModelService.createCompanyList(companyList);

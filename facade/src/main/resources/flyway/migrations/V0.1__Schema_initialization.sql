@@ -4,7 +4,8 @@ CREATE SEQUENCE SEQ_ID
 
 CREATE TABLE company (
   id  VARCHAR2 (255) NOT NULL,
-  inn VARCHAR2 (255)
+  inn VARCHAR2 (255),
+  descr varchar2(255)
 );
 ALTER TABLE company
   ADD CONSTRAINT company_pk PRIMARY KEY (id);

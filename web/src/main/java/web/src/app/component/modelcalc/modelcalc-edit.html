@@ -1,5 +1,15 @@
-<p-dialog header="Изменение правила" [(visible)]="showToggle"
-          [modal]="true" [width]="500" [maximizable]="true">
+<div *ngIf="showToggle"
+     [style.display]="'block'"
+     [style.background-color]="'rgba(0,0,0,0.4)'"
+     class="modal fade in" role="dialog" id="editRow">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
+                aria-hidden="true" (click)="closeModal()">
+        </button>
+        <h2 class="modal-title">Изменение правила</h2>
+      </div>
   <div class="modal-body" class="ui-dialog-content">
     <form [formGroup]="modelcalcForm" class="form-horizontal" method="post" id="detailsForm">
       <input type="text" hidden="hidden" id="node" name="node">
@@ -28,4 +38,6 @@
       </p-footer>
     </form>
   </div>
-</p-dialog>
+  </div>
+  </div>
+  </div>

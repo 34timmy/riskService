@@ -39,9 +39,10 @@ export class TreeViewComponent implements OnInit {
     let year;
     // this.treeCompanyListResult = this.treeService.getResultTable(modelId, companyListId, allCompaniesListId, year);
     this.cols = [
-      {field: 'id', header: 'Id'},
-      {field: 'name', header: 'Name'},
-      {field: 'actions', header: 'Actions'}
+      {field: 'name', header: 'Название', width:'40%'},
+      {field: 'weight', header: 'Вес',width:'15%'},
+      {field: 'value', header: 'Показатель риска',width:'15%'},
+      {field: 'actions', header: 'Действия',width:'30%'}
     ];
   }
 
@@ -151,26 +152,26 @@ export class TreeViewComponent implements OnInit {
           data: {id: 2, name: 'll2'},
           children: [
             {
-              data: {id: 3, name: 'lll3'},
-              children: []
+              data: {id: 3, name: 'lll3', value: '1'},
+              children: [
+                {
+                  data: {id: 3, name: 'lll3', value: '1', weight: '2'},
+                  children: []
+                }]
             }
             , {
-              data: {id: 4, name: '11ll'},
-              children: []
+              data: {id: 4, name: '11ll', value: '1'},
+              children: [
+                {
+                  data: {id: 3, name: 'lll3', value: '1', weight: '2'},
+                  children: []
+                }
+                , {
+                  data: {id: 4, name: '11ll', value: '1', weight: '2'},
+                  children: []
+                }]
             },
             {
-              data: {id: 3, name: 'lll3'},
-              children: []
-            }
-            , {
-              data: {id: 4, name: '11ll'},
-              children: []
-            },
-            {
-              data: {id: 3, name: 'lll3'},
-              children: []
-            }
-            , {
               data: {id: 4, name: '11ll'},
               children: []
             },

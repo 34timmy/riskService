@@ -20,10 +20,8 @@ const appRoutes: Routes = [
     component: CompanyPicklistComponent
   },
   {
-    path: 'constructor',
-    component: TreeViewComponent,
-    // canActivate: [AuthenticationGuard],
-    runGuardsAndResolvers: 'always',
+    path: 'results',
+    component: TreeViewComponent
   }
 ];
 

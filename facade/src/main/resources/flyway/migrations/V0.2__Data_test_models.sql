@@ -5,9 +5,9 @@ VALUES ('2', '8602166992;5410786860','Список 2');
 insert into normative_parameters (param_name, value, descr)
 VALUES ('FIIJJJ', '0.55', 'Testers gonna test');
 
--- INSERT INTO COMPANY (ID, INN)
--- values (1, 10),
---        (2, 20);
+INSERT INTO COMPANY (ID, INN,descr)
+values (8602166992, 10,'Comp 1'),
+       (5410786860, 20,'Comp 2');
 --
 INSERT INTO MODEL (ID, DESCR)
 VALUES (1, 'Model 1'),

@@ -1,5 +1,15 @@
-<p-dialog header="Списки компаний" [(visible)]="showToggle"
-          [modal]="true" [width]="700" [maximizable]="true">
+<div *ngIf="showToggle"
+               [style.display]="'block'"
+               [style.background-color]="'rgba(0,0,0,0.4)'"
+               class="modal fade in" role="dialog" id="editRow">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
+                aria-hidden="true" (click)="closeModal()">
+        </button>
+        <h2 class="modal-title">Списки компаний</h2>
+      </div>
   <div class="modal-body">
     <p-treeTable [value]="companiesListNodes" [columns]="cols" selectionMode="single" [(selection)]="selectedNode"
     >
@@ -34,4 +44,6 @@
       </ng-template>
     </p-treeTable>
   </div>
-</p-dialog>
+  </div>
+  </div>
+  </div>

@@ -1,5 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
-p-dialog .ui-dialog {
-  overflow: scroll;
-  max-height: 70%;
+.risk0-33{
+  color:red;
+}
+.risk33-66{
+  color:yellow;
+}
+.risk66-100{
+  color:green;
+}
+
+.modal-dialog{
+  /*overflow: scroll;*/
+  position: relative;
+  display: table; /* <-- This makes the trick */
+  overflow-y: auto;
+  overflow-x: auto;
+  width: auto;
+  min-width: 700px;
+}
+
+.modal-body {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
 }
