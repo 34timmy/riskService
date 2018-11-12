@@ -9,4 +9,5 @@ public class Company {
 
     private Long id;
     private String INN;
+    private String descr;
 }

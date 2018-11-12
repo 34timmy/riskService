@@ -1,5 +1,5 @@
 import {Http, Response} from '@angular/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
 import {of} from 'rxjs';
@@ -17,20 +17,15 @@ import {CompanyModel} from '../model/company.model';
 @Injectable()
 export class CompanyService {
 
+  listsLoaded = new BehaviorSubject<boolean>(false);
+
 
   constructor(private http: Http) {
   }
 
 
-  getCompanies(): Observable<CompanyModel[]> {
-    // return this.http.get(basePath + companiesPath, reqOptions).pipe(map(res => res.json()));
-    const companyModel = new CompanyModel(1, 'Company', '9999');
-    const companyModel1 = new CompanyModel(2, '1Company', '1');
-    const companyModel2 = new CompanyModel(3, '2Company', '2');
-    const companyModel3 = new CompanyModel(4, '3Company', '3');
-    const companyModels: CompanyModel[] = [companyModel, companyModel1, companyModel2, companyModel3];
-    // return new Observable<CompanyModel[]>();
-    return of(companyModels);
+  getCompanies(): Observable<Response> {
+    return this.http.get(basePath + companiesPath, reqOptions);
   }
 
   delete(company: CompanyModel): Observable<Response> {
@@ -70,11 +65,14 @@ export class CompanyService {
   }
 
   getAllCompanyLists(): Observable<Response> {
-     return this.http.get(basePath + constructorPath + modelPath + companyLists, reqOptions)
-       .pipe(
-         map(
-           res => res.json()));
+    return this.http.get(basePath + constructorPath + modelPath + companyLists, reqOptions);
+  }
 
+  isListsLoaded() {
+    return this.listsLoaded.asObservable();
+  }
 
+  setListsLoaded(boolean) {
+    this.listsLoaded.next(boolean);
   }
 }

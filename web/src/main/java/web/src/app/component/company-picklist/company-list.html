@@ -1,4 +1,4 @@
-<div *ngIf="showToggle"
+<div *ngIf="showToggle && (listsLoaded | async)"
                [style.display]="'block'"
                [style.background-color]="'rgba(0,0,0,0.4)'"
                class="modal fade in" role="dialog" id="editRow">

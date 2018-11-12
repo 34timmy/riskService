@@ -2,7 +2,7 @@ import {Component, Output, EventEmitter, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CompanyModel} from '../../model/company.model';
 import {TreeNode} from "../../../../node_modules/primeng/api";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
 import {CompanyService} from "../../service/company.service";
 import {map} from "rxjs/operators";
 
@@ -13,12 +13,13 @@ import {map} from "rxjs/operators";
 export class CompanyListComponent implements OnInit {
 
   showToggle = false;
-  companyLists;
+  companyLists = [];
   allCompanies = [];
   selectedCompanies = [];
   companiesListNodes: TreeNode[];
   cols: any[];
   selectedNode: TreeNode;
+  listsLoaded: Observable<boolean>;
 
   @Output()
   onSaveEvent: EventEmitter<CompanyModel> = new EventEmitter<CompanyModel>();
@@ -28,66 +29,28 @@ export class CompanyListComponent implements OnInit {
 
   ngOnInit(): void {
     //TODO colmns
+
+    this.companyService.isListsLoaded().subscribe(val =>
+      this.listsLoaded = of(val));
     this.cols = [
       {field: 'id', header: 'Id'},
       {field: 'name', header: 'Name'},
       {field: 'actions', header: 'Actions'}
     ];
-
-    // this.companyLists = [{
-    //   id: 1,
-    //   companiesIds: ['1;2;3'],
-    //   descr: 'Список 1'
-    // }
-    //   , {
-    //     id: 2,
-    //     companiesIds: ['1;2;3;4'],
-    //     descr: 'Список 2'
-    //   },
-    //   {
-    //     id: 3,
-    //     companiesIds: ['1;'],
-    //     descr: 'Список 11'
-    //   }];
-
-    //TODO list from service
-    this.companyService.getAllCompanyLists().pipe(map(data => {
-      this.companyLists = data;
-    }));
-    this.companiesListNodes = this.resultsWithCompanies(this.companyLists);
-
   }
 
   reloadCompanyLists() {
-    // this.companyLists = [{
-    //   id: 1,
-    //   companiesIds: ['1;2;3'],
-    //   descr: 'Список 1'
-    // },
-    //   {
-    //     id: 2,
-    //     companiesIds: ['1;2;3;4'],
-    //     descr: 'Список 2'
-    //   },
-    //   {
-    //     id: 3,
-    //     companiesIds: ['1;'],
-    //     descr: 'Список 11'
-    //   },
-    //   {
-    //     id: 4,
-    //     companiesIds: ['2;3'],
-    //     descr: 'Список 23'
-    //   }];
-
-    this.companyService.getAllCompanyLists().pipe(
-      map(
-        data => {
-          this.companyLists = data;
-        }));
-    this.companiesListNodes = this.resultsWithCompanies(this.companyLists);
+    this.companyLists.length = 0;
+    this.companyService.setListsLoaded(false);
+    this.companyService.getAllCompanyLists().subscribe(
+      res => {
+        this.companiesListNodes = this.resultsWithCompanies(res.json());
+        this.companyService.setListsLoaded(true);
+      }
+    );
 
   }
+
 
   onEdit(data) {
 
@@ -120,7 +83,7 @@ export class CompanyListComponent implements OnInit {
     for (let list of companyLists) {
       let companyObjs =
         this.allCompanies.filter(
-          val => list.companiesIds.toString().split(";")
+          val => list.company_ids.toString().split(";")
             .map(Number).includes(val.id)).map(val => {
           return {data: val}
         });

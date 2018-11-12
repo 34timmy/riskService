@@ -10,5 +10,5 @@ import java.util.List;
 public class CompanyList {
     private String id;
     private String descr;
-    private String companiesIds;
+    private String company_ids;
 }

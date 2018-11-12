@@ -54,14 +54,16 @@ export class CompanyPicklistComponent implements OnInit {
   private companySaveChild: CompanySaveComponent;
 
   ngOnInit() {
-    this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
-    this.companyListChild.setAllCompanyList(this.source);
+    this.companyService.getCompanies().subscribe(res => {
+      this.source = res.json();
+      this.companyListChild.setAllCompanyList(this.source);
+    });
     this.target = [];
   }
 
   private reloadCompanies() {
     //TODO subscribe again?
-    this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
+    // this.companyService.getCompanies().subscribe(res => this.source = res as CompanyModel[]);
   }
 
   onEditCompany(company) {
@@ -91,8 +93,6 @@ export class CompanyPicklistComponent implements OnInit {
     // this.showCreateModal();
     // this.companyListChild.fillCompanyForm(company);
   }
-
-
 
 
   onSave(company: CompanyModel) {
