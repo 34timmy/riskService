@@ -102,8 +102,8 @@ public interface ConstructorMapper {
     @Select("SELECT * from company_list")
     List<CompanyList> getAllCompanyLists();
 
-    @Insert("INSERT INTO company_list(id,descr,company_ids)" +
-            " values (#(id),#(descr),#(companiesIds)")
+    @Insert("INSERT INTO company_list(id,company_ids,descr)" +
+            " values (#{id},#{company_ids},#{descr})")
     void createCompanyList(CompanyList companyList);
 
 //        -------------------- Company Repository --------------------

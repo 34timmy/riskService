@@ -16,13 +16,13 @@ public class FormulaController {
     @Autowired
     FormulaService formulaService;
 
-    @PutMapping(consumes = "application/json")
+    @PostMapping(consumes = "application/json")
     public void createFormula(@Valid @RequestBody Formula formula) {
 //        TODO responseEntity
         formulaService.createFormula(formula);
     }
 
-    @PostMapping(consumes = "application/json")
+    @PutMapping(consumes = "application/json")
     public void updateFormula(@Valid @RequestBody Formula formula) {
 //        TODO responseEntity
         formulaService.updateFormula(formula);

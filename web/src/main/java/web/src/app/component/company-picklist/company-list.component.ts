@@ -1,10 +1,11 @@
-import {Component, Output, EventEmitter, OnInit} from '@angular/core';
+import {Component, Output, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CompanyModel} from '../../model/company.model';
 import {TreeNode} from "../../../../node_modules/primeng/api";
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {CompanyService} from "../../service/company.service";
 import {map} from "rxjs/operators";
+import {CompanySaveComponent} from "./company-save.component";
 
 @Component({
   templateUrl: './company-list.html',
@@ -20,6 +21,8 @@ export class CompanyListComponent implements OnInit {
   cols: any[];
   selectedNode: TreeNode;
   listsLoaded: Observable<boolean>;
+
+  saveChild: CompanySaveComponent;
 
   @Output()
   onSaveEvent: EventEmitter<CompanyModel> = new EventEmitter<CompanyModel>();
@@ -45,12 +48,16 @@ export class CompanyListComponent implements OnInit {
     this.companyService.getAllCompanyLists().subscribe(
       res => {
         this.companiesListNodes = this.resultsWithCompanies(res.json());
+        this.saveChild.setSelectedCompanyList(res.json());
         this.companyService.setListsLoaded(true);
       }
     );
 
   }
 
+  public setSaveChildComponent(component) {
+    this.saveChild = component;
+  }
 
   onEdit(data) {
 
@@ -68,14 +75,14 @@ export class CompanyListComponent implements OnInit {
     this.showToggle = false;
   }
 
-  setSelectedCompanyList(companies) {
-    this.selectedCompanies = companies;
+
+  setSelectedCompanies(companies) {
+    this.selectedCompanies = companies.map(x => Object.assign({}, x));
   }
 
-  setAllCompanyList(companies) {
-    this.allCompanies = companies;
+  setAllCompanies(companies) {
+    this.allCompanies = companies.map(x => Object.assign({}, x));
   }
-
 
   resultsWithCompanies(companyLists) {
     let companyListsWithCompanies = [];

@@ -48,19 +48,25 @@ public class MainModelController {
         return mainModelService.getAllCompanyLists();
     }
 
-    @PutMapping(value = "/companyLists",produces = "application/json")
+    @PostMapping(value = "/companyLists",consumes = "application/json")
     public void createCompanyList(@Valid @RequestBody CompanyList companyList) {
 //        TODO responseEntity
         mainModelService.createCompanyList(companyList);
     }
 
-    @PutMapping(consumes = "application/json")
+    @PutMapping(value = "/companyLists",produces = "application/json")
+    public void updateCompanyList(@Valid @RequestBody CompanyList companyList) {
+//        TODO responseEntity
+        mainModelService.createCompanyList(companyList);
+    }
+
+    @PostMapping(consumes = "application/json")
     public void createModel(@Valid @RequestBody Model model) {
 //        TODO responseEntity
         mainModelService.createModel(model);
     }
 
-    @PostMapping(consumes = "application/json")
+    @PutMapping(consumes = "application/json")
     public void updateModel(@Valid @RequestBody Model model) {
 //        TODO responseEntity
         mainModelService.updateModel(model);

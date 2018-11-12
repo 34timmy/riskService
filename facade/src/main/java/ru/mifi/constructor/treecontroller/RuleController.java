@@ -14,13 +14,13 @@ public class RuleController {
     @Autowired
     RuleService ruleService;
 
-    @PutMapping(consumes = "application/json")
+    @PostMapping(consumes = "application/json")
     public void createRule(@Valid @RequestBody Rule rule) {
 //        TODO responseEntity
         ruleService.createRule(rule);
     }
 
-    @PostMapping(consumes = "application/json")
+    @PutMapping(consumes = "application/json")
     public void updateRule(@Valid @RequestBody Rule rule) {
 //        TODO responseEntity
         ruleService.updateRule(rule);

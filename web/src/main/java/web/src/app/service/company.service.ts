@@ -9,7 +9,7 @@ import {
   reqOptionsJson,
   companiesPath,
   constructorPath,
-  companyLists, modelPath
+  companyLists, modelPath, companiesListsPath
 } from '../shared/config';
 import {CompanyModel} from '../model/company.model';
 
@@ -56,7 +56,7 @@ export class CompanyService {
 
   createCompanyList(companiesList): Observable<Response> {
     //TODO create PAth
-    return this.http.post(basePath + constructorPath + modelPath + companiesList, JSON.stringify(companiesList), reqOptionsJson);
+    return this.http.post(basePath + constructorPath + modelPath + companiesListsPath, JSON.stringify(companiesList), reqOptionsJson);
   }
 
   updateCompanyList(companiesList): Observable<Response> {

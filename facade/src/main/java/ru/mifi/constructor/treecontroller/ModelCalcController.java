@@ -14,13 +14,13 @@ public class ModelCalcController {
     @Autowired
     ModelCalcService modelCalcService;
 
-    @PutMapping(consumes = "application/json")
+    @PostMapping(consumes = "application/json")
     public void createModelCalc(@Valid @RequestBody ModelCalc modelCalc) {
 //        TODO responseEntity
         modelCalcService.createModelCalc(modelCalc);
     }
 
-    @PostMapping(consumes = "application/json")
+    @PutMapping(consumes = "application/json")
     public void updateModelCalc(@Valid @RequestBody ModelCalc modelCalc) {
 //        TODO responseEntity
         modelCalcService.updateModelCalc(modelCalc);

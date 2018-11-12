@@ -12,10 +12,9 @@ import {CompanyListComponent} from "./company-list.component";
 export class CompanySaveComponent implements OnInit {
   showToggle = false;
   autoCompleteResults: string[];
-  allCompanies = [];
+  allCompaniesLists = [];
   selectedCompanies = [];
   text: string;
-  companyLists;
 
 
   @Output()
@@ -35,29 +34,8 @@ export class CompanySaveComponent implements OnInit {
   }
 
   search(event) {
-    //TODO load
 
-    this.companyLists = [{
-      id: 1,
-      companiesIds: ['1;2;3'],
-      descr: 'Список 1'
-    }
-      , {
-        id: 2,
-        companiesIds: ['1;2;3;4'],
-        descr: 'Список 2'
-      },
-      {
-        id: 3,
-        companiesIds: ['1;'],
-        descr: 'Список 11'
-      }];
-
-    //TODO list from service
-    // this.companyService.getAllCompanyLists().pipe(map(data => {
-    //   this.companyLists = data;
-    // }));
-    this.autoCompleteResults = this.companyLists.map(val => {
+    this.autoCompleteResults = this.allCompaniesLists.map(val => {
       return val.descr
     });
   }
@@ -82,26 +60,29 @@ export class CompanySaveComponent implements OnInit {
       let collectToCompanyList = this.collectToCompanyList(name, this.selectedCompanies);
       if (this.autoCompleteResults.indexOf(name) !== -1) {
         //TODO set id from existing lists
-        this.companyService.updateCompanyList(collectToCompanyList).subscribe(
-          res => {
-          },
-          err => {
-          }
-        );
+        this.errorMessage({
+          cause: 'Данное название уже существует!',
+          url: '',
+          detail: ''
+        })
+        // this.companyService.updateCompanyList(collectToCompanyList).subscribe(
+        //   res => {
+        //   },
+        //   err => {
+        //   }
+        // );
 
       }
       else {
         this.companyService.createCompanyList(collectToCompanyList).subscribe(
           res => {
-            this.companyListChild.reloadCompanyLists();
+            // this.companyListChild.reloadCompanyLists();
             this.closeModal();
             this.successMessage(collectToCompanyList, 'создан.');
           },
           err => {
-            //TODO delete
-            this.companyListChild.reloadCompanyLists();
             this.closeModal();
-            // this.errorMessage(err.json());
+            this.errorMessage(err.json());
           }
         );
       }
@@ -109,22 +90,23 @@ export class CompanySaveComponent implements OnInit {
   }
 
 
-  private collectToCompanyList(name, companies) {
+  private   collectToCompanyList(name, companies) {
+    //TODO autogen id
     return {
-      id: null,
+      id: 3,
       descr: name,
-      companiesIds: companies.map(val => {
+      company_ids: companies.map(val => {
         return val.id
       }).toString()
     }
   }
 
   setSelectedCompanyList(companies) {
-    this.selectedCompanies = companies;
+    this.selectedCompanies = companies.map(x => Object.assign({}, x));
   }
 
-  setAllCompanyList(companies) {
-    this.allCompanies = companies;
+  setAllCompanyList(lists) {
+    this.allCompaniesLists = lists.map(x => Object.assign({}, x));
   }
 
   closeModal() {

@@ -56,7 +56,9 @@ export class CompanyPicklistComponent implements OnInit {
   ngOnInit() {
     this.companyService.getCompanies().subscribe(res => {
       this.source = res.json();
-      this.companyListChild.setAllCompanyList(this.source);
+      this.companyListChild.setAllCompanies(this.source);
+      this.companyListChild.setSaveChildComponent(this.companySaveChild);
+      this.companySaveChild.setAllCompanyList(this.source);
     });
     this.target = [];
   }
