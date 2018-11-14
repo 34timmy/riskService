@@ -1,19 +1,19 @@
 import {Injectable} from '@angular/core';
 import {basePath} from "../shared/config";
 import {Http} from "@angular/http";
-import {HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 
 @Injectable()
 export class UploadService {
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
   }
 
   // file from event.target.files[0]
-  uploadFile(file) {
+  uploadFile(file:File) {
 
-    let formData = new FormData();
-      formData.append('file', file);
+    const formData = new FormData();
+      formData.append('file', file,file.name);
 
     let params = new HttpParams();
     let headers=new HttpHeaders();
@@ -26,6 +26,9 @@ export class UploadService {
 
     let url = basePath + "/import" + "/fromExcel";
     // const req = new HttpRequest('POST', url, formData, options);
-    return this.http.post(url,formData);
+    return this.http.post(url,formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
   }
 }

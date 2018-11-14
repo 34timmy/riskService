@@ -1,19 +1,24 @@
 <app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
 <app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
 <app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
-<!--<p-fileUpload #fubauto mode="basic"-->
-              <!--customUpload="true"-->
-              <!--accept=".xlsx, .xls, application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"-->
-              <!--maxFileSize="1000000"-->
-              <!--(uploadHandler)="selectFile($event)"-->
-              <!--auto="true" chooseLabel="Browse"></p-fileUpload>-->
-<input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
+<div class="ui-g-12 ui-md-12">
+  <input
+    style="display: none"
+    type="file" (change)="uploadFile($event)"
+    #fileInput>
+  <button type="button" pButton
+          icon="fa fa-download" style="margin: 5px 5px 5px 5px "
+          (onClick)="fileInput.click()"
+          label="Импорт из Excel"></button>
+  <button type="button" pButton icon="fa fa-calculator" style="margin: 5px 5px 5px 5px "
+          (click)="calculate()" label="Рассчитать">
+  </button>
+  <button type="button" pButton icon="fa fa-save" style="margin: 5px 5px 5px 5px "
+          (click)="showCompanyList()" label="Списки компаний">
+  </button>
+</div>
 
-<button type="button" class="btn btn-success btn-s"
-        (click)="uploader.uploadAll()"
-        [disabled]="!uploader.getNotUploadedItems().length" >
-  Upload an Image
-</button>
+
 <p-pickList [source]="source" [target]="target" sourceHeader="Список компаний" targetHeader="Список выбранных компаний"
             dragdrop="true"
             dragdropScope="companies"
@@ -44,18 +49,9 @@
 
 </p-pickList>
 <footer>
-
-  <div class="ui-helper-clearfix" style="width:100%">
-    <button type="button" pButton icon="fa fa-save" style="float:right;margin: 5px 0px 5px 5px "
+  <div class="ui-helper-clearfix">
+    <button type="button" pButton icon="fa fa-save" style="float:right;margin: 5px 5px 5px 5px "
             (click)="showSaveModal(target)" label="Сохранить список компаний">
-    </button>
-    <button type="button" pButton icon="fa fa-save" style="float:right;margin: 5px 0px 5px 5px "
-            (click)="showCompanyList()" label="Списки компаний">
-    </button>
-  </div>
-  <div class="ui-helper-clearfix" style="width:100%">
-    <button type="button" pButton icon="fa fa-calculator" style="float:right"
-            (click)="calculate()" label="Рассчитать">
     </button>
   </div>
 </footer>

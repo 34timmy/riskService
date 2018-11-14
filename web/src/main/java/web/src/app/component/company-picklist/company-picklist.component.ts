@@ -42,7 +42,7 @@ export class CompanyPicklistComponent implements OnInit {
       this.companySaveChild.setAllCompanyList(this.source);
     });
     this.target = [];
-    this.upload();
+    // this.upload();
   }
 
   private reloadCompanies() {
@@ -105,60 +105,35 @@ export class CompanyPicklistComponent implements OnInit {
 
   public uploader: FileUploader = new FileUploader({url: '', itemAlias: 'photo'});
 
-  selectFile(event) {
-    // this.uploadFile(event);
-  }
 
-  upload()
-  {
-    this.uploader.onAfterAddingFile = (file) => {
-      file.withCredentials = false;
-    };
-    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      console.log('ImageUpload:uploaded:', item, status, response);
-      this.uploadService.uploadFile(item.file)
-        .subscribe(
+  selectedFile: File = null;
+
+  uploadFile(event) {
+    this.selectedFile = event.target.files[0]
+
+    // if (files.length == 0) {
+    //   console.log("No file selected!");
+    //   return
+    // }
+
+    // let file: File = files[0];
+
+    this.uploadService.uploadFile(this.selectedFile)
+      .subscribe(
         event => {
-          // if (event.type == HttpEventType.UploadProgress) {
-          //   const percentDone = Math.round(100 * event.loaded / event.total);
-          //   console.log(`File is ${percentDone}% loaded.`);
-          // } else if (event instanceof HttpResponse) {
-          //   console.log('File is completely loaded!');
-          // }
+          if (event.type == HttpEventType.UploadProgress) {
+            const percentDone = Math.round(100 * event.loaded / event.total);
+            console.log(`File is ${percentDone}% loaded.`);
+            window.location.reload();
+          } else if (event instanceof HttpResponse) {
+            console.log('File is completely loaded!');
+          }
         },
         (err) => {
           console.log("Upload Error:", err);
         }, () => {
           console.log("Upload done");
         }
-      );
-    };
+      )
   }
-  // uploadFile(files: FileList) {
-  //
-  //   if (files.length == 0) {
-  //     console.log("No file selected!");
-  //     return
-  //
-  //   }
-  //
-  //   // let file: File = files[0];
-  //
-  //   this.uploadService.uploadFile(files.item(0))
-  //     .subscribe(
-  //       event => {
-  //         if (event.type == HttpEventType.UploadProgress) {
-  //           const percentDone = Math.round(100 * event.loaded / event.total);
-  //           console.log(`File is ${percentDone}% loaded.`);
-  //         } else if (event instanceof HttpResponse) {
-  //           console.log('File is completely loaded!');
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log("Upload Error:", err);
-  //       }, () => {
-  //         console.log("Upload done");
-  //       }
-  //     )
-  // }
 }
