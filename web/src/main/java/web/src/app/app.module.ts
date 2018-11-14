@@ -43,8 +43,10 @@ import {CompanyListComponent} from "./component/company-picklist/company-list.co
 import {TableNamesComponent} from "./component/results_view/table-names.component";
 import {GroupByPipe} from "./shared/groupBy.pipe";
 import {TableModule} from "primeng/table";
-
-// import {D3testComponent} from "./component/treeview/d3test.component";
+import {FileUploadModule} from 'primeng/fileupload';
+import {HttpClientModule} from "@angular/common/http";
+import {UploadService} from "./service/upload.service";
+import { FileSelectDirective } from 'ng2-file-upload';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,8 @@ import {TableModule} from "primeng/table";
     CompanyListComponent,
     CompanySaveComponent,
     TableNamesComponent,
-    GroupByPipe
+    GroupByPipe,
+    FileSelectDirective
   ],
   imports: [
     BrowserModule,
@@ -82,10 +85,15 @@ import {TableModule} from "primeng/table";
     DialogModule,
     DragDropModule,
     ConfirmDialogModule,
-    AutoCompleteModule
+    AutoCompleteModule,
+    FileUploadModule,
+    HttpClientModule
   ],
-  providers: [CompanyService, ParamsService, TreeService, NodesListService, TreeDiagramService,
-    ConfirmationService, NotificationService, {provide: ErrorHandler, useClass: CustomErrorHandler}],
+  providers: [CompanyService, ParamsService, TreeService,
+    NodesListService, TreeDiagramService,
+    ConfirmationService, NotificationService,
+    UploadService,
+    {provide: ErrorHandler, useClass: CustomErrorHandler}],
   bootstrap: [AppComponent],
   exports: [SharedModule, Tree,
     Node]

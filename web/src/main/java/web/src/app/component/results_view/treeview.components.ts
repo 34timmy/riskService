@@ -152,12 +152,16 @@ export class TreeViewComponent implements OnInit {
           this.treeService.getCalcResultDTOs(tableName.json().data).subscribe(calcResultDTOs => {
               let calcResultDTOsJSON = calcResultDTOs.json().data;
               this.treeCompanyListResult = this.convertResultListTableNamesToTreeNode(calcResultDTOsJSON, companyListId);
-              this.successMessage(calcResultDTOsJSON, 'с иерархией расчёта получена');
+              this.successMessage(calcResultDTOsJSON,
+                'Запись ' + calcResultDTOsJSON + 'с иерархией расчёта получена',
+                null);
             },
             err => {
               this.errorMessage(err.json())
             });
-          this.successMessage({name: '(таблица ' + tableName}, 'получена');
+          this.successMessage(tableName,
+            'Таблица '+tableName+' получена',
+            '');
         }, err => {
           this.errorMessage(err.json())
         });
@@ -237,12 +241,20 @@ export class TreeViewComponent implements OnInit {
     this.showToggle = false;
   }
 
-  successMessage(node, action) {
-    this.notificationService.add({
-      severity: 'success',
-      summary: 'Запись "' + node.descr + '" ' + action,
-      detail: JSON.stringify(node, null, 2)
-    })
+  successMessage(obj, summary, detail) {
+    if (detail == null) {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: JSON.stringify(obj, null, 2)
+      })
+    } else {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: detail
+      })
+    }
   }
 
   errorMessage(error) {

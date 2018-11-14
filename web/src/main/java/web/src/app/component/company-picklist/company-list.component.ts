@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {CompanyModel} from '../../model/company.model';
-import {SelectItem, TreeNode} from "../../../../node_modules/primeng/api";
+import {MessageService, SelectItem, TreeNode} from "../../../../node_modules/primeng/api";
 import {Observable, of} from "rxjs";
 import {CompanyService} from "../../service/company.service";
 import {CompanySaveComponent} from "./company-save.component";
@@ -38,7 +38,9 @@ export class CompanyListComponent implements OnInit {
   @Output()
   onSaveEvent: EventEmitter<CompanyModel> = new EventEmitter<CompanyModel>();
 
-  constructor(private companyService: CompanyService, private treeService: TreeDiagramService) {
+  constructor(private companyService: CompanyService,
+              private treeService: TreeDiagramService,
+              private notificationService: MessageService) {
   }
 
   ngOnInit(): void {
@@ -59,17 +61,17 @@ export class CompanyListComponent implements OnInit {
     this.loadModels();
     this.years = this.loadYears();
     let allCompanyLists;
-      allCompanyLists = this.companyService.getAllCompanyLists().subscribe(
-        res => {
+    allCompanyLists = this.companyService.getAllCompanyLists().subscribe(
+      res => {
 
-          let resJson = res.json();
-          this.companiesListNodes = this.resultsWithCompanies(resJson);
-          this.companyService.setCompaniesLists(this.companiesListNodes);
-          this.saveChild.setSelectedCompanyList(resJson);
-          this.companyService.setListsLoaded(true);
-          console.log('listLoaded? & toggle', this.listsLoaded, this.showToggle)
-        }
-      );
+        let resJson = res.json();
+        this.companiesListNodes = this.resultsWithCompanies(resJson);
+        this.companyService.setCompaniesLists(this.companiesListNodes);
+        this.saveChild.setSelectedCompanyList(resJson);
+        this.companyService.setListsLoaded(true);
+        console.log('listLoaded? & toggle', this.listsLoaded, this.showToggle)
+      }
+    );
 
   }
 
@@ -111,9 +113,15 @@ export class CompanyListComponent implements OnInit {
       this.selectedYear)
       .subscribe(res => {
           this.companyService.setFlagForreloadNames(true);
+          this.showToggle = false
+          this.successMessage(res,
+            'Расчёт завершен',
+            '')
+
         },
         err => {
         });
+
   }
 
   onSaveCompanyList() {
@@ -145,7 +153,7 @@ export class CompanyListComponent implements OnInit {
         this.allCompanies.filter(
           val => list.company_ids.toString().split(";")
             .map(Number).includes(val.id)).map(val => {
-          return {data: {id:val.id,descr:"Temp Name",INN:val.inn}}
+          return {data: {id: val.id, descr: "Temp Name", INN: val.inn}}
         });
 
       companyListsWithCompanies.push({
@@ -158,5 +166,30 @@ export class CompanyListComponent implements OnInit {
     }
     return companyListsWithCompanies;
   }
+
+  successMessage(obj, summary, detail) {
+    if (detail == null) {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: JSON.stringify(obj, null, 2)
+      })
+    } else {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: detail
+      })
+    }
+  }
+
+  errorMessage(error) {
+    this.notificationService.add({
+      severity: 'error',
+      summary: error.cause,
+      detail: error.url + '\n' + error.detail
+    })
+  }
+
 
 }

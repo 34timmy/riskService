@@ -2,9 +2,11 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {CompanyModel} from '../../model/company.model';
 import {CompanyService} from '../../service/company.service';
 import {CompanyEditComponent} from './company-edit.component';
-import {SelectItem} from "../../../../node_modules/primeng/api";
-import {CompanySaveComponent} from "./company-save.component";
 import {CompanyListComponent} from "./company-list.component";
+import {CompanySaveComponent} from "./company-save.component";
+import {HttpEventType, HttpResponse} from "@angular/common/http";
+import {UploadService} from "../../service/upload.service";
+import {FileUploader} from "ng2-file-upload";
 
 @Component({
   templateUrl: './company-picklist.html',
@@ -17,7 +19,9 @@ export class CompanyPicklistComponent implements OnInit {
   target: CompanyModel[];
 
 
-  constructor(private companyService: CompanyService) {
+  constructor(private companyService: CompanyService,
+              private uploadService: UploadService
+  ) {
   }
 
   @ViewChild(CompanyEditComponent)
@@ -29,6 +33,7 @@ export class CompanyPicklistComponent implements OnInit {
   @ViewChild(CompanySaveComponent)
   private companySaveChild: CompanySaveComponent;
 
+
   ngOnInit() {
     this.companyService.getCompanies().subscribe(res => {
       this.source = res.json();
@@ -37,6 +42,7 @@ export class CompanyPicklistComponent implements OnInit {
       this.companySaveChild.setAllCompanyList(this.source);
     });
     this.target = [];
+    this.upload();
   }
 
   private reloadCompanies() {
@@ -96,4 +102,63 @@ export class CompanyPicklistComponent implements OnInit {
       }
     );
   }
+
+  public uploader: FileUploader = new FileUploader({url: '', itemAlias: 'photo'});
+
+  selectFile(event) {
+    // this.uploadFile(event);
+  }
+
+  upload()
+  {
+    this.uploader.onAfterAddingFile = (file) => {
+      file.withCredentials = false;
+    };
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      console.log('ImageUpload:uploaded:', item, status, response);
+      this.uploadService.uploadFile(item.file)
+        .subscribe(
+        event => {
+          // if (event.type == HttpEventType.UploadProgress) {
+          //   const percentDone = Math.round(100 * event.loaded / event.total);
+          //   console.log(`File is ${percentDone}% loaded.`);
+          // } else if (event instanceof HttpResponse) {
+          //   console.log('File is completely loaded!');
+          // }
+        },
+        (err) => {
+          console.log("Upload Error:", err);
+        }, () => {
+          console.log("Upload done");
+        }
+      );
+    };
+  }
+  // uploadFile(files: FileList) {
+  //
+  //   if (files.length == 0) {
+  //     console.log("No file selected!");
+  //     return
+  //
+  //   }
+  //
+  //   // let file: File = files[0];
+  //
+  //   this.uploadService.uploadFile(files.item(0))
+  //     .subscribe(
+  //       event => {
+  //         if (event.type == HttpEventType.UploadProgress) {
+  //           const percentDone = Math.round(100 * event.loaded / event.total);
+  //           console.log(`File is ${percentDone}% loaded.`);
+  //         } else if (event instanceof HttpResponse) {
+  //           console.log('File is completely loaded!');
+  //         }
+  //       },
+  //       (err) => {
+  //         console.log("Upload Error:", err);
+  //       }, () => {
+  //         console.log("Upload done");
+  //       }
+  //     )
+  // }
 }

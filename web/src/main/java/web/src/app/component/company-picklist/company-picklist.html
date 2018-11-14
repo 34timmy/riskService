@@ -1,7 +1,19 @@
 <app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
 <app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
 <app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
+<!--<p-fileUpload #fubauto mode="basic"-->
+              <!--customUpload="true"-->
+              <!--accept=".xlsx, .xls, application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"-->
+              <!--maxFileSize="1000000"-->
+              <!--(uploadHandler)="selectFile($event)"-->
+              <!--auto="true" chooseLabel="Browse"></p-fileUpload>-->
+<input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
 
+<button type="button" class="btn btn-success btn-s"
+        (click)="uploader.uploadAll()"
+        [disabled]="!uploader.getNotUploadedItems().length" >
+  Upload an Image
+</button>
 <p-pickList [source]="source" [target]="target" sourceHeader="Список компаний" targetHeader="Список выбранных компаний"
             dragdrop="true"
             dragdropScope="companies"

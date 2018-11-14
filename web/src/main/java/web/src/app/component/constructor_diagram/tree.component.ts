@@ -28,7 +28,6 @@ export class Tree implements OnInit {
   private modelCalcEditChild: ModelcalcEditComponent;
 
 
-
   private _config = {
     confirmationService: this.confirmationService,
     notificationService: this.notificationService,
@@ -155,11 +154,15 @@ export class Tree implements OnInit {
         res => {
           if (node.id) {
             this.nodesSrv.editNodeOnSaveFormula();
-            this.successMessage(node, 'изменена');
+            this.successMessage(node,
+              'Запись ' + node.descr + ' изменена',
+              null);
           }
           else {
             this.nodesSrv.addNodeOnSaveFormula();
-            this.successMessage(node, 'добавлена');
+            this.successMessage(node,
+              'Запись ' + node.descr + ' добавлена',
+              null);
           }
         },
         err => {
@@ -182,11 +185,16 @@ export class Tree implements OnInit {
         res => {
           if (node.id) {
             this.nodesSrv.editNodeOnSaveRule();
-            this.successMessage(node, 'изменена');
+            this.successMessage(node,
+              'Запись ' + node.descr + ' изменена',
+              null);
           }
           else {
             this.nodesSrv.addNodeOnSaveRule();
-            this.successMessage(node, 'добавлена');
+            this.successMessage(node,
+              'Запись ' + node.descr + ' добавлена',
+              null);
+
           }
 
         },
@@ -203,11 +211,17 @@ export class Tree implements OnInit {
         res => {
           if (node.id) {
             this.nodesSrv.editNodeOnSaveModel();
-            this.successMessage(node, 'изменена')
+            this.successMessage(node,
+              'Запись ' + node.descr + ' изменена',
+              null);
+
           }
           else {
             this.nodesSrv.addNodeOnSaveModel();
-            this.successMessage(node, 'добавлена')
+            this.successMessage(node,
+              'Запись ' + node.descr + ' добавлена',
+              null);
+
           }
         },
         err => {
@@ -223,11 +237,17 @@ export class Tree implements OnInit {
         res => {
           if (node.node) {
             this.nodesSrv.editNodeOnSaveModelCalc();
-            this.successMessage(node, 'изменена')
+            this.successMessage(node,
+              'Запись ' + node.descr + ' изменена',
+              null);
+
           }
           else {
             this.nodesSrv.addNodeOnSaveModelCalc();
-            this.successMessage(node, 'добавлена')
+            this.successMessage(node,
+              'Запись ' + node.descr + ' добавлена',
+              null);
+
           }
         },
         err => {
@@ -243,12 +263,20 @@ export class Tree implements OnInit {
     console.log('updatedNodes ', this.updatedNodes)
   }
 
-  successMessage(node, action) {
-    this.notificationService.add({
-      severity: 'success',
-      summary: 'Запись "' + node.descr + '" ' + action,
-      detail: JSON.stringify(node, null, 2)
-    })
+  successMessage(obj, summary, detail) {
+    if (detail == null) {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: JSON.stringify(obj, null, 2)
+      })
+    } else {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: detail
+      })
+    }
   }
 
   errorMessage(error) {

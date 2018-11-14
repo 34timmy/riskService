@@ -8,6 +8,7 @@ import ru.mifi.constructor.model.DTO.RuleDTO;
 
 import java.util.Map;
 
+
 @SpringBootApplication(scanBasePackages = "ru.mifi")
 @MapperScan("ru.mifi")
 public class RiskServiceApplication {

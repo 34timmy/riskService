@@ -166,7 +166,9 @@ export class TreeDiagramNodesList {
           node.treeService.deleteFormula(node.data).subscribe((val) => {
               if (val.ok) {
                 this.delete(node);
-                this.successMessage(node, 'удалена')
+                this.successMessage(node,
+                  'Запись ' + node.descr + ' удалена',
+                  null)
               }
             },
             err => {
@@ -178,7 +180,9 @@ export class TreeDiagramNodesList {
           node.treeService.deleteRule(node.data).subscribe((val) => {
               if (val.ok) {
                 this.delete(node);
-                this.successMessage(node, 'удалена')
+                this.successMessage(node,
+                  'Записб ' + node.descr + ' удалена',
+                  null)
               }
             },
             err => {
@@ -190,7 +194,9 @@ export class TreeDiagramNodesList {
           node.treeService.deleteModel(node.data).subscribe((val) => {
               if (val.ok) {
                 this.delete(node);
-                this.successMessage(node, 'удалена')
+                this.successMessage(node,
+                  'Запись ' + node.descr + ' удалена',
+                  null)
               }
             },
             err => {
@@ -338,12 +344,20 @@ export class TreeDiagramNodesList {
     this.globalNode.data = formValue;
   }
 
-  private successMessage(node, action) {
-    this.notificationService.add({
-      severity: 'success',
-      summary: 'Запись "' + node.descr + '" ' + action,
-      detail: JSON.stringify(node,null,2)
-    })
+  successMessage(obj, summary, detail) {
+    if (detail == null) {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: JSON.stringify(obj, null, 2)
+      })
+    } else {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: detail
+      })
+    }
   }
 
   private errorMessage(error) {

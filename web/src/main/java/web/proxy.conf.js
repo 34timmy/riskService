@@ -4,7 +4,8 @@ const PROXY_CONFIG = [
       "/getData",
       "/constructor",
       "/companies",
-      "/perform"
+      "/perform",
+      "/import"
     ],
     target: "http://localhost:8080",
     secure: false

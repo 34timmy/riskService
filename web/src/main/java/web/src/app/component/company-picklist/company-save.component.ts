@@ -47,15 +47,13 @@ export class CompanySaveComponent implements OnInit {
         detail: ''
       })
     }
-    if (this.selectedCompanies === undefined || this.selectedCompanies.length === 0)
-    {
+    if (this.selectedCompanies === undefined || this.selectedCompanies.length === 0) {
       this.errorMessage({
         cause: 'Список выбранных компаний пуст!',
         url: '',
         detail: ''
       })
-    }else
-    {
+    } else {
       let collectToCompanyList = this.collectToCompanyList(name, this.selectedCompanies);
       if (this.autoCompleteResults.indexOf(name) !== -1) {
         //TODO set id from existing lists
@@ -77,9 +75,12 @@ export class CompanySaveComponent implements OnInit {
           res => {
             // this.companyListChild.reloadCompanyLists();
             this.closeModal();
-            this.successMessage(collectToCompanyList, 'создан.');
+            this.successMessage(collectToCompanyList,
+              'Список ' + collectToCompanyList.descr + ' создан.',
+              null);
           },
           err => {
+
             this.closeModal();
             this.errorMessage(err.json());
           }
@@ -89,7 +90,7 @@ export class CompanySaveComponent implements OnInit {
   }
 
 
-  private   collectToCompanyList(name, companies) {
+  private collectToCompanyList(name, companies) {
     //TODO autogen id
     return {
       id: 3,
@@ -112,13 +113,22 @@ export class CompanySaveComponent implements OnInit {
     this.showToggle = false;
   }
 
-  successMessage(node, action) {
-    this.notificationService.add({
-      severity: 'success',
-      summary: 'Запись "' + node.descr + '" ' + action,
-      detail: JSON.stringify(node, null, 2)
-    })
+  successMessage(obj, summary, detail) {
+    if (detail == null) {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: JSON.stringify(obj, null, 2)
+      })
+    } else {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: detail
+      })
+    }
   }
+
 
   errorMessage(error) {
     this.notificationService.add({
