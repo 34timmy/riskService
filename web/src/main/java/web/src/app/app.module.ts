@@ -63,8 +63,6 @@ import {TableModule} from "primeng/table";
     CompanySaveComponent,
     TableNamesComponent,
     GroupByPipe
-
-
   ],
   imports: [
     BrowserModule,

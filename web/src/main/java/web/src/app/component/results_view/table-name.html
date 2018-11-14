@@ -1,3 +1,4 @@
+<h3>Список расчётов</h3>
 <p-tabView>
   <p-tabPanel *ngFor="let item of resultList | groupBy:'modelId'; let i = index" [selected]="i == 0">
     <ng-template pTemplate="header">Модель {{item.key}}</ng-template>

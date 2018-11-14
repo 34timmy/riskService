@@ -118,11 +118,13 @@ export class TreeDiagramService {
     return this.http.post(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), reqOptionsJson);
   }
 
-  private getAll() {
+   getAllModels() {
+    //TODO MODELS only
     return this.http.get(basePath + constructorPath + modelPath, reqOptions);
   }
 
   private getAllNodes() {
+
     return this.http.get(basePath + constructorPath + modelPath + "/toNodes", reqOptions);
   }
 
@@ -141,7 +143,7 @@ export class TreeDiagramService {
   getModelsAndConvert() {
     this.modelsNodes = [];
     this.setTheBoolean(false);
-    this.getAll().toPromise().then(res => {
+    this.getAllModels().toPromise().then(res => {
       this.modelsToTreeNode(res.json());
       // this.setTheBoolean(true);
     });

@@ -3,7 +3,6 @@ import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CompanyModel} from '../../model/company.model';
 import {CompanyService} from "../../service/company.service";
 import {MessageService} from "../../../../node_modules/primeng/api";
-import {CompanyListComponent} from "./company-list.component";
 
 @Component({
   templateUrl: './company-save.html',
@@ -22,8 +21,8 @@ export class CompanySaveComponent implements OnInit {
   @Output()
   onSaveCompanyListEvent: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild(CompanyListComponent)
-  private companyListChild: CompanyListComponent;
+  // @ViewChild(CompanyListComponent)
+  // private companyListChild: CompanyListComponent;
 
   constructor(private companyService: CompanyService,
               private notificationService: MessageService

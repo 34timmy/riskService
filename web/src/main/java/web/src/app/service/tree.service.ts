@@ -58,11 +58,9 @@ export class TreeService {
       , reqOptions)
   }
 
-  getResultTable(modelId, companyListId, allCompaniesListId, year) {
-    return this.getResultTableRequest(modelId, companyListId, allCompaniesListId, year)
-  }
 
-  private getResultTableRequest(modelId, companyListId, allCompaniesListId, year) {
+
+  getResultTableNamesRequest(modelId, companyListId, allCompaniesListId, year) {
     return this.http.get(basePath +
       "/getData" +
       "/allTablesByParams?" +
@@ -73,20 +71,23 @@ export class TreeService {
       , reqOptions);
   }
 
-  private getResults() {
-    this.modelsNodes = [];
-    this.setTheBoolean(false);
-    this.getCalcResultDTOs().toPromise().then(res => {
-      this.modelsToTreeNode(res.json());
-      this.setTheBoolean(true);
-    });
-    return this.modelsNodes;
-  }
+  //  getResults(tableName) {
+  //   // this.modelsNodes = [];
+  //   // this.setTheBoolean(false);
+  //   return this.getCalcResultDTOs(tableName)
+  //   //   .toPromise().then(res => {
+  //   //   this.modelsToTreeNode(res.json());
+  //   //   this.setTheBoolean(true);
+  //   // });
+  //   // return this.modelsNodes;
+  // }
 
-  private getCalcResultDTOs() {
+   getCalcResultDTOs(tableName) {
     return this.http.get(basePath +
       "/getData" +
-      "/byTable" + "", reqOptions);
+      "/byTable?" +
+      "tableName=" + tableName
+      , reqOptions);
   }
 
   getModelsAndConvert() {

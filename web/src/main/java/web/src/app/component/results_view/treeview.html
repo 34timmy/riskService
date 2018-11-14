@@ -8,7 +8,7 @@
         <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
                 aria-hidden="true" (click)="closeModal()">
         </button>
-        <h2 class="modal-title">Изменить компанию</h2>
+        <h2 class="modal-title">Результаты</h2>
       </div>
       <div class="modal-body">
         <!--<p-dialog header="Списки компаний" [(visible)]="showToggle"-->
@@ -19,8 +19,7 @@
                      [columns]="cols" selectionMode="single"
                      [(selection)]="selectedNode"
                      [resizableColumns]="true"
-                     [scrollable]="true"
-                     scrollHeight="700px">
+                     >
           <ng-template pTemplate="header" let-columns>
             <tr>
               <th *ngFor="let col of columns" ttResizableColumn [ttSortableColumn]="col.field">{{col.header}}
@@ -33,10 +32,15 @@
             pDraggable="dd" (onDragEnd)="dragEnd($event,rowData)"
             (onDragStart)="dragStart($event,rowData)">
             <tr [ttSelectableRow]="rowNode">
-
               <td>
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                {{rowData.name}}
+                {{rowData.INN}}
+              </td>
+              <td *ngIf="rowData.descr">
+                {{rowData.descr}}
+              </td>
+              <td *ngIf="rowData.comment">
+                {{rowData.comment}}
               </td>
               <td>
                 {{rowData.weight}}

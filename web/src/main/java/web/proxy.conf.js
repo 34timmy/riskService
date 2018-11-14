@@ -1,13 +1,10 @@
 const PROXY_CONFIG = [
   {
     context: [
+      "/getData",
       "/constructor",
       "/companies",
-      "/endpoints",
-      "/i",
-      "/need",
-      "/to",
-      "/proxy"
+      "/perform"
     ],
     target: "http://localhost:8080",
     secure: false

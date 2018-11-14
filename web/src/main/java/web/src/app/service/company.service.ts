@@ -75,4 +75,27 @@ export class CompanyService {
   setListsLoaded(boolean) {
     this.listsLoaded.next(boolean);
   }
+
+  calculate(selectedModel, selectedListId, selectedCompaniesId, selectedYear) {
+    return this.http.get(basePath +
+      "/perform" +
+      "/calculation?" +
+      "modelId=" + selectedModel +
+      "&companyListId=" + selectedListId +
+      "&industryCompanyListId=" + "2" +
+      "&year=" + selectedYear
+      , reqOptions)
+  }
+
+  companyLists = new BehaviorSubject<any[]>([]);
+
+  setCompaniesLists(resJson) {
+    this.companyLists.next(resJson.map(x => Object.assign({}, x)));
+  }
+
+  reloadNames = new BehaviorSubject<boolean>(false);
+
+  setFlagForreloadNames(flag) {
+    this.reloadNames.next(flag);
+  }
 }

@@ -5,9 +5,9 @@ VALUES ('2', '8602166992;5410786860','Список 2');
 insert into normative_parameters (param_name, value, descr)
 VALUES ('FIIJJJ', '0.55', 'Testers gonna test');
 
-INSERT INTO COMPANY (ID, INN,descr)
-values (8602166992, 10,'Comp 1'),
-       (5410786860, 20,'Comp 2');
+-- INSERT INTO COMPANY (ID, INN,descr)
+-- values (8602166992, 10,'Comp 1'),
+--        (5410786860, 20,'Comp 2');
 --
 INSERT INTO MODEL (ID, DESCR)
 VALUES (1, 'Model 1'),
@@ -31,14 +31,17 @@ INSERT into FORMULA (id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, COMME
 VALUES (8, 'Formula 1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm', 1),
        (9, 'Formula 2', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm', 2),
        (10, 'Formula 3', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm', 2);
--- INSERT INTO BUSINESS_PARAM (PARAM_CODE, DESCRIPTION)
--- VALUES (10, 'Code 10');
--- INSERT INTO FORMULA_PARAMS (NODE, PARAM_CODE)
--- VALUES (1, 10);
---
--- INSERT INTO COMPANY_BUSINESS_PARAMS (COMPANY_ID, PARAM_CODE, YEAR, PARAM_VALUE)
--- VALUES (1, 10, 2000, 'Val');
---
+
+
+
+INSERT INTO BUSINESS_PARAM (PARAM_CODE, DESCRIPTION)
+VALUES (10, 'Code 10');
+INSERT INTO FORMULA_PARAMS (NODE, PARAM_CODE)
+VALUES (8, 10);
+
+INSERT INTO COMPANY_BUSINESS_PARAMS (COMPANY_ID, PARAM_CODE, YEAR, PARAM_VALUE)
+VALUES (1, 10, 2000, 'Val');
+
 -- insert into company_list (id, company_ids)
 -- VALUES ('1', '3241012505;7451346741');
 -- insert into company_list (id, company_ids)

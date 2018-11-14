@@ -5,7 +5,7 @@ export class ResultTableModel {
   modelId: string;
   companyListId: string;
   companyListName: string;
-  allcompaniesListid: string;
+  allCompaniesListId: string;
   year: string;
   date: string;
 
@@ -14,7 +14,7 @@ export class ResultTableModel {
     this.modelId = modelId;
     this.companyListId = companyListId;
     this.companyListName = companyListName;
-    this.allcompaniesListid = allcompaniesListid;
+    this.allCompaniesListId = allcompaniesListid;
     this.year = year;
     this.date = date;
   }

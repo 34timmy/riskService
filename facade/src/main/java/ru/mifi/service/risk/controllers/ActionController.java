@@ -30,7 +30,7 @@ public class ActionController extends ExceptionHandlerController {
     private DataService dataService;
 
     @ApiOperation(value = "Запустить основной расчет")
-    @RequestMapping(value = "/calculation", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/calculation", method =  RequestMethod.GET)
     public
     @ResponseBody
     Map<String, Object> calculate(

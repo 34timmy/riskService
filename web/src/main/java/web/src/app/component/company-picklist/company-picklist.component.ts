@@ -16,32 +16,8 @@ export class CompanyPicklistComponent implements OnInit {
 
   target: CompanyModel[];
 
-  stages: SelectItem[];
-
-  selectedStage: string;
-
-  models: SelectItem[];
-
-  selectedModel: string;
-
-  years: SelectItem[];
-
-  selectedYear: string;
 
   constructor(private companyService: CompanyService) {
-
-    this.models =
-      [{label: '1', value: '1'},
-        {label: '2', value: '2'},
-        {label: '3', value: '3'}];
-
-    this.stages =
-      [{label: 'Тендер', value: 1},
-        {label: 'Закупка', value: 2}];
-
-    this.years =
-      [{label: '2016', value: 2016},
-        {label: '2015', value: 2015}];
   }
 
   @ViewChild(CompanyEditComponent)
@@ -56,8 +32,8 @@ export class CompanyPicklistComponent implements OnInit {
   ngOnInit() {
     this.companyService.getCompanies().subscribe(res => {
       this.source = res.json();
-      this.companyListChild.setAllCompanies(this.source);
       this.companyListChild.setSaveChildComponent(this.companySaveChild);
+      this.companyListChild.setAllCompanies(this.source);
       this.companySaveChild.setAllCompanyList(this.source);
     });
     this.target = [];
@@ -86,6 +62,7 @@ export class CompanyPicklistComponent implements OnInit {
   showCompanyList() {
     //TODO delete reload here
     this.companyListChild.reloadCompanyLists();
+    // this.companyService.setListsLoaded(true);
     this.companyListChild.showToggle = true;
   }
 
@@ -96,6 +73,12 @@ export class CompanyPicklistComponent implements OnInit {
     // this.companyListChild.fillCompanyForm(company);
   }
 
+  calculate() {
+    this.companyListChild.reloadCompanyLists();
+    this.companyListChild.calculationPerform = true;
+    this.companyListChild.showToggle = true;
+
+  }
 
   onSave(company: CompanyModel) {
     this.companyService.saveCompany(company)

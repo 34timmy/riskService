@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {TreeNode} from 'primeng/api';
+import {MessageService, TreeNode} from 'primeng/api';
 import {TreeService} from '../../service/tree.service';
 import {FormulaEditComponent} from '../formula/formula-edit.component';
 import {Observable, of} from "rxjs";
@@ -13,6 +13,7 @@ export class TreeViewComponent implements OnInit {
 
   treeCompanyListResult: TreeNode[];
   resultList;
+  companies;
   items;
   cols: any[];
   selectedNode: TreeNode;
@@ -20,9 +21,8 @@ export class TreeViewComponent implements OnInit {
   draggedNode: TreeNode;
   showToggle;
 
-  constructor(private treeService: TreeService) {
-
-
+  constructor(private treeService: TreeService,
+              private notificationService: MessageService) {
   }
 
   @ViewChild(FormulaEditComponent)
@@ -37,17 +37,18 @@ export class TreeViewComponent implements OnInit {
     let companyListId;
     let allCompaniesListId;
     let year;
-    // this.treeCompanyListResult = this.treeService.getResultTable(modelId, companyListId, allCompaniesListId, year);
+    // this.treeCompanyListResult = this.treeService.getResultTableNames(modelId, companyListId, allCompaniesListId, year);
     this.cols = [
-      {field: 'name', header: 'Название', width:'40%'},
-      {field: 'weight', header: 'Вес',width:'15%'},
-      {field: 'value', header: 'Показатель риска',width:'15%'},
-      {field: 'actions', header: 'Действия',width:'30%'}
+      {field: 'inn', header: 'ИНН', width: '30%'},
+      {field: 'name', header: 'Название', width: '30%'},
+      {field: 'weight', header: 'Вес', width: '10%'},
+      {field: 'value', header: 'Показатель риска', width: '10%'},
+      {field: 'actions', header: 'Действия', width: '20%'}
     ];
   }
 
   reloadTree() {
-    this.treeCompanyListResult = this.treeService.getModelsAndConvert();
+    // this.treeCompanyListResult = this.treeService.getModelsAndConvert();
   }
 
   onEdit(node) {
@@ -145,72 +146,114 @@ export class TreeViewComponent implements OnInit {
     let companyListId = data.companyListId;
     let allCompaniesListId = data.allCompaniesListId;
     let year = data.year;
-    let resultsForList = [{
-      data: {id: 1, name: 'll1'},
-      children: [
-        {
-          data: {id: 2, name: 'll2'},
-          children: [
-            {
-              data: {id: 3, name: 'lll3', value: '1'},
-              children: [
-                {
-                  data: {id: 3, name: 'lll3', value: '1', weight: '2'},
-                  children: []
-                }]
-            }
-            , {
-              data: {id: 4, name: '11ll', value: '1'},
-              children: [
-                {
-                  data: {id: 3, name: 'lll3', value: '1', weight: '2'},
-                  children: []
-                }
-                , {
-                  data: {id: 4, name: '11ll', value: '1', weight: '2'},
-                  children: []
-                }]
+    this.treeService.getResultTableNamesRequest(modelId, companyListId, allCompaniesListId, year)
+      .subscribe(
+        tableName => {
+          this.treeService.getCalcResultDTOs(tableName.json().data).subscribe(calcResultDTOs => {
+              let calcResultDTOsJSON = calcResultDTOs.json().data;
+              this.treeCompanyListResult = this.convertResultListTableNamesToTreeNode(calcResultDTOsJSON, companyListId);
+              this.successMessage(calcResultDTOsJSON, 'с иерархией расчёта получена');
             },
-            {
-              data: {id: 4, name: '11ll'},
-              children: []
-            },
-            {
-              data: {id: 3, name: 'lll3'},
-              children: []
-            }
-            , {
-              data: {id: 4, name: '11ll'},
-              children: []
-            }]
-        }
-      ]
-    }];
-    // this.treeService.getResultTable(modelId, companyListId, allCompaniesListId, year).pipe(map(data => {
-    //   resultsForList = data;
-    // }, err => {
-    //
-    // }));
-    //TODO
-    // this.treeCompanyListResult = this.convertResultListToTreeNode(resultsForList);
-    this.treeCompanyListResult = resultsForList;
+            err => {
+              this.errorMessage(err.json())
+            });
+          this.successMessage({name: '(таблица ' + tableName}, 'получена');
+        }, err => {
+          this.errorMessage(err.json())
+        });
     this.showToggle = true;
 
   }
 
-  convertResultListToTreeNode(list) {
-    if (list.children != undefined && list.children.length != 0) {
-      this.convertResultListToTreeNode(list.children);
-    }
-    return list.map(val => {
-      return {
-        data: val,
-        children: val.children
+  convertResultListTableNamesToTreeNode(list, companyListId) {
+
+    let keys = Object.keys(list);
+    return keys.map(key => {
+        console.log('treeview', this.companies
+          .filter(x => x.data.id == companyListId)
+          .find(x => x.children.data ? x.children.data.id.toString() == key : false))
+        return {
+          data: {
+            id: key,
+            descr: this.companies
+              .filter(x => x.data.id == companyListId)
+              .find(x => {
+                  for (let obj of x.children) {
+                    if (obj.data) {
+                      if (obj.data.id.toString() == key) {
+                        return obj;
+                      }
+                    }
+                  }
+                }
+              )
+              .data.descr
+          },
+          children: [this.convertChildren(list[key])]
+        }
       }
-    })
+    )
+
+
+  }
+
+
+  convertChildren(list) {
+    //TODO
+    let convertedObj;
+    let tempList = [];
+    if (list.length == undefined) {
+      convertedObj = {
+        data: {
+          comment: list.comment,
+          companyId: list.companyId,
+          isLeaf: list.isLeaf,
+          node: list.node,
+          parentNode: list.parentNode,
+          value: list.value,
+          weight: list.weight
+        },
+        children: tempList
+      };
+    }
+    else {
+      list.forEach(val =>
+        this.convertChildren(val))
+    }
+    if (list.children) {
+      if (list.children.length == 0) {
+        return convertedObj;
+      }
+      else {
+        for (let child of list.children) {
+          tempList.push(this.convertChildren(child))
+        }
+        return convertedObj;
+      }
+    }
   }
 
   closeModal() {
     this.showToggle = false;
+  }
+
+  successMessage(node, action) {
+    this.notificationService.add({
+      severity: 'success',
+      summary: 'Запись "' + node.descr + '" ' + action,
+      detail: JSON.stringify(node, null, 2)
+    })
+  }
+
+  errorMessage(error) {
+    this.notificationService.add({
+      severity: 'error',
+      summary: error.cause,
+      detail: error.url + '\n' + error.detail
+    })
+  }
+
+  setCompanies(res) {
+    this.companies = res;
   }
 }

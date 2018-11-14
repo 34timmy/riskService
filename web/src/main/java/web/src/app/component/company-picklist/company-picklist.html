@@ -1,36 +1,7 @@
-<div class="ui-g ui-fluid">
-  <div class="ui-g-12 ui-md-4">
-    <p class="fa fa-chevron-right" style="margin: 0 5px 0 0"></p>
-    <p-dropdown class="" [options]="models" [(ngModel)]="selectedModel" [filter]="true"
-                placeholder="Модель" [showClear]="true"
-                [style]="{'width':'150px'}">
-      <ng-template let-item pTemplate="selectedItem">
-        <div>{{item.value}}</div>
-      </ng-template>
-    </p-dropdown>
-  </div>
+<app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
+<app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
+<app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
 
-  <div class="ui-g-12 ui-md-4 ">
-    <p class="fa fa-list-ol" style="margin: 0 5px 0 0"></p>
-    <p-dropdown  [options]="stages" [(ngModel)]="selectedStage" [filter]="true"
-                placeholder="Стадия" [showClear]="true"
-                [style]="{'width':'150px'}">
-      <ng-template let-item pTemplate="selectedItem">
-        <div>{{item.label}}</div>
-      </ng-template>
-    </p-dropdown>
-  </div>
-  <div class="ui-g-12 ui-md-4">
-    <p class="fa fa-calendar " style="margin: 0 5px 0 0"></p>
-    <p-dropdown  [options]="years" [(ngModel)]="selectedYear" [filter]="true"
-                placeholder="Год" [showClear]="true"
-                [style]="{'width':'150px'}">
-      <ng-template let-item pTemplate="selectedItem">
-        <div>{{item.label}}</div>
-      </ng-template>
-    </p-dropdown>
-  </div>
-</div>
 <p-pickList [source]="source" [target]="target" sourceHeader="Список компаний" targetHeader="Список выбранных компаний"
             dragdrop="true"
             dragdropScope="companies"
@@ -72,13 +43,10 @@
   </div>
   <div class="ui-helper-clearfix" style="width:100%">
     <button type="button" pButton icon="fa fa-calculator" style="float:right"
-            (click)="showCreateModal()" label="Рассчитать">
+            (click)="calculate()" label="Рассчитать">
     </button>
   </div>
 </footer>
-<app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
-<app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
-<app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
 
 <p-toast position="top-right">
   <ng-template let-message pTemplate="message">
