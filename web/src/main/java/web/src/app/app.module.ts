@@ -9,7 +9,14 @@ import {HeaderComponent} from './component/auth/header.component';
 import {CompanyEditComponent} from './component/company-picklist/company-edit.component';
 import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
-import {CodeHighlighterModule, DataListModule, SharedModule, TabViewModule} from 'primeng/primeng';
+import {
+  CodeHighlighterModule,
+  DataListModule,
+  ProgressBarModule,
+  SharedModule,
+  SidebarModule,
+  TabViewModule
+} from 'primeng/primeng';
 import {GrowlModule} from 'primeng/components/growl/growl';
 import {FooterComponent} from './component/auth/footer.component';
 import {TabMenuModule} from 'primeng/tabmenu';
@@ -87,7 +94,9 @@ import { FileSelectDirective } from 'ng2-file-upload';
     ConfirmDialogModule,
     AutoCompleteModule,
     FileUploadModule,
-    HttpClientModule
+    HttpClientModule,
+    SidebarModule,
+    ProgressBarModule
   ],
   providers: [CompanyService, ParamsService, TreeService,
     NodesListService, TreeDiagramService,

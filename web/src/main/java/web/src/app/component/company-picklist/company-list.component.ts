@@ -9,6 +9,7 @@ import {TreeDiagramService} from "../../service/tree-diagram.service";
 
 @Component({
   templateUrl: './company-list.html',
+  styleUrls: ['../../resources/css/picklist.css'],
   selector: 'app-company-list'
 })
 export class CompanyListComponent implements OnInit {
@@ -69,7 +70,9 @@ export class CompanyListComponent implements OnInit {
         this.companyService.setCompaniesLists(this.companiesListNodes);
         this.saveChild.setSelectedCompanyList(resJson);
         this.companyService.setListsLoaded(true);
-        console.log('listLoaded? & toggle', this.listsLoaded, this.showToggle)
+      },
+      err => {
+        this.errorMessage(err.json())
       }
     );
 
@@ -81,6 +84,8 @@ export class CompanyListComponent implements OnInit {
       this.models = res.json().map(model => {
         return {label: model.descr, value: model.id}
       })
+    }, err => {
+      this.errorMessage(err.json())
     })
   }
 
@@ -120,6 +125,7 @@ export class CompanyListComponent implements OnInit {
 
         },
         err => {
+          this.errorMessage(err.json())
         });
 
   }

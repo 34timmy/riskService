@@ -1,0 +1,23 @@
+.modal-dialog{
+  /*overflow: scroll;*/
+  position: relative;
+  display: table; /* <-- This makes the trick */
+  overflow-y: auto;
+  overflow-x: auto;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  min-width: 700px;
+}
+
+.modal-body {
+  max-height: calc(100vh - 100px );
+  overflow-y: auto;
+}
+
+.modal-content {
+  height: auto;
+  min-height: 100%;
+}
+

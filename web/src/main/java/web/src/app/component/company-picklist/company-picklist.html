@@ -1,15 +1,19 @@
 <app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
 <app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
 <app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
+
+<div *ngIf="displayTopBar">
+  <p-progressBar [value]="loadValue"></p-progressBar>
+</div>
 <div class="ui-g-12 ui-md-12">
   <input
     style="display: none"
     type="file" (change)="uploadFile($event)"
     #fileInput>
-  <button type="button" pButton
-          icon="fa fa-download" style="margin: 5px 5px 5px 5px "
-          (onClick)="fileInput.click()"
-          label="Импорт из Excel"></button>
+  <p-button type="button"
+            icon="fa fa-download" style="margin: 5px 5px 5px 5px "
+            (onClick)="fileInput.click()"
+            label="Импорт из Excel"></p-button>
   <button type="button" pButton icon="fa fa-calculator" style="margin: 5px 5px 5px 5px "
           (click)="calculate()" label="Рассчитать">
   </button>

@@ -5,6 +5,7 @@ import {CompanyService} from "../../service/company.service";
 import {map} from "rxjs/operators";
 import {TreeViewComponent} from "./treeview.components";
 import {BehaviorSubject} from "rxjs";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-tableName',
@@ -19,7 +20,10 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
   @ViewChild(TreeViewComponent)
   treeViewChild: TreeViewComponent;
 
-  constructor(private treeService: TreeService, private companyService: CompanyService) {
+  constructor(private treeService: TreeService,
+              private companyService: CompanyService,
+              private notificationService: MessageService
+  ) {
   }
 
   ngOnInit() {
@@ -41,6 +45,7 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
 
       },
       err => {
+        this.errorMessage(err.json());
       })
 
   }
@@ -79,4 +84,29 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
       }
     })
   }
+
+  successMessage(obj, summary, detail) {
+    if (detail == null) {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: JSON.stringify(obj, null, 2)
+      })
+    } else {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: detail
+      })
+    }
+  }
+
+  errorMessage(error) {
+    this.notificationService.add({
+      severity: 'error',
+      summary: error.cause,
+      detail: error.url + '\n' + error.detail
+    })
+  }
+
 }

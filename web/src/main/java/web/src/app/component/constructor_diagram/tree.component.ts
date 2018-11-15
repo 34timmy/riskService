@@ -71,27 +71,11 @@ export class Tree implements OnInit {
     );
 
     let _data = this.treeService.getTreeNodeDTOs();
-    // let _data2 = this.treeService.getModelsAndConvert();
-    // console.log('data2', _data2)
-    // let _data = this.treeService.HARDCODEDgetModelsAndConvert();
     // if (!_data || !Array.isArray(_data.json)) return
     // if (typeof _data.config === 'object') {
     //   this._config = Object.assign(this._config, _data.config)
     // }
 
-    // this.treeService.getTheBooleanNodes().subscribe(value => {
-    //   if (value) {
-    //     setTimeout(() => {
-    //         this._config.formulaEditChild = this.formulaEditChild;
-    //         this._config.ruleEditChild = this.ruleEditChild;
-    //         this._config.modelEditChild = this.modelEditChild;
-    //         this.nodes = this.nodesSrv.loadNodes(_data, this._config);
-    //         this.treeService.setTheBoolean(true)
-    //       }
-    //     );
-    //
-    //   }
-    // });
     if (_data) {
       setTimeout(() => {
           this._config.formulaEditChild = this.formulaEditChild;

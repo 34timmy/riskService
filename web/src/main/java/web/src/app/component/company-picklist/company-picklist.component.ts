@@ -7,6 +7,8 @@ import {CompanySaveComponent} from "./company-save.component";
 import {HttpEventType, HttpResponse} from "@angular/common/http";
 import {UploadService} from "../../service/upload.service";
 import {FileUploader} from "ng2-file-upload";
+import {NotificationService} from "../../shared/notification.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   templateUrl: './company-picklist.html',
@@ -17,10 +19,12 @@ export class CompanyPicklistComponent implements OnInit {
   source: CompanyModel[];
 
   target: CompanyModel[];
-
+  displayTopBar = false;
+  loadValue = 0;
 
   constructor(private companyService: CompanyService,
-              private uploadService: UploadService
+              private uploadService: UploadService,
+              private notificationService: MessageService
   ) {
   }
 
@@ -36,11 +40,14 @@ export class CompanyPicklistComponent implements OnInit {
 
   ngOnInit() {
     this.companyService.getCompanies().subscribe(res => {
-      this.source = res.json();
-      this.companyListChild.setSaveChildComponent(this.companySaveChild);
-      this.companyListChild.setAllCompanies(this.source);
-      this.companySaveChild.setAllCompanyList(this.source);
-    });
+        this.source = res.json();
+        this.companyListChild.setSaveChildComponent(this.companySaveChild);
+        this.companyListChild.setAllCompanies(this.source);
+        this.companySaveChild.setAllCompanyList(this.source);
+      },
+      err => {
+        this.errorMessage(err.json());
+      });
     this.target = [];
     // this.upload();
   }
@@ -91,6 +98,10 @@ export class CompanyPicklistComponent implements OnInit {
       .subscribe(
         res => {
           this.reloadCompanies();
+        },
+        err => {
+          this.errorMessage(err.json());
+
         }
       );
   }
@@ -99,6 +110,10 @@ export class CompanyPicklistComponent implements OnInit {
     this.companyService.delete(company).subscribe(
       res => {
         this.reloadCompanies();
+      },
+      err => {
+        this.errorMessage(err.json());
+
       }
     );
   }
@@ -111,29 +126,59 @@ export class CompanyPicklistComponent implements OnInit {
   uploadFile(event) {
     this.selectedFile = event.target.files[0]
 
-    // if (files.length == 0) {
-    //   console.log("No file selected!");
-    //   return
-    // }
-
-    // let file: File = files[0];
+    if (this.selectedFile == undefined) {
+      console.log("No file selected!");
+      return
+    }
 
     this.uploadService.uploadFile(this.selectedFile)
       .subscribe(
         event => {
           if (event.type == HttpEventType.UploadProgress) {
+            this.displayTopBar = true;
             const percentDone = Math.round(100 * event.loaded / event.total);
-            console.log(`File is ${percentDone}% loaded.`);
+            this.loadValue = percentDone;
+            this.successMessage('',
+              'Файл ' + this.selectedFile.name + ' загружен',
+              '');
             window.location.reload();
           } else if (event instanceof HttpResponse) {
+            this.successMessage('',
+              'Файл ' + this.selectedFile.name + ' загружен',
+              '');
+            window.location.reload();
             console.log('File is completely loaded!');
           }
         },
         (err) => {
-          console.log("Upload Error:", err);
+          this.errorMessage(err.json());
         }, () => {
           console.log("Upload done");
         }
       )
+  }
+
+  successMessage(obj, summary, detail) {
+    if (detail == null) {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: JSON.stringify(obj, null, 2)
+      })
+    } else {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: detail
+      })
+    }
+  }
+
+  errorMessage(error) {
+    this.notificationService.add({
+      severity: 'error',
+      summary: error.cause,
+      detail: error.url + '\n' + error.detail
+    })
   }
 }

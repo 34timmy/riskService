@@ -7,6 +7,7 @@ import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-treeview',
+  styleUrls: ['../../resources/css/picklist.css'],
   templateUrl: 'treeview.html'
 })
 export class TreeViewComponent implements OnInit {
