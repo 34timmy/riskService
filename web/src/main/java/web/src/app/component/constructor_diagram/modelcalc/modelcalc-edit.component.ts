@@ -1,5 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {v4 as uuid} from 'uuid';
 
 @Component({
   selector: 'app-modelcalc-edit',
@@ -19,12 +20,14 @@ export class ModelcalcEditComponent implements OnInit {
     this.modelcalcForm = this.formBuilder.group(
       {
         node: [''],
+        guid:[''],
         descr: ['', Validators.required],
         model_id: [''],
         parent_node: [''],
         weight: [''],
         is_leaf: [''],
-        updated: false,
+        updating: false,
+        creating: false,
         type: 'modelcalc'
       }
     );
@@ -40,26 +43,30 @@ export class ModelcalcEditComponent implements OnInit {
       parent_node: modelcalc.parent_node,
       weight: modelcalc.weight,
       is_leaf: modelcalc.is_leaf,
-      updated: false,
+      updating: false,
+      creating: false
     });
   }
 
   fillModelcalcFormWithModelId(model) {
+    let guid = uuid();
     this.modelcalcForm.patchValue({
-      node: '',
+      node: guid,
+      guid: guid,
       descr: '',
-      model_id: model.id? model.id:model.data.model_id,
-      parent_node: model.id? model.id:model.node,
+      model_id: model.guid,
+      parent_node: model.guid,
       weight: '',
-      is_leaf: true,
-      updated: false,
+      is_leaf: false,
+      updating: false,
+      creating: true,
       type: 'modelcalc'
     });
   }
 
   onSaveModelcalc() {
     console.log('modelcalc value ', this.modelcalcForm.value);
-    this.modelcalcForm.value.updated = true;
+    this.modelcalcForm.value.updating = true;
     this.onSaveEvent.emit(this.modelcalcForm.value);
     this.closeModal();
   }

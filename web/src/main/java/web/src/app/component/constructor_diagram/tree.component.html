@@ -2,7 +2,9 @@
 <app-rule-edit #ruleChild (onSaveEvent)="onSaveRule($event)"></app-rule-edit>
 <app-model-edit #modelChild (onSaveEvent)="onSaveModel($event)"></app-model-edit>
 <app-modelcalc-edit #modelCalcChild (onSaveEvent)="onSaveModelCalc($event)"></app-modelcalc-edit>
-<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+<app-choose #chooseChild (onChooseAgr)="onChooseAgr()" (onChooseFormula)="onChooseFormula()"></app-choose>
+<p-confirmDialog icon="pi pi-exclamation-triangle" width="425" [closeOnEscape]="true">
+</p-confirmDialog>
 <div class="tree-pane"
      (mousedown)="onmousedown($event)"
      (mouseup)="onmouseup($event)"
@@ -11,8 +13,8 @@
 >
 
   <div
-       class="tree-paning-container"
-       [style.transform]="paneTransform"
+    class="tree-paning-container"
+    [style.transform]="paneTransform"
   >
     <div *ngIf="nodes"
          class="tree-roots-elements"

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {v4 as uuid} from 'uuid';
 
 @Component({
   selector: 'app-formula-edit',
@@ -25,6 +25,7 @@ export class FormulaEditComponent implements OnInit {
         descr: ['', Validators.required],
         calculation: [''],
         formulaType: [''],
+        weight: [''],
         a: [''],
         b: [''],
         c: [''],
@@ -33,7 +34,12 @@ export class FormulaEditComponent implements OnInit {
         comments: [''],
         rule_id: [''],
         model_calc_id: [''],
-        updated: false,
+        node: [''],
+        parent_node: [''],
+        is_leaf: [''],
+        model_id: [''],
+        updating: false,
+        creating: false,
         type: 'formula'
       }
     );
@@ -42,18 +48,21 @@ export class FormulaEditComponent implements OnInit {
   fillFormulaForm(formula) {
     this.formulaForm.patchValue({
       id: formula.id,
+      guid:[''],
       descr: formula.descr,
       calculation: formula.calculation,
       formulaType: formula.formulaType,
+      weight: formula.weight,
       a: formula.a,
       b: formula.b,
       c: formula.c,
       d: formula.d,
       xb: formula.xb,
       comments: formula.comments,
-      rule_id: formula.rule_id,
-      updated: false,
-      type: 'formula'
+      model_calc_id: formula.model_calc_id,
+      updating: false,
+      creating: false,
+      type: formula.type
     });
   }
 
@@ -61,23 +70,32 @@ export class FormulaEditComponent implements OnInit {
     console.log('fillFormulaFormWithRuleId', rule);
     this.formulaForm.patchValue({
       rule_id: rule.id,
-      updated: false,
+      updating: false,
       type: 'formula'
     });
   }
 
-  fillFormulaFormWithModelCalcId(modelCalc) {
-    console.log('fillFormulaFormWithRuleId', modelCalc);
+  fillFormulaFormWithModelCalcId(modelcalc) {
+    console.log('fillFormulaFormWithRuleId', modelcalc);
+    let guid = uuid();
     this.formulaForm.patchValue({
-      rule_id: modelCalc.id,
-      updated: false,
+      id: guid,
+      guid: guid,
+      descr: modelcalc.data.descr,
+      model_id: modelcalc.data.model_id,
+      parent_node: modelcalc.data.node,
+      weight: modelcalc.data.weight,
+      is_leaf: true,
+      model_calc_id: modelcalc.guid,
+      updating: false,
+      creating: true,
       type: 'formula'
     });
   }
 
   onSaveFormula() {
     console.log('formula value ', this.formulaForm.value);
-    this.formulaForm.value.updated = true;
+    this.formulaForm.value.updating = true;
     this.onSaveEvent.emit(this.formulaForm.value);
     this.closeModal();
   }

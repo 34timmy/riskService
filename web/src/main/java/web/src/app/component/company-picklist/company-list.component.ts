@@ -90,7 +90,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   loadYears() {
-
+    //TODO from service
     return [
       {label: 2016, value: 2016},
       {label: 2015, value: 2015},
@@ -153,7 +153,7 @@ export class CompanyListComponent implements OnInit {
 
   resultsWithCompanies(companyLists) {
     let companyListsWithCompanies = [];
-
+    //TODO temo name
     for (let list of companyLists) {
       let companyObjs =
         this.allCompanies.filter(

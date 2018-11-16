@@ -4,10 +4,11 @@ import {NodesListService} from './services/nodesList.service'
 import {DomSanitizer} from "@angular/platform-browser";
 import {TreeDiagramService} from "../../service/tree-diagram.service";
 import {Observable, of} from "rxjs";
-import {FormulaEditComponent} from "../formula/formula-edit.component";
+import {FormulaEditComponent} from "./formula/formula-edit.component";
 import {ConfirmationService, MessageService} from "primeng/api";
-import {ModelEditComponent} from "../model/model-edit.component";
-import {ModelcalcEditComponent} from "../modelcalc/modelcalc-edit.component";
+import {ModelEditComponent} from "./model/model-edit.component";
+import {ModelcalcEditComponent} from "./modelcalc/modelcalc-edit.component";
+import {ChooseComponent} from "./choose_dialog/choose.component";
 
 @Component({
   selector: 'tree-diagram',
@@ -27,6 +28,9 @@ export class Tree implements OnInit {
   @ViewChild('modelCalcChild')
   private modelCalcEditChild: ModelcalcEditComponent;
 
+  @ViewChild('chooseChild')
+  private chooseChild: ChooseComponent;
+
 
   private _config = {
     confirmationService: this.confirmationService,
@@ -36,6 +40,7 @@ export class Tree implements OnInit {
     ruleEditChild: this.ruleEditChild,
     modelEditChild: this.modelEditChild,
     modelCalcEditChild: this.modelCalcEditChild,
+    chooseChild: this.chooseChild,
     nodeWidth: 200,
     nodeHeight: 100
   };
@@ -47,6 +52,8 @@ export class Tree implements OnInit {
   private paneY = 0
   nodes;
   updatedNodes;
+
+  typeDialog;
   modelsLoaded: Observable<boolean>;
   nodesLoaded: Observable<boolean>;
 
@@ -66,7 +73,10 @@ export class Tree implements OnInit {
   ngOnInit() {
     this.treeService.getTheBoolean().subscribe(value => {
         this.modelsLoaded = of(value);
-        console.log('is models Loaded? ', this.modelsLoaded)
+      }
+    );
+    this.treeService.getTypeDialog().subscribe(value => {
+        this.typeDialog = of(value);
       }
     );
 
@@ -75,6 +85,8 @@ export class Tree implements OnInit {
     // if (typeof _data.config === 'object') {
     //   this._config = Object.assign(this._config, _data.config)
     // }
+    this.chooseChild.setModelCalcChild(this.modelCalcEditChild);
+    this.chooseChild.setFormulaChild(this.formulaEditChild);
 
     if (_data) {
       setTimeout(() => {
@@ -82,6 +94,7 @@ export class Tree implements OnInit {
           this._config.ruleEditChild = this.ruleEditChild;
           this._config.modelEditChild = this.modelEditChild;
           this._config.modelCalcEditChild = this.modelCalcEditChild;
+          this._config.chooseChild = this.chooseChild;
           this.nodes = this.nodesSrv.loadNodes(_data, this._config);
           this.treeService.setTheBoolean(true)
         }
@@ -131,18 +144,43 @@ export class Tree implements OnInit {
     this.makeTransform()
   }
 
-  onSaveFormula(node) {
+  private onChooseAgr() {
+    this.chooseChild.chooseAgr();
+  }
+
+  private onChooseFormula() {
+    this.chooseChild.chooseFormula();
+  }
+
+  private onSaveFormula(node) {
     console.log('formula ', node);
     this.treeService.saveFormula(node)
       .subscribe(
         res => {
-          if (node.id) {
+          if (!node.creating) {
             this.nodesSrv.editNodeOnSaveFormula();
             this.successMessage(node,
               'Запись ' + node.descr + ' изменена',
               null);
           }
           else {
+
+            let modelCalc = {
+              node: node.guid,
+              descr: node.descr,
+              model_id: node.model_id,
+              parent_node: node.node,
+              weight: node.weight,
+              is_leaf: node.is_leaf,
+              level: 0,
+              creating: true,
+              model_calc_id: node.model_calc_id,
+            };
+            this.treeService.saveModelCalc(modelCalc).subscribe(res => {
+            }, err => {
+              this.errorMessage(err.json());
+            });
+
             this.nodesSrv.addNodeOnSaveFormula();
             this.successMessage(node,
               'Запись ' + node.descr + ' добавлена',
@@ -155,19 +193,19 @@ export class Tree implements OnInit {
       );
   }
 
-  onDeleteFormula(formula) {
+  private onDeleteFormula(formula) {
     this.treeService.deleteFormula(formula).subscribe(
       res => {
       }
     );
   }
 
-  onSaveRule(node) {
+  private onSaveRule(node) {
     console.log('rule ', node);
     this.treeService.saveRule(node)
       .subscribe(
         res => {
-          if (node.id) {
+          if (!node.creating) {
             this.nodesSrv.editNodeOnSaveRule();
             this.successMessage(node,
               'Запись ' + node.descr + ' изменена',
@@ -188,17 +226,16 @@ export class Tree implements OnInit {
       );
   }
 
-  onSaveModel(node) {
+  private onSaveModel(node) {
     console.log('model ', node);
     this.treeService.saveModel(node)
       .subscribe(
         res => {
-          if (node.id) {
+          if (!node.creating) {
             this.nodesSrv.editNodeOnSaveModel();
             this.successMessage(node,
               'Запись ' + node.descr + ' изменена',
               null);
-
           }
           else {
             this.nodesSrv.addNodeOnSaveModel();
@@ -214,12 +251,12 @@ export class Tree implements OnInit {
       );
   }
 
-  onSaveModelCalc(node) {
+  private onSaveModelCalc(node) {
     console.log('model ', node);
     this.treeService.saveModelCalc(node)
       .subscribe(
         res => {
-          if (node.node) {
+          if (!node.creating) {
             this.nodesSrv.editNodeOnSaveModelCalc();
             this.successMessage(node,
               'Запись ' + node.descr + ' изменена',
@@ -240,14 +277,14 @@ export class Tree implements OnInit {
       );
   }
 
-  saveChanges(nodes) {
+  private saveChanges(nodes) {
     //TODO save changes after drag and drop
     this.updatedNodes = Array.from(this.nodesSrv.getNodes())
       .filter((val) => val.updated === true);
     console.log('updatedNodes ', this.updatedNodes)
   }
 
-  successMessage(obj, summary, detail) {
+  private successMessage(obj, summary, detail) {
     if (detail == null) {
       this.notificationService.add({
         severity: 'success',
@@ -263,7 +300,7 @@ export class Tree implements OnInit {
     }
   }
 
-  errorMessage(error) {
+  private errorMessage(error) {
     this.notificationService.add({
       severity: 'error',
       summary: error.cause,

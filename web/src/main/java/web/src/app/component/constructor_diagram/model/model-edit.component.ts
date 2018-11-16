@@ -1,5 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {v4 as uuid} from 'uuid';
 
 @Component({
   selector: 'app-model-edit',
@@ -18,8 +19,10 @@ export class ModelEditComponent implements OnInit {
     this.modelForm = this.formBuilder.group(
       {
         id: [''],
+        guid:[''],
         descr: ['', Validators.required],
-        updated: false,
+        updating: false,
+        creating: false,
         type: 'model'
       }
     );
@@ -29,27 +32,31 @@ export class ModelEditComponent implements OnInit {
     console.log('fillModelForm', model);
 
     this.modelForm.patchValue({
-      id: model.guid,
-      descr: model.displayName,
+      id: model.id,
+      descr: model.descr,
       parentId: model.parentId,
-      updated: false,
+      updating: false,
+      creating: false,
       data: model.data,
       type: model.type
     });
   }
 
   fillEmptyModelForm() {
+    let guid = uuid();
     this.modelForm.patchValue({
-      id: '',
+      id: guid,
+      guid: guid,
       descr: '',
-      updated: false,
+      updating: false,
+      creating: true,
       type: 'model'
     });
   }
 
   onSaveModel() {
     console.log('model value ', this.modelForm.value);
-    this.modelForm.value.updated = true;
+    this.modelForm.value.updating = true;
     this.onSaveEvent.emit(this.modelForm.value);
     this.closeModal();
   }

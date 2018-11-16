@@ -1,16 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
-import {RiskModelModel} from '../model/risk-model.model';
 import {
   basePath,
-  companiesPath,
   constructorPath,
-  formulaPath, modelCalcPath,
+  formulaPath,
+  modelCalcPath,
   modelPath,
   reqOptions,
-  reqOptionsJson, rulePath
+  reqOptionsJson,
+  rulePath
 } from '../shared/config';
-import {TreeNode} from "primeng/api";
 import {Router} from "@angular/router";
 import {BehaviorSubject, Observable} from "rxjs";
 
@@ -26,10 +25,11 @@ export class TreeDiagramService {
   modelsNodes;
   nodesLoaded: BehaviorSubject<boolean>;
   modelsLoaded: BehaviorSubject<boolean>;
+  typeDialog = new BehaviorSubject<boolean>(false);
 
   saveFormula(formula) {
     console.log('service save formula ', formula);
-    if (formula.id) {
+    if (!formula.creating) {
       return this.updateFormula(formula);
     } else {
       return this.createFormula(formula);
@@ -75,7 +75,7 @@ export class TreeDiagramService {
 
   saveModel(model) {
     console.log('service save model ', model);
-    if (model.id) {
+    if (!model.creating) {
       return this.updateModel(model);
     } else {
       return this.createModel(model);
@@ -97,7 +97,7 @@ export class TreeDiagramService {
   }
 
   saveModelCalc(modelCalc) {
-    if (modelCalc.node) {
+    if (!modelCalc.creating) {
       return this.updateModelCalc(modelCalc);
     } else {
       return this.createModelCalc(modelCalc);
@@ -118,7 +118,7 @@ export class TreeDiagramService {
     return this.http.post(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), reqOptionsJson);
   }
 
-   getAllModels() {
+  getAllModels() {
     //TODO MODELS only
     return this.http.get(basePath + constructorPath + modelPath, reqOptions);
   }
@@ -140,17 +140,6 @@ export class TreeDiagramService {
     return this.modelsNodes;
   }
 
-  getModelsAndConvert() {
-    this.modelsNodes = [];
-    this.setTheBoolean(false);
-    this.getAllModels().toPromise().then(res => {
-      this.modelsToTreeNode(res.json());
-      // this.setTheBoolean(true);
-    });
-    return this.modelsNodes;
-  }
-
-
   getTheBoolean(): Observable<boolean> {
     return this.modelsLoaded.asObservable();
   }
@@ -164,17 +153,40 @@ export class TreeDiagramService {
     this.modelsLoaded.next(newValue);
   }
 
+
+  getTypeDialog() {
+    return this.typeDialog.asObservable();
+  }
+
+  setTheTypeDalog(newValue: boolean): void {
+    this.typeDialog.next(newValue);
+  }
+
+
   private setTheBooleanNodes(newValue: boolean) {
     this.nodesLoaded.next(newValue);
 
   }
 
+  // @Deprecated
+  private getModelsAndConvert() {
+    this.modelsNodes = [];
+    this.setTheBoolean(false);
+    this.getAllModels().toPromise().then(res => {
+      this.modelsToTreeNode(res.json());
+      // this.setTheBoolean(true);
+    });
+    return this.modelsNodes;
+  }
+
+  // @Deprecated
   private modelsToTreeNode(models) {
     for (let mod of models) {
       this.modelsNodes.push(this.modelToTreeNode(mod));
     }
   }
 
+  // @Deprecated
   private modelToTreeNode(mod): any {
     let modelCalcsTreeNodes = [];
     if (mod.modelCalcs !== undefined) {
@@ -197,6 +209,7 @@ export class TreeDiagramService {
     };
   }
 
+  // @Deprecated
   private modelCalcToTreeNode(modelCalc, parent) {
     let formulaTreeNodes = [];
     if (modelCalc.formulas !== undefined) {
@@ -220,6 +233,7 @@ export class TreeDiagramService {
     }
   }
 
+  // @Deprecated
   private formulaToTreeNode(formula, parent) {
     return {
       guid: (formula.id + '_' + formula.descr).toString(),
@@ -243,7 +257,6 @@ export class TreeDiagramService {
       children: []
     }
   }
-
 
 
 }

@@ -2,10 +2,13 @@ import {TreeDiagramNode} from './node.class';
 import {TreeDiagramNodeMaker} from "./node-maker.class"
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ViewChild} from "@angular/core";
-import {FormulaEditComponent} from "../../formula/formula-edit.component";
-import {ModelEditComponent} from "../../model/model-edit.component";
+import {FormulaEditComponent} from "../formula/formula-edit.component";
+import {ModelEditComponent} from "../model/model-edit.component";
 import {RuleEditComponent} from "../../rule/rule-edit.component";
-import {ModelcalcEditComponent} from "../../modelcalc/modelcalc-edit.component";
+import {ModelcalcEditComponent} from "../modelcalc/modelcalc-edit.component";
+import {ChooseComponent} from "../choose_dialog/choose.component";
+import {v4 as uuid} from 'uuid';
+
 
 export class TreeDiagramNodesList {
   private _nodesList = new Map();
@@ -33,6 +36,8 @@ export class TreeDiagramNodesList {
   private modelEditChild: ModelEditComponent;
   @ViewChild(ModelcalcEditComponent)
   private modelCalcEditChild: ModelcalcEditComponent;
+  @ViewChild(ChooseComponent)
+  private chooseChild: ChooseComponent;
 
   private uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -48,7 +53,7 @@ export class TreeDiagramNodesList {
 
     this._makeRoots()
     //TODO - guid generation
-    this.makerGuid = this.uuidv4()
+    this.makerGuid = uuid();
     let node = {
       guid: this.makerGuid,
       parentId: 'root',
@@ -63,6 +68,7 @@ export class TreeDiagramNodesList {
     this.ruleEditChild = this.config.ruleEditChild;
     this.modelEditChild = this.config.modelEditChild;
     this.modelCalcEditChild = this.config.modelCalcEditChild;
+    this.chooseChild = this.config.chooseChild;
   }
 
   private _makeRoots() {
@@ -229,7 +235,7 @@ export class TreeDiagramNodesList {
     this.globalNode = node;
     if (node.type === 'model') {
       this.showModelEditDialog();
-      this.modelEditChild.fillModelForm(node);
+      this.modelEditChild.fillModelForm(node.data);
 
     }
     else if (node.type === 'modelcalc') {
@@ -252,19 +258,18 @@ export class TreeDiagramNodesList {
       this.showModelEditDialog();
       this.modelEditChild.fillEmptyModelForm();
     }
-    else if (node.type.equals('model')) {
+    else if (node.type === 'model') {
       this.showModelCalcEditDialog();
       this.modelCalcEditChild.fillModelcalcFormWithModelId(node);
     }
-    else if (node.type.equals('modelcalc')) {
-      this.showFormulaEditDialog();
-      this.formulaEditChild.fillFormulaFormWithModelCalcId(node);
+    else if (node.type === 'modelcalc') {
+      this.showChooseDialog(node);
     }
   }
 
   public newNode(node = null, value = null) {
     let _nodeTemplate = Object.assign({}, this._nodeTemplate);
-    _nodeTemplate.guid = this.uuidv4();
+    _nodeTemplate.guid = value.guid;
     //TODO guid must be id from DB
     _nodeTemplate.parentId = node ? node.guid : null;
     _nodeTemplate.displayName = value.descr;
@@ -276,7 +281,12 @@ export class TreeDiagramNodesList {
 
   }
 
-  private showFormulaEditDialog() {
+  private showChooseDialog(node) {
+    this.chooseChild.showToggle = true;
+    this.chooseChild.node = node;
+  }
+
+  showFormulaEditDialog() {
     this.formulaEditChild.resetForm();
     this.formulaEditChild.showToggle = true;
   }
@@ -286,7 +296,7 @@ export class TreeDiagramNodesList {
     this.ruleEditChild.showToggle = true;
   }
 
-  private showModelCalcEditDialog() {
+  showModelCalcEditDialog() {
     this.modelCalcEditChild.resetForm();
     this.modelCalcEditChild.showToggle = true;
   }
@@ -334,7 +344,7 @@ export class TreeDiagramNodesList {
   }
 
   addNodeOnSaveModel() {
-    this.newNode(this.modelEditChild.modelForm.value)
+    this.newNode(null,this.modelEditChild.modelForm.value)
   }
 
 

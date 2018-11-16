@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MessageService, TreeNode} from 'primeng/api';
 import {TreeService} from '../../service/tree.service';
-import {FormulaEditComponent} from '../formula/formula-edit.component';
+import {FormulaEditComponent} from '../constructor_diagram/formula/formula-edit.component';
 import {Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
 
@@ -52,66 +52,8 @@ export class TreeViewComponent implements OnInit {
     // this.treeCompanyListResult = this.treeService.getModelsAndConvert();
   }
 
-  onEdit(node) {
-    //TODO Check type
-    if (node.name.toLowerCase().includes('model')) {
-      this.showModelCreateDialog(node);
-    }
-    if (node.name.toLowerCase().includes('formula')) {
-      this.showFormulaEditDialog();
-      this.formulaEditChild.fillFormulaForm(node);
-    }
-  }
-
-  onAdd(node) {
-    //TODO Check type
-    if (node.name.toLowerCase().includes('model')) {
-      this.showModelCreateDialog(node);
-    }
-    if (node.name.toLowerCase().includes('formula')) {
-      this.showFormulaEditDialog();
-      this.formulaEditChild.fillFormulaFormWithRuleId(node);
-
-    }
-  }
-
   //------------------------------------------------------------------------------------
-  private addNodeToParent(rowData) {
-    this.onAdd(rowData);
-    // let node: TreeNode = {
-    //   parent: rowData.parent,
-    //   data: {id: rowData.id, name: rowData.name},
-    //   children: rowData.children
-    // };
-    // let newNode: TreeNode = this.onEdit(rowData);
-    // if (node.parent !== undefined) {
-    //   node.parent.children.push(node);
-    //   console.log('toParentNode', this.selectedNode.children)
-    // }
-    // else {
-    //   this.treeCompanyListResult.push(node);
-    //   console.log('no parent', this.treeCompanyListResult)
-    // }
-  }
 
-  private addNodeToChildren(rowData) {
-    this.onAdd(rowData);
-
-    // node = this.selectedNode;
-    // console.log(node);
-    // let newNode: TreeNode = {
-    //   data: {id: 99, name: 'new'},
-    //   children: []
-    // };
-    // if (node.children !== undefined) {
-    //   node.children.push(newNode);
-    //   console.log('toChildrenNode', this.selectedNode.children)
-    // }
-    // else {
-    //   node.parent.children.push(newNode);
-    //   console.log('no children', node.parent.children)
-    // }
-  }
 
   private showModelCreateDialog(node) {
     //TODO

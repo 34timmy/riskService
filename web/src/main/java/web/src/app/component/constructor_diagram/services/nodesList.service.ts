@@ -26,6 +26,14 @@ export class NodesListService {
     return this._nodesList.makerGuid
   }
 
+  public showAgr() {
+    this._nodesList.showModelCalcEditDialog()
+  }
+
+  public showFormula() {
+    this._nodesList.showModelCalcEditDialog()
+  }
+
   public addNodeOnSaveFormula() {
     this._nodesList.addNodeOnSaveFormula();
   }
@@ -49,7 +57,7 @@ export class NodesListService {
   }
 
   public editNodeOnSaveModel() {
-   this._nodesList.editNodeOnSaveModel();
+    this._nodesList.editNodeOnSaveModel();
   }
 
   public addNodeOnSaveModelCalc() {

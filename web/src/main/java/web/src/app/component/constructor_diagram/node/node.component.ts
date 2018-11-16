@@ -7,7 +7,7 @@ import {NodesListService} from '../services/nodesList.service'
 import {TreeDiagramNode} from "../classes/node.class"
 import {DomSanitizer} from "@angular/platform-browser"
 import {TreeDiagramNodeMaker} from "../classes/node-maker.class"
-import {FormulaEditComponent} from "../../formula/formula-edit.component";
+import {FormulaEditComponent} from "../formula/formula-edit.component";
 
 @Component({
   selector: '[treeDiagramNode]',

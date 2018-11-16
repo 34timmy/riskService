@@ -1,6 +1,6 @@
 import {TreeDiagramNodesList} from './nodesList.class'
 import {ViewChild, ViewChildren} from "@angular/core";
-import {FormulaEditComponent} from "../../formula/formula-edit.component";
+import {FormulaEditComponent} from "../formula/formula-edit.component";
 import {TreeDiagramService} from "../../../service/tree-diagram.service";
 import {ConfirmationService} from "primeng/api";
 
@@ -111,7 +111,6 @@ export class TreeDiagramNode {
   }
 
   public addChild() {
-    console.log('addChild method called', this);
     this.getThisNodeList().addNode(this);
   }
 

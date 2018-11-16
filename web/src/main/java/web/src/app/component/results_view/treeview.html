@@ -19,7 +19,7 @@
                      [columns]="cols" selectionMode="single"
                      [(selection)]="selectedNode"
                      [resizableColumns]="true"
-                     >
+        >
           <ng-template pTemplate="header" let-columns>
             <tr>
               <th *ngFor="let col of columns" ttResizableColumn [ttSortableColumn]="col.field">{{col.header}}
@@ -67,4 +67,3 @@
     </div>
   </div>
 </div>
-<app-formula-edit (onSaveEvent)="onSaveFormula($event)"></app-formula-edit>

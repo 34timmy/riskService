@@ -1,18 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
-import {RiskModelModel} from '../model/risk-model.model';
-import {
-  basePath,
-  companiesPath,
-  constructorPath,
-  formulaPath,
-  modelPath,
-  reqOptions,
-  reqOptionsJson
-} from '../shared/config';
+import {basePath, constructorPath, formulaPath, modelPath, reqOptions, reqOptionsJson} from '../shared/config';
 import {TreeNode} from "primeng/api";
 import {Router} from "@angular/router";
 import {BehaviorSubject, Observable} from "rxjs";
+import {v4 as uuid} from 'uuid';
 
 @Injectable()
 export class TreeService {
@@ -30,6 +22,7 @@ export class TreeService {
     if (formula.id) {
       return this.update(formula);
     } else {
+      formula.id = uuid();
       return this.create(formula);
     }
   }
@@ -59,7 +52,6 @@ export class TreeService {
   }
 
 
-
   getResultTableNamesRequest(modelId, companyListId, allCompaniesListId, year) {
     return this.http.get(basePath +
       "/getData" +
@@ -82,7 +74,7 @@ export class TreeService {
   //   // return this.modelsNodes;
   // }
 
-   getCalcResultDTOs(tableName) {
+  getCalcResultDTOs(tableName) {
     return this.http.get(basePath +
       "/getData" +
       "/byTable?" +
@@ -90,18 +82,7 @@ export class TreeService {
       , reqOptions);
   }
 
-  getModelsAndConvert() {
-    this.modelsNodes = [];
-    this.setTheBoolean(false);
-    this.getAll().toPromise().then(res => {
-      this.modelsToTreeNode(res.json());
-      this.setTheBoolean(true);
-    });
-    return this.modelsNodes;
-  }
-
-
-  getTheBoolean(): Observable<boolean> {
+    getTheBoolean(): Observable<boolean> {
     return this.modelsLoaded.asObservable();
   }
 
@@ -109,67 +90,67 @@ export class TreeService {
     this.modelsLoaded.next(newValue);
   }
 
-  private modelsToTreeNode(models) {
-    for (let mod of models) {
-      this.modelsNodes.push(this.modelToTreeNode(mod));
-    }
-  }
-
-  private modelToTreeNode(mod): TreeNode {
-    let rulesTreeNodes: TreeNode[] = [];
-    if (mod.rules !== undefined) {
-      for (let rule of mod.rules) {
-        rulesTreeNodes.push(this.ruleToTreeNode(rule, mod))
-      }
-    }
-    return {
-      label: mod.nom,
-      data: mod,
-      children: rulesTreeNodes,
-      draggable: true,
-      droppable: true
-    };
-  }
-
-  private ruleToTreeNode(rule, parent) {
-    let formulaTreeNodes: TreeNode[] = [];
-    if (rule.formulas !== undefined) {
-      for (let formula of rule.formulas) {
-        formulaTreeNodes.push(this.formulaToTreeNode(formula, rule))
-      }
-    }
-    return {
-      label: rule.nom,
-      parent: parent,
-      data: rule,
-      children: formulaTreeNodes,
-      draggable: true,
-      droppable: true
-    }
-  }
-
-  private formulaToTreeNode(formula, parent): TreeNode {
-    return {
-      label: formula.nom,
-      parent: parent,
-      data: {
-        id: formula.node,
-        name: formula.name,
-        calculation: formula.calculation,
-        formulaType: formula.formulaType,
-        a: formula.a,
-        b: formula.b,
-        c: formula.c,
-        d: formula.d,
-        xb: formula.xb,
-        comments: formula.comments,
-        rule_id: parent.id,
-      },
-      children: [],
-      draggable: true,
-      droppable: true
-    }
-  }
+  // private modelsToTreeNode(models) {
+  //   for (let mod of models) {
+  //     this.modelsNodes.push(this.modelToTreeNode(mod));
+  //   }
+  // }
+  //
+  // private modelToTreeNode(mod): TreeNode {
+  //   let rulesTreeNodes: TreeNode[] = [];
+  //   if (mod.rules !== undefined) {
+  //     for (let rule of mod.rules) {
+  //       rulesTreeNodes.push(this.ruleToTreeNode(rule, mod))
+  //     }
+  //   }
+  //   return {
+  //     label: mod.nom,
+  //     data: mod,
+  //     children: rulesTreeNodes,
+  //     draggable: true,
+  //     droppable: true
+  //   };
+  // }
+  //
+  // private ruleToTreeNode(rule, parent) {
+  //   let formulaTreeNodes: TreeNode[] = [];
+  //   if (rule.formulas !== undefined) {
+  //     for (let formula of rule.formulas) {
+  //       formulaTreeNodes.push(this.formulaToTreeNode(formula, rule))
+  //     }
+  //   }
+  //   return {
+  //     label: rule.nom,
+  //     parent: parent,
+  //     data: rule,
+  //     children: formulaTreeNodes,
+  //     draggable: true,
+  //     droppable: true
+  //   }
+  // }
+  //
+  // private formulaToTreeNode(formula, parent): TreeNode {
+  //   return {
+  //     label: formula.nom,
+  //     parent: parent,
+  //     data: {
+  //       id: formula.node,
+  //       name: formula.name,
+  //       calculation: formula.calculation,
+  //       formulaType: formula.formulaType,
+  //       a: formula.a,
+  //       b: formula.b,
+  //       c: formula.c,
+  //       d: formula.d,
+  //       xb: formula.xb,
+  //       comments: formula.comments,
+  //       rule_id: parent.id,
+  //     },
+  //     children: [],
+  //     draggable: true,
+  //     droppable: true
+  //   }
+  // }
 
 
 }

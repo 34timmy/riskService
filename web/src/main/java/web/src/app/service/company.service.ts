@@ -12,7 +12,7 @@ import {
   companyLists, modelPath, companiesListsPath
 } from '../shared/config';
 import {CompanyModel} from '../model/company.model';
-
+import {v4 as uuid} from 'uuid';
 
 @Injectable()
 export class CompanyService {
@@ -36,6 +36,7 @@ export class CompanyService {
     if (company.id) {
       return this.updateCompany(company);
     } else {
+      company.id = uuid();
       return this.createCompany(company);
     }
   }

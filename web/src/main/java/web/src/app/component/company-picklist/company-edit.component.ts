@@ -22,7 +22,9 @@ export class CompanyEditComponent implements OnInit {
       {
         id: [''],
         name: ['', Validators.required],
-        INN: ['', Validators.required]
+        INN: ['', Validators.required],
+        updating: false,
+        creating: false
       }
     );
   }
@@ -31,7 +33,9 @@ export class CompanyEditComponent implements OnInit {
     this.companyForm.patchValue({
       id: company.id,
       name: company.descr,
-      INN: company.INN
+      INN: company.INN,
+      updating: false,
+      creating: false
     });
   }
 

@@ -1,8 +1,8 @@
-import {Component, Output, EventEmitter, OnInit, ViewChild} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {CompanyModel} from '../../model/company.model';
 import {CompanyService} from "../../service/company.service";
-import {MessageService} from "../../../../node_modules/primeng/api";
+import {MessageService} from "primeng/api";
+import {v4 as uuid} from 'uuid';
 
 @Component({
   templateUrl: './company-save.html',
@@ -20,9 +20,6 @@ export class CompanySaveComponent implements OnInit {
   onSaveEvent: EventEmitter<CompanyModel> = new EventEmitter<CompanyModel>();
   @Output()
   onSaveCompanyListEvent: EventEmitter<any> = new EventEmitter();
-
-  // @ViewChild(CompanyListComponent)
-  // private companyListChild: CompanyListComponent;
 
   constructor(private companyService: CompanyService,
               private notificationService: MessageService
@@ -91,9 +88,8 @@ export class CompanySaveComponent implements OnInit {
 
 
   private collectToCompanyList(name, companies) {
-    //TODO autogen id
     return {
-      id: 3,
+      id: uuid(),
       descr: name,
       company_ids: companies.map(val => {
         return val.id

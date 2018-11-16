@@ -29,7 +29,7 @@ import {DropdownModule} from 'primeng/dropdown';
 import {TreeTableModule} from 'primeng/treetable';
 import {TreeViewComponent} from './component/results_view/treeview.components';
 import {TreeService} from './service/tree.service';
-import {FormulaEditComponent} from './component/formula/formula-edit.component';
+import {FormulaEditComponent} from './component/constructor_diagram/formula/formula-edit.component';
 import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
 import {DragDropModule} from 'primeng/dragdrop';
@@ -39,11 +39,11 @@ import {NodesListService} from "./component/constructor_diagram/services/nodesLi
 import {TreeDiagramService} from "./service/tree-diagram.service";
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
-import {ModelEditComponent} from "./component/model/model-edit.component";
+import {ModelEditComponent} from "./component/constructor_diagram/model/model-edit.component";
 import {NotificationService} from "./shared/notification.service";
 import {CustomErrorHandler} from "./shared/custom.errorhandler";
 import {RuleEditComponent} from "./component/rule/rule-edit.component";
-import {ModelcalcEditComponent} from "./component/modelcalc/modelcalc-edit.component";
+import {ModelcalcEditComponent} from "./component/constructor_diagram/modelcalc/modelcalc-edit.component";
 import {CompanySaveComponent} from "./component/company-picklist/company-save.component";
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {CompanyListComponent} from "./component/company-picklist/company-list.component";
@@ -54,6 +54,7 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {HttpClientModule} from "@angular/common/http";
 import {UploadService} from "./service/upload.service";
 import { FileSelectDirective } from 'ng2-file-upload';
+import {ChooseComponent} from "./component/constructor_diagram/choose_dialog/choose.component";
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { FileSelectDirective } from 'ng2-file-upload';
     CompanySaveComponent,
     TableNamesComponent,
     GroupByPipe,
-    FileSelectDirective
+    FileSelectDirective,
+    ChooseComponent
   ],
   imports: [
     BrowserModule,
