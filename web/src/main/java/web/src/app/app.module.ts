@@ -22,7 +22,6 @@ import {FooterComponent} from './component/auth/footer.component';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {TabViewComponent} from './component/tabmenu2/tab-view.component';
 import {ToastModule} from 'primeng/toast';
-import {ParamsService} from './service/params.service';
 import {PickListModule} from 'primeng/picklist';
 import {CompanyPicklistComponent} from './component/company-picklist/company-picklist.component';
 import {DropdownModule} from 'primeng/dropdown';
@@ -53,8 +52,16 @@ import {TableModule} from "primeng/table";
 import {FileUploadModule} from 'primeng/fileupload';
 import {HttpClientModule} from "@angular/common/http";
 import {UploadService} from "./service/upload.service";
-import { FileSelectDirective } from 'ng2-file-upload';
+import {FileSelectDirective} from 'ng2-file-upload';
 import {ChooseComponent} from "./component/constructor_diagram/choose_dialog/choose.component";
+import {UserService} from "./service/user.service";
+import {AuthService} from "./service/auth.service";
+import {ProfileComponent} from "./component/user/profile.component";
+import {UserEditComponent} from "./component/user/user-edit.component";
+import {UserListComponent} from "./component/user/user-list.component";
+import {AuthComponent} from "./component/auth/auth.component";
+import {RegisterComponent} from "./component/auth/register.component";
+import {ProfileService} from "./service/profile.service";
 
 @NgModule({
   declarations: [
@@ -74,7 +81,13 @@ import {ChooseComponent} from "./component/constructor_diagram/choose_dialog/cho
     TableNamesComponent,
     GroupByPipe,
     FileSelectDirective,
-    ChooseComponent
+    ChooseComponent,
+    ProfileComponent,
+    UserEditComponent,
+    UserListComponent,
+    AuthComponent,
+    HeaderComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -100,10 +113,12 @@ import {ChooseComponent} from "./component/constructor_diagram/choose_dialog/cho
     SidebarModule,
     ProgressBarModule
   ],
-  providers: [CompanyService, ParamsService, TreeService,
+  providers: [CompanyService, UserService, TreeService,
     NodesListService, TreeDiagramService,
     ConfirmationService, NotificationService,
     UploadService,
+    AuthService, ProfileService,
+
     {provide: ErrorHandler, useClass: CustomErrorHandler}],
   bootstrap: [AppComponent],
   exports: [SharedModule, Tree,

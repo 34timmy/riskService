@@ -1,11 +1,9 @@
 package ru.mifi.constructor.treecontroller;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.mifi.constructor.model.CompanyList;
-import ru.mifi.constructor.model.DTO.ModelDTO;
 import ru.mifi.constructor.model.DTO.TreeNodeDTO;
 import ru.mifi.constructor.model.Model;
 import ru.mifi.constructor.service.MainModelService;
@@ -22,13 +20,6 @@ public class MainModelController {
     @Autowired
     MainModelService mainModelService;
 
-
-    @ApiOperation(value = "Запустить основной расчет")
-    @ResponseBody
-    @GetMapping(value = "/modelDTO", produces = "application/json")
-    public List<ModelDTO> getAllModelsDTO() throws SQLException {
-        return mainModelService.getAllModelsDTO();
-    }
 
     @ResponseBody
     @GetMapping(produces = "application/json")

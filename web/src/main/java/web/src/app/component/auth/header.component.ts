@@ -1,26 +1,51 @@
-import {Component, OnInit} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {I18nService} from '../../service/i18n.service';
-import {I18Enum} from '../../model/i18n.enum';
+import {Component, OnInit} from "@angular/core";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AuthService} from "../../service/auth.service";
+import {Router} from "@angular/router";
+import {I18nService} from "../../service/i18n.service";
+import {I18Enum} from "../../model/i18n.enum";
+import {ErrorModel} from "../../model/error.model";
+import {MessageService} from "primeng/api";
 
 @Component({
-  templateUrl: './header.html',
-  selector: 'app-header-component'
+    templateUrl: 'templates/auth/header.html',
+    selector: 'header-component',
+    styleUrls: ["resources/css/i18n.css"]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+
+    private errors: ErrorModel[] = [];
 
 
-  constructor(
-    private router: Router,
-    private formBuilder: FormBuilder) {
-  }
+    loginForm: FormGroup = this.formBuilder.group({
+        "login": ["", Validators.required],
+        "password": ["", Validators.required]
+    });
 
-  chooseEng() {
-    // this.i18Service.reloadLocale(I18Enum.en);
-  }
+    constructor(private authService: AuthService,
+                private router: Router,
+                private formBuilder: FormBuilder,
+                private i18Service: I18nService,
+                private notificationService: MessageService) {
+    }
 
-  chooseRu() {
-    // this.i18Service.reloadLocale(I18Enum.ru);
-  }
+    ngOnInit(): void {
+    }
+
+    onLogout() {
+        this.authService.logout();
+        this.router.navigate(["login"]);
+    }
+
+    onSubmit() {
+        this.authService.login(this.loginForm.value);
+    }
+
+    chooseEng() {
+        this.i18Service.reloadLocale(I18Enum.en);
+    }
+
+    chooseRu() {
+        this.i18Service.reloadLocale(I18Enum.ru);
+    }
 }
