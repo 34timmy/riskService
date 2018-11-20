@@ -19,6 +19,7 @@ import ru.mifi.utils.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -146,7 +147,7 @@ public class CalculationService {
                     }
 
                 } catch (FormulaCalculationException | DataLeakException ex) {
-                    wrongFormulas.add(new FormulaResult(inn, formula.getId(), year));
+                    wrongFormulas.add(new FormulaResult(inn, formula.getId(), year, ex.getMessage()));
                     LOG.warn(String.format("Параметры: Инн = %s, Год = %s\nВ формуле по id:%s\nОшибка: \n\t{\n\t\t%s.\n\t}",
                             inn, year, formula.getId(), ex.getMessage()));
                 }
@@ -229,6 +230,7 @@ public class CalculationService {
                                     key,
                                     curFormulaResultObj.getId(),
                                     curFormulaResultObj.getInputeValue(),
+                                    curFormulaResultObj.getResult(),
                                     totalValue == 0
                                             ? 0
                                             : curFormulaResultObj.getResult() / totalValue,
@@ -248,19 +250,28 @@ public class CalculationService {
             String inn,
             int year
     ) {
-        Map<HierarchyNode, String> idToParent = accessor.getModelCalcHierarchy(modelId);
-        Map<String, List<HierarchyNode>> parents = idToParent.entrySet().stream()
+        Map<HierarchyNode, HierarchyNode> idToParent = accessor.getModelCalcHierarchy(modelId);
+        Map<HierarchyNode, List<HierarchyNode>> parents = idToParent.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 Map.Entry::getValue,
                                 entry -> Arrays.asList(entry.getKey()),
                                 CollectionUtils::mergeLists));
-        for (String parentId : parents.keySet()) {
+        for (HierarchyNode parentNode : parents.keySet()) {
+            String parentId = parentNode.getId();
             if (formulasData.containsKey(parentId)) {
                 continue;
             }
-            Double val = calculateNode(parents, parentId, formulasData);
-            formulasData.put(parentId, new FormulaResult(inn, parentId, val, val, year));
+            Double val = calculateNode(
+                    parents.entrySet().stream()
+                            .collect(Collectors.toMap(
+                                    entry -> entry.getKey().getId(),
+                                    Map.Entry::getValue
+                            )),
+                    parentId,
+                    formulasData
+            );
+            formulasData.put(parentId, new FormulaResult(inn, parentId, val, val, year, parentNode.getComments()));
 
         }
         return formulasData.values();
@@ -324,7 +335,7 @@ public class CalculationService {
             activeElem.remove(activeElem.size() - 1);
             String formulaId = String.join(".", activeElem);
             formulasData.put(formulaId, new FormulaResult(inn, formulaId, total / amount,
-                    total / amount, year));
+                    total / amount, year, Collections.EMPTY_SET));
             keySet.add(activeElem);
 
             keySet = keySet.stream()

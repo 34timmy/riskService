@@ -35,10 +35,10 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
     private final PreparedStatement insertFormulaParamStmt;
 
     private static final String SQL_INSERT_COMPANY = "INSERT INTO company (id, inn) VALUES (?,?)";
-    private static final String SQL_INSERT_COMPANY_PARAM = "INSERT INTO company_business_params (company_id, param_code, year, param_value) VALUES (?,?,?,?)";
-    private static final String SQL_INSERT_FORMULA = "INSERT INTO formula (id, calculation, descr, formula_type, a, b, c, d, xb,comments) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    private static final String SQL_INSERT_COMPANY_PARAM = "INSERT INTO company_business_data (company_id, param_code, year, param_value) VALUES (?,?,?,?)";
+    private static final String SQL_INSERT_FORMULA = "INSERT INTO formula (id, calculation, descr, formula_type, a, b, c, d, xb) VALUES (?,?,?,?,?,?,?,?,?)";
     private static final String SQL_INSERT_MODEL = "INSERT INTO model (id, descr) VALUES (?,'Загружено из Excel')";
-    private static final String SQL_INSERT_MODEL_CALC = "INSERT INTO model_CALC (node,model_id, descr, parent_node, weight, level, is_leaf) VALUES (?,?,?,?,?,?,?)";
+    private static final String SQL_INSERT_MODEL_CALC = "INSERT INTO model_CALC (node,model_id, descr, parent_node, weight, level, is_leaf, comments) VALUES (?,?,?,?,?,?,?,?)";
     private static final String SQL_INSERT_FORMULA_PARAMS = "INSERT INTO formula_params (node, param_code, year_shift) VALUES (?,?,?)";
 
 
@@ -99,7 +99,8 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
             String parent_node,
             Double weight,
             Integer level,
-            Integer isLeaf
+            Integer isLeaf,
+            String comments
     ) throws SQLException {
         insertModelCalcStmt.setString(1, node);
         insertModelCalcStmt.setString(2, model_id);
@@ -108,6 +109,7 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
         insertModelCalcStmt.setDouble(5, weight);
         insertModelCalcStmt.setInt(6, level);
         insertModelCalcStmt.setInt(7, isLeaf);
+        insertModelCalcStmt.setString(8, comments);
         insertModelCalcStmtCounter = addReqToStmtBatch(insertModelCalcStmtCounter, insertModelCalcStmt);
     }
 
@@ -168,8 +170,7 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
             String b,
             String c,
             String d,
-            String xb,
-            String comments
+            String xb
     ) throws SQLException {
         int paramCounter = 1;
         insertFormulaStmt.setString(paramCounter++, node);
@@ -180,8 +181,7 @@ public class DatabaseExcelImportAccessor extends CustomAutoCloseable {
         insertFormulaStmt.setString(paramCounter++, b);
         insertFormulaStmt.setString(paramCounter++, c);
         insertFormulaStmt.setString(paramCounter++, d);
-        insertFormulaStmt.setString(paramCounter++, xb);
-        insertFormulaStmt.setString(paramCounter, comments);
+        insertFormulaStmt.setString(paramCounter, xb);
         insertFormulaStmtCounter = addReqToStmtBatch(insertFormulaStmtCounter, insertFormulaStmt);
     }
 

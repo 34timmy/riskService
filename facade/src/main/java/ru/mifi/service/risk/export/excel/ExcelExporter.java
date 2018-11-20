@@ -40,6 +40,7 @@ public class ExcelExporter {
         TABLE_HEADER_MAP.put("ID текущей ноды", 4000);
         TABLE_HEADER_MAP.put("Вес ноды", 4000);
         TABLE_HEADER_MAP.put("Флаг листа", 4000);
+        TABLE_HEADER_MAP.put("Нормированный результат", 6000);
         TABLE_HEADER_MAP.put("Результат", 6000);
         TABLE_HEADER_MAP.put("Комментарий", 35000);
     }
@@ -133,6 +134,7 @@ public class ExcelExporter {
         setNextCellValue(curRow, dto.getNode());
         setNextCellValue(curRow, dto.getWeight());
         setNextCellValue(curRow, dto.getIsLeaf());
+        setNextCellValue(curRow, dto.getNormalizedValue());
         setNextCellValue(curRow, dto.getValue());
         setNextCellValue(curRow, dto.getComment());
         Set<CalcResultDto> children = dto.getChildren();

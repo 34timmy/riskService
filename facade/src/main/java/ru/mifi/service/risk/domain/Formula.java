@@ -9,7 +9,10 @@ import ru.mifi.service.risk.utils.validation.ValidationUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+
+import static ru.mifi.utils.StringUtils.extractComments;
 
 /**
  * Класс-представление формулы
@@ -31,16 +34,16 @@ public class Formula {
     public final static String CALCULATION_INPUT_NAME = "calculationFormula";
 
 
-    private  String id;
-    private  String descr;
-    private  FormulaTypeEnum formulaType;
-    private  String calculationFormula;
+    private String id;
+    private String descr;
+    private FormulaTypeEnum formulaType;
+    private String calculationFormula;
     private String a;
     private String b;
     private String c;
     private String d;
     private String _XB;
-    private  double weight;
+    private double weight;
     private Set<String> comments;
     private double result;
     private double inputValue;
@@ -106,7 +109,7 @@ public class Formula {
         this.weight = leafs.getDouble("weight");
         this.d = leafs.getString("d");
         this._XB = leafs.getString("xb");
-        this.comments = new HashSet<>(Collections.singletonList(leafs.getString("comments")));
+        this.comments = extractComments(leafs.getString("comments"));
 
     }
 
@@ -143,7 +146,6 @@ public class Formula {
     }
 
 
-
     /**
      * Расчет формулы this.formulaType на основе формулы из входной строки
      *
@@ -176,19 +178,4 @@ public class Formula {
             throw new FormulaCalculationException("Ошибка при расчете: " + ex);
         }
     }
-
-    /**
-     * Обновление параметров формулы
-     *
-     * @param params новые параметры
-     */
-    public void updateParams(String... params) {
-        this.a = params[0];
-        this.b = params[1];
-        this.c = params[2];
-        this.d = params[3];
-        this._XB = params[4];
-    }
-
-
 }

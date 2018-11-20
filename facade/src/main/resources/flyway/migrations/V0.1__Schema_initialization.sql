@@ -37,24 +37,24 @@ ALTER TABLE public.roles
   ADD CONSTRAINT roles_id PRIMARY KEY (id);
 
 
-CREATE TABLE public.business_param (
+CREATE TABLE public.business_data (
   param_code  VARCHAR2 (255) NOT NULL,
   description VARCHAR2 (4000)
 );
-ALTER TABLE public.business_param
-  ADD CONSTRAINT business_param_pk PRIMARY KEY (param_code);
+ALTER TABLE public.business_data
+  ADD CONSTRAINT business_data_pk PRIMARY KEY (param_code);
 
-CREATE TABLE public.company_business_params (
+CREATE TABLE public.company_business_data (
   company_id  VARCHAR2 (255) NOT NULL,
   param_code  VARCHAR2 (4000) NOT NULL,
   year        INTEGER NOT NULL,
   param_value VARCHAR2 (4000)
 );
-ALTER TABLE public.company_business_params
+ALTER TABLE public.company_business_data
   ADD CONSTRAINT company_bus_param_pk PRIMARY KEY (company_id, param_code, year);
 --Нужны ли эти констрейнты? ну нет описания и нет - рассчитать-то всё можем.
--- ALTER TABLE public.company_business_params ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id) ON DELETE CASCADE;
--- ALTER TABLE public.company_business_params ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code) ON DELETE CASCADE;
+-- ALTER TABLE public.company_business_data ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id) ON DELETE CASCADE;
+-- ALTER TABLE public.company_business_data ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
 
 
 CREATE TABLE public.model (
@@ -71,7 +71,8 @@ CREATE TABLE public.model_calc (
   parent_node VARCHAR2 (255),
   weight      DOUBLE PRECISION,
   level       INTEGER,
-  is_leaf     INTEGER
+  is_leaf     INTEGER,
+  comments     text
 );
 ALTER TABLE public.model_calc
   ADD CONSTRAINT model_calc_pk PRIMARY KEY (model_id, node);
@@ -92,8 +93,7 @@ CREATE TABLE public.formula (
   b            VARCHAR2 (4000) NOT NULL,
   c            VARCHAR2 (4000) NOT NULL,
   d            VARCHAR2 (4000) NOT NULL,
-  xb           VARCHAR2 (4000) NOT NULL,
-  comments     VARCHAR2 (4000) NOT NULL
+  xb           VARCHAR2 (4000) NOT NULL
 );
 ALTER TABLE public.formula
   ADD CONSTRAINT formula_pk PRIMARY KEY (id);
@@ -112,7 +112,7 @@ CREATE INDEX formula_params_node_idx
 ALTER TABLE public.formula_params
   ADD CONSTRAINT formula_params_formula_fk FOREIGN KEY (node) REFERENCES formula (id)
   ON DELETE CASCADE;
--- ALTER TABLE public.formula_params ADD CONSTRAINT formula_params_bus_param_fk FOREIGN KEY (param_code) REFERENCES business_param (param_code) ON DELETE CASCADE;
+-- ALTER TABLE public.formula_params ADD CONSTRAINT formula_params_bus_param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
 
 CREATE TABLE public.company_list (
   id          VARCHAR2 (255) NOT NULL,

@@ -16,19 +16,19 @@ import java.util.Set;
  * Класс с результами расчета, к оторый отдаем на клиент
  * Created by DenRUS on 06.10.2018.
  */
-@RequiredArgsConstructor
 @EqualsAndHashCode
 @Getter
 public class CalcResultDto implements Serializable {
     private static final String ROOT_NODE = "root";
-    private final Set<CalcResultDto> children = new HashSet<>();
     private final String companyId;
     private final String node;
     private final String parentNode;
     private final Double weight;
     private final Double value;
+    private final String normalizedValue;
     private final Integer isLeaf;
     private final String comment;
+    private final Set<CalcResultDto> children = new HashSet<>();
 
     @SneakyThrows
     public CalcResultDto(ResultSet resultSet) {
@@ -39,6 +39,11 @@ public class CalcResultDto implements Serializable {
         this.isLeaf = resultSet.getInt(5);
         this.comment = resultSet.getString(6);
         this.value = resultSet.getDouble(7);
+        if (isLeaf == 1) {
+            this.normalizedValue = String.valueOf(resultSet.getDouble(8));
+        } else {
+            this.normalizedValue = "-";
+        }
     }
 
     /**

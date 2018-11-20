@@ -27,7 +27,7 @@ public class DatabaseSelectAccessor {
     private static final String SQL_GET_ALL_RES_TABLES_NAMES = "SELECT * FROM result_data_mapper";
     private static final String SQL_GET_RES_FROM_TABLE =
             "SELECT " +
-                    "   company_id, node, parent_node, weight, is_leaf, comment, value " +
+                    "   company_id, node, parent_node, weight, is_leaf, comment, value, normalized_value " +
                     "FROM " +
                     "   %s";//TODO пагинация и сортировка
     private static final String SQL_GET_ALL_TABLE_NAMES = "SELECT TABLE_NAME " +

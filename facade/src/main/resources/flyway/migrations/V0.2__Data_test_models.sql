@@ -23,19 +23,19 @@ values (1, 'Agr 1', 3, null, 4, 1, 0),
        (2, 'Agr 2.1', 6, 4, 4, 2, 0),
        (2, 'Formula 3', 10, 6, 4, 2, 1);
 
-INSERT into FORMULA (id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB, COMMENTS)
-VALUES (8, 'Formula 1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm'),
-       (9, 'Formula 2', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm'),
-       (10, 'Formula 3', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB', 'Comm');
+INSERT into FORMULA (id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB)
+VALUES (8, 'Formula 1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),
+       (9, 'Formula 2', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),
+       (10, 'Formula 3', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB');
 
 
 
-INSERT INTO BUSINESS_PARAM (PARAM_CODE, DESCRIPTION)
+INSERT INTO business_data (PARAM_CODE, DESCRIPTION)
 VALUES (10, 'Code 10');
 INSERT INTO FORMULA_PARAMS (NODE, PARAM_CODE)
 VALUES (8, 10);
 
-INSERT INTO COMPANY_BUSINESS_PARAMS (COMPANY_ID, PARAM_CODE, YEAR, PARAM_VALUE)
+INSERT INTO COMPANY_business_data (COMPANY_ID, PARAM_CODE, YEAR, PARAM_VALUE)
 VALUES (1, 10, 2000, 'Val');
 
 -- insert into company_list (id, company_ids)

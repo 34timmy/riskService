@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +22,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static ru.mifi.utils.StringUtils.extractComments;
 
 /**
  * Работа с базой при непосредственном расчете.
@@ -31,7 +34,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     //TODO надо сортировать формулы и потом доставать по 1000 для расчета. Чтоб не все сразу
     private static final String SQL_GET_MODEL_LEAFS =
             "SELECT " +
-                    "   f.id, f.descr, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, f.comments, mc.weight " +
+                    "   f.id, f.descr, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, mc.weight, mc.comments " +
                     "FROM " +
                     "   model_calc mc " +
                     "JOIN formula f ON (f.id = mc.node)" +
@@ -46,9 +49,9 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     private static final String SQL_SAVE_FORMULA_TO_TEMP_TABLE =
             "INSERT INTO " +
                     "   %s" +
-                    "       (company_id, node, value, comment)" +
+                    "       (company_id, node, value, normalized_value, comment)" +
                     "   VALUES" +
-                    "       (?,         ?,      ?,      ?)";
+                    "       (?,         ?,      ?,      ?,             ?)";
     private static final String SQL_SAVE_RESULT_TABLE_NAME =
             "INSERT INTO " +
                     "   result_data_mapper" +
@@ -66,7 +69,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
             "SELECT " +
                     "   cbp.company_id, cbp.param_code, cbp.year, cbp.param_value " +
                     "FROM " +
-                    "   company_business_params cbp " +
+                    "   company_business_data cbp " +
                     "JOIN formula_params fp ON (fp.param_code = cbp.param_code) " +
                     "WHERE fp.node in (%s) AND cbp.company_id IN (%s) AND ((%s + fp.year_shift) = cbp.year)";
 
@@ -74,8 +77,9 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
             "MERGE INTO";
     private static final String SQL_GET_MODEL_CALC =
             "SELECT " +
-                    "  mc.descr, mc.node, mc.parent_node, mc.weight, mc.is_leaf, mc.level " +
+                    "  mc.descr, mc.node, mc.parent_node, mc.weight, mc.is_leaf, mc.level, mc.comments, mc_parent.comments as parent_comments, mc_parent.weight as parent_weight " +
                     "FROM model_calc mc " +
+                    "LEFT JOIN model_calc mc_parent ON (mc_parent.node = mc.parent_node) " +
                     "WHERE mc.model_id = ?";
     private static final int SQL_BATCH_SIZE = 100;
     private static final String SQL_UPDATE_WEIGHT = "UPDATE %s t1 set t1.weight = (select weight from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
@@ -189,17 +193,23 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         tryToCloseConnection(connection, hasErrors);
     }
 
-    public Map<HierarchyNode, String> getModelCalcHierarchy(String modelId) throws SQLException {
-        Map<HierarchyNode, String> idsMap = new HashMap<>();
+    public Map<HierarchyNode, HierarchyNode> getModelCalcHierarchy(String modelId) throws SQLException {
+        Map<HierarchyNode, HierarchyNode> idsMap = new HashMap<>();
         getModelCalcStmt.setString(1, modelId);
         try (ResultSet resultSet = getModelCalcStmt.executeQuery()) {
             while (resultSet.next()) {
                 idsMap.put(
                         new HierarchyNode(
                                 resultSet.getString("node"),
-                                resultSet.getDouble("weight")
+                                resultSet.getDouble("weight"),
+                                extractComments(resultSet.getString("comments"))
                         ),
-                        resultSet.getString("parent_node")
+                        new HierarchyNode(
+                                resultSet.getString("parent_node"),
+                                resultSet.getDouble("parent_weight"),
+                                extractComments(resultSet.getString("parent_comments"))
+                        )
+
                 );
             }
         }
@@ -249,7 +259,12 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                                     : node.getId()
                     );
                     saveFormulaStmt.setDouble(3, node.getResult());
-                    saveFormulaStmt.setString(4, node.getComment());
+                    if (node.getNormalizedResult() == null) {
+                        saveFormulaStmt.setNull(4, Types.DOUBLE);
+                    } else {
+                        saveFormulaStmt.setDouble(4, node.getNormalizedResult());
+                    }
+                    saveFormulaStmt.setString(5, node.getComment());
                     saveFormulaStmt.addBatch();
                     if (++counter == SQL_BATCH_SIZE) {
                         saveFormulaStmt.executeBatch();

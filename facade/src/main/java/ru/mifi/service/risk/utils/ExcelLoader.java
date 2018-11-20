@@ -102,6 +102,13 @@ public class ExcelLoader {
             Double weight = Double.valueOf(formatCellVal(row.getCell(3)));               //Weight
             Integer level = Integer.parseInt(formatCellVal(row.getCell(4)));
             Integer isLeaf = Integer.parseInt(formatCellVal(row.getCell(5)));
+            StringJoiner comments = new StringJoiner(";");
+            for (int i = 6; i <= 10; i++) {
+                if (formatter.formatCellValue(row.getCell(i)) != null &&
+                        !formatter.formatCellValue(row.getCell(i)).equalsIgnoreCase("")) {
+                    comments.add(formatter.formatCellValue(row.getCell(i)));
+                }
+            }
             accessor.insertModelCalc(
                     nodeId,
                     modelId,
@@ -109,7 +116,8 @@ public class ExcelLoader {
                     parentNode,
                     weight,
                     level,
-                    isLeaf
+                    isLeaf,
+                    comments.toString()
             );
         }
         return modelId;
@@ -159,13 +167,6 @@ public class ExcelLoader {
             try {
                 if (row.getCell(0) != null && !row.getCell(0).toString().equals("")) {
 
-                    StringJoiner comments = new StringJoiner(";");
-                    for (int i = 11; i <= 15; i++) {
-                        if (formatter.formatCellValue(row.getCell(i)) != null &&
-                                !formatter.formatCellValue(row.getCell(i)).equalsIgnoreCase("")) {
-                            comments.add(formatter.formatCellValue(row.getCell(i)));
-                        }
-                    }
                     String calculation = editInput(formatCellVal(row.getCell(2)));  //calculation
                     String nodeId = formatCellVal(row.getCell(0));                  //id
                     parseAndSaveParams(nodeId, calculation, accessor);
@@ -180,8 +181,7 @@ public class ExcelLoader {
                             formatCellVal(row.getCell(5)),                              //B
                             formatCellVal(row.getCell(6)),                              //C
                             formatCellVal(row.getCell(7)),                              //D
-                            formatCellVal(row.getCell(9)),                              //_XB
-                            comments.toString()
+                            formatCellVal(row.getCell(8))                             //_XB
                     );
 
                 }

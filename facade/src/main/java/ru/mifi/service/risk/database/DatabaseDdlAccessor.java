@@ -26,7 +26,8 @@ public class DatabaseDdlAccessor {
                     "   weight DOUBLE PRECISION, " +
                     "   is_leaf INTEGER, " +
                     "   comment VARCHAR2(4000), " +
-                    "   value DOUBLE " +
+                    "   value DOUBLE, " +
+                    "   normalized_value DOUBLE " +
                     ")";
     private static final String SQL_PK_TEMP_TABLE_CONSTR = "ALTER TABLE %s ADD CONSTRAINT %s_pk PRIMARY KEY (company_id, node)";
     private static final String SQL_WEIGH_CHECK_TEMP_TABLE_CONSTR = "ALTER TABLE %s ADD CONSTRAINT %s_weight_val_check CHECK (weight BETWEEN 0 and 100)";
