@@ -61,8 +61,7 @@ export class CompanyListComponent implements OnInit {
   reloadCompanyLists() {
     this.loadModels();
     this.years = this.loadYears();
-    let allCompanyLists;
-    allCompanyLists = this.companyService.getAllCompanyLists().subscribe(
+    this.companyService.getAllCompanyLists().subscribe(
       res => {
 
         let resJson = res.json();
@@ -80,7 +79,7 @@ export class CompanyListComponent implements OnInit {
 
 
   loadModels() {
-    this.treeService.getAllModels().subscribe(res => {
+    this.treeService.getAllModelsOnly().subscribe(res => {
       this.models = res.json().map(model => {
         return {label: model.descr, value: model.id}
       })

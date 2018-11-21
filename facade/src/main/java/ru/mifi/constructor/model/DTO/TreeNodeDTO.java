@@ -20,11 +20,12 @@ public class TreeNodeDTO {
     private boolean updated = false;
     private String type;
     private Object data;
+    private boolean is_leaf = false;
     private Set<String> children = new HashSet<String>();
     private List<TreeNodeDTO> resultList;
 
 
-    public TreeNodeDTO(Model model) {
+    private TreeNodeDTO(Model model) {
         this.guid = model.getId();
         this.parentId = null;
         this.displayName = model.getDescr();
@@ -37,7 +38,7 @@ public class TreeNodeDTO {
         }
     }
 
-    public TreeNodeDTO(List<ModelCalc> modelCalcList, ModelCalc modelCalc, Map<String, Formula> formulas) {
+    private TreeNodeDTO(List<ModelCalc> modelCalcList, ModelCalc modelCalc, Map<String, Formula> formulas) {
         this.guid = modelCalc.getNode();
         if ((modelCalc.getParent_node()) != null) {
             this.parentId = modelCalc.getParent_node();
@@ -45,10 +46,14 @@ public class TreeNodeDTO {
             this.parentId = modelCalc.getModel_id();
         }
         this.displayName = modelCalc.getDescr();
-        this.type = modelCalc.getClass().getSimpleName().toLowerCase();
-
         if (modelCalc.is_leaf()) {
-            this.data = formulas.get(this.guid);
+            Formula formula = formulas.get(this.guid);
+            this.is_leaf = true;
+            this.data = formula;
+            this.type = formula.getClass().getSimpleName().toLowerCase();
+        } else {
+            this.type = modelCalc.getClass().getSimpleName().toLowerCase();
+            this.data = modelCalc;
         }
         for (ModelCalc mc : modelCalcList) {
             if (this.getGuid().equals(mc.getParent_node()))

@@ -4,6 +4,7 @@ import {v4 as uuid} from 'uuid';
 
 @Component({
   selector: 'app-formula-edit',
+  styleUrls: ['../../../resources/css/formula.css'],
   templateUrl: './formula-edit.html'
 })
 export class FormulaEditComponent implements OnInit {
@@ -50,14 +51,14 @@ export class FormulaEditComponent implements OnInit {
       id: formula.id,
       guid:[''],
       descr: formula.descr,
-      calculation: formula.calculation,
+      calculation: formula.calculationFormula,
       formulaType: formula.formulaType,
       weight: formula.weight,
       a: formula.a,
       b: formula.b,
       c: formula.c,
       d: formula.d,
-      xb: formula.xb,
+      xb: formula._xb,
       comments: formula.comments,
       model_calc_id: formula.model_calc_id,
       updating: false,

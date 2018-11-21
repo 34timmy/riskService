@@ -1,6 +1,7 @@
 <div class="line-to"></div>
 <div id="tree-node-{{node.guid}}"
-     [ngClass]="{'tree-element-container': !0, 'tree-element-has-children': node.hasChildren()}"
+     [ngClass]="{'tree-element-container': !0, 'tree-element-has-children': node.hasChildren(),
+     'tree-element-is-leaf': node._leaf}"
      [style.width.px]="node.width"
      [style.height.px]="node.height"
 >

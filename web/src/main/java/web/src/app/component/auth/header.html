@@ -1,17 +1,33 @@
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
 
+    <a [routerLink]="['/meal-list']" class="navbar-brand">{{'app.title' }}</a>
+
+
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <button class="dropbtn">DropBTN</button>
-          <div class="dropdown-content">
-
-            <a (click)="chooseEng()">English</a>
-
-            <a (click)="chooseRu()">Русский</a>
-
+        <li *ngIf="authService.authenticatedAs">
+          <div class="navbar-form">
+            <a *ngIf="authService.hasAdminRole()" class="btn btn-info" role="button"
+               [routerLink]="['/user-list']">{{'users.title' }}</a>
+            <a class="btn btn-info" role="button" [routerLink]="['/profile']">{{authService.authenticatedAs.name}}
+              {{'app.profile' }}</a>
+            <button type="button" class="btn btn-primary" (click)="onLogout()">{{'app.logout' }}
+            </button>
           </div>
+        </li>
+        <li *ngIf="!authService.authenticatedAs">
+          <form [formGroup]="loginForm" class="navbar-form" role="form" (ngSubmit)="onSubmit()"
+                method="post">
+            <div class="form-group">
+              <input type="text" formControlName="login" placeholder="{{'users.email' }}" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" formControlName="password" placeholder="{{'users.password' }}"
+                     class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">{{'app.login' }}</button>
+          </form>
         </li>
       </ul>
     </div>

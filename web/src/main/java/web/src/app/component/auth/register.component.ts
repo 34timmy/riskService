@@ -2,42 +2,80 @@ import {Component, OnInit} from "@angular/core";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {UserService} from "../../service/user.service";
 import {Router} from "@angular/router";
+import {first} from "rxjs/operators";
+import {MessageService} from "primeng/api";
 
 @Component({
-  // moduleId: module.id,
-  templateUrl: "../../../templates/user/register.html"
+  templateUrl: 'register.html'
 })
-export class RegisterComponent {
-
-  model: any = {};
+export class RegisterComponent implements OnInit {
+  registerForm: FormGroup;
   loading = false;
+  submitted = false;
 
   constructor(
+    private formBuilder: FormBuilder,
     private router: Router,
-    private userService: UserService) {
+    private userService: UserService,
+    private notificationService: MessageService
+  ) {
   }
 
-  registerU() {
+  ngOnInit() {
+    this.registerForm = this.formBuilder.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      username: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+
+  get f() {
+    return this.registerForm.controls;
+  }
+
+  onSubmit() {
+    this.submitted = true;
+
+    if (this.registerForm.invalid) {
+      return;
+    }
+
     this.loading = true;
-    this.userService.registerUser(this.model)
+    this.userService.registerUser(this.registerForm.value)
+      .pipe(first())
       .subscribe(
         data => {
-          // set success message and pass true paramater to persist the message after redirecting to the login page
+          this.successMessage("", 'Registration successful', "");
           this.router.navigate(['/login']);
         },
         error => {
-
+          this.errorMessage(error.json());
+          this.loading = false;
         });
   }
 
-  // save() {
-  //     this.userService.registerUser(this.registerForm.value).subscribe(
-  //         res => {
-  //             this.router.navigate(['/login']);
-  //         },
-  //         err => {
-  //             this.exceptionService.onError(err);
-  //         }
-  //     );
-  // }
+  successMessage(obj, summary, detail) {
+    if (detail == null) {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: JSON.stringify(obj, null, 2)
+      })
+    } else {
+      this.notificationService.add({
+        severity: 'success',
+        summary: summary,
+        detail: detail
+      })
+    }
+  }
+
+  errorMessage(error) {
+    this.notificationService.add({
+      severity: 'error',
+      summary: error.cause,
+      detail: error.url + '\n' + error.detail
+    })
+  }
 }

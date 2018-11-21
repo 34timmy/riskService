@@ -11,7 +11,7 @@ import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
 import {
   CodeHighlighterModule,
-  DataListModule,
+  DataListModule, MessageService,
   ProgressBarModule,
   SharedModule,
   SidebarModule,
@@ -62,6 +62,10 @@ import {UserListComponent} from "./component/user/user-list.component";
 import {AuthComponent} from "./component/auth/auth.component";
 import {RegisterComponent} from "./component/auth/register.component";
 import {ProfileService} from "./service/profile.service";
+import {ModelsListComponent} from "./component/constructor_diagram/models_list/models-list.component";
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+import {AuthActivateGuard} from "./shared/auth.activate.guard";
 
 @NgModule({
   declarations: [
@@ -87,7 +91,8 @@ import {ProfileService} from "./service/profile.service";
     UserListComponent,
     AuthComponent,
     HeaderComponent,
-    RegisterComponent
+    RegisterComponent,
+    ModelsListComponent
   ],
   imports: [
     BrowserModule,
@@ -111,14 +116,17 @@ import {ProfileService} from "./service/profile.service";
     FileUploadModule,
     HttpClientModule,
     SidebarModule,
-    ProgressBarModule
+    ProgressBarModule,
+    OverlayPanelModule,
+    InputTextareaModule
   ],
   providers: [CompanyService, UserService, TreeService,
     NodesListService, TreeDiagramService,
     ConfirmationService, NotificationService,
     UploadService,
     AuthService, ProfileService,
-
+    AuthActivateGuard,
+    MessageService,
     {provide: ErrorHandler, useClass: CustomErrorHandler}],
   bootstrap: [AppComponent],
   exports: [SharedModule, Tree,

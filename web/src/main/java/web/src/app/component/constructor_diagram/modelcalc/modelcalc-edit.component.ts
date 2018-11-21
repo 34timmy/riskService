@@ -64,6 +64,22 @@ export class ModelcalcEditComponent implements OnInit {
     });
   }
 
+  fillModelcalcFormWithModelCalcId(modelCalc) {
+    let guid = uuid();
+    this.modelcalcForm.patchValue({
+      node: guid,
+      guid: guid,
+      descr: '',
+      model_id: modelCalc.data.model_id,
+      parent_node: modelCalc.data.node,
+      weight: '',
+      is_leaf: false,
+      updating: false,
+      creating: true,
+      type: 'modelcalc'
+    });
+  }
+
   onSaveModelcalc() {
     console.log('modelcalc value ', this.modelcalcForm.value);
     this.modelcalcForm.value.updating = true;

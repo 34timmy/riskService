@@ -32,7 +32,9 @@ export class CompanySaveComponent implements OnInit {
   search(event) {
 
     this.autoCompleteResults = this.allCompaniesLists.map(val => {
-      return val.descr
+      if (val.descr.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+        return val.descr
+      }
     });
   }
 

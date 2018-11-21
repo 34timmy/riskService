@@ -23,14 +23,20 @@ public class MainModelController {
 
     @ResponseBody
     @GetMapping(produces = "application/json")
-    public List<Model> getAllModels() throws SQLException {
-        return mainModelService.getAllModels();
+    public List<Model> getAllModelsOnly() throws SQLException {
+        return mainModelService.getAllModelsOnly();
     }
 
     @ResponseBody
-    @GetMapping(value = "/toNodes", produces = "application/json")
+    @GetMapping(value = "/treeNodes", produces = "application/json")
     public List<TreeNodeDTO> getAllTreeNodeDTOs() throws SQLException {
         return mainModelService.getAllTreeNodeDTOs();
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/treeNodes/{modelId}", produces = "application/json")
+    public List<TreeNodeDTO> getTreeNodeDTO(@PathVariable("modelId") String modelId) throws SQLException {
+        return mainModelService.getTreeNodeDTO(modelId);
     }
 
     @ResponseBody

@@ -30,5 +30,5 @@ public interface UserMapper {
 
 
     @Select("SELECT * FROM users u WHERE u.email = #{email}")
-    User getByEmail(String email);
+    User getByEmail(String email)throws SQLException;
 }

@@ -2,15 +2,12 @@ import {Component, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../service/auth.service";
 import {Router} from "@angular/router";
-import {I18nService} from "../../service/i18n.service";
-import {I18Enum} from "../../model/i18n.enum";
 import {ErrorModel} from "../../model/error.model";
 import {MessageService} from "primeng/api";
 
 @Component({
-    templateUrl: 'templates/auth/header.html',
-    selector: 'header-component',
-    styleUrls: ["resources/css/i18n.css"]
+    templateUrl: 'header.html',
+    selector: 'header-component'
 })
 export class HeaderComponent implements OnInit {
 
@@ -22,10 +19,9 @@ export class HeaderComponent implements OnInit {
         "password": ["", Validators.required]
     });
 
-    constructor(private authService: AuthService,
+    constructor(public authService: AuthService,
                 private router: Router,
                 private formBuilder: FormBuilder,
-                private i18Service: I18nService,
                 private notificationService: MessageService) {
     }
 
@@ -37,15 +33,4 @@ export class HeaderComponent implements OnInit {
         this.router.navigate(["login"]);
     }
 
-    onSubmit() {
-        this.authService.login(this.loginForm.value);
-    }
-
-    chooseEng() {
-        this.i18Service.reloadLocale(I18Enum.en);
-    }
-
-    chooseRu() {
-        this.i18Service.reloadLocale(I18Enum.ru);
-    }
 }

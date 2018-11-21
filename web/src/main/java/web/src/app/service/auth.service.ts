@@ -6,6 +6,8 @@ import {basePath, loginPath} from "../shared/config";
 import {ProfileService} from "./profile.service";
 import {Token} from "../model/auth.token";
 import {Observable, of} from "rxjs";
+import {map} from "rxjs/operators";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 
 @Injectable()
@@ -13,31 +15,22 @@ export class AuthService {
 
   private _authenticatedAs: UserModel = null;
 
-  constructor(private http: Http,
+  constructor(private http: HttpClient,
               private router: Router,
               private profileService: ProfileService) {
   }
 
-  login(token: Token): void {
-
-    let headers: Headers = new Headers({'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'});
-    let options = new RequestOptions({
+  login(username: string, password: string) {
+    const headers = new HttpHeaders({
+      authorization: 'Basic ' + btoa(username + ':' + password)
+    });
+    // let headers: Headers = new Headers({'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'});
+    let options = ({
       headers: headers,
       withCredentials: true
     });
 
-    this.http.post(basePath + loginPath,
-      "username=" + token.login +
-      "&password=" + token.password,
-      options)
-      // .map(res => {return res;})
-      .subscribe(
-      res => {
-        this.router.navigate(["profile"])
-      },
-      error => {
-      }
-    );
+    return this.http.get(basePath + loginPath,{headers:headers});
   }
 
   get authenticatedAs(): UserModel {
@@ -59,15 +52,17 @@ export class AuthService {
 
   isAuthenticated(): Observable<boolean> {
     if (this._authenticatedAs == null) {
-      return this.profileService.getOwnProfile().map(res => {
-        this._authenticatedAs = res.json();
-        return true;
-      }).catch((error: any) => {
-        this._authenticatedAs = null;
-        return of(false);
-      });
+      this.profileService.getOwnProfile().subscribe(res => {
+          this._authenticatedAs = res.json();
+          return of(true);
+        },
+        err => {
+          return of(false)
+        })
     } else {
       return of(true);
     }
   }
+
 }
+

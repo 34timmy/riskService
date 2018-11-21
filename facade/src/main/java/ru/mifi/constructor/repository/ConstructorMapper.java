@@ -26,6 +26,20 @@ public interface ConstructorMapper {
     )
     List<Model> getAllModels() throws SQLException;
 
+
+    @Select("SELECT * from model")
+    List<Model> getAllModelsOnly() throws SQLException;
+
+    @Select("SELECT * FROM model m WHERE m.id = #{id}")
+    @Results(
+            {
+                    @Result(id = true, property = "id", column = "id"),
+                    @Result(property = "modelCalcs", javaType = List.class, column = "id",
+                            many = @Many(select = "getModelCalcs"))
+            }
+    )
+    Model getModel(String id);
+
     @Update("UPDATE model m SET m.descr=#{descr} where m.id=#{id}")
     void updateModel(Model model);
 
@@ -65,6 +79,11 @@ public interface ConstructorMapper {
 
     @Select("SELECT f.id,f.descr,f.calculation," +
             "f.formula_type,f.A,f.B,f.C,f.D,f.XB from formula f")
+    @Results({
+            @Result(property = "calculationFormula", column = "calculation"),
+            @Result(property = "formulaType", column = "formula_type"),
+            @Result(property = "_XB", column = "xb")
+    })
     List<Formula> getAllFormulas();
 
     @Update("UPDATE formula f SET f.descr=#{descr} where f.id=#{id}")
@@ -106,7 +125,7 @@ public interface ConstructorMapper {
             " values (#{id},#{company_ids},#{descr})")
     void createCompanyList(CompanyList companyList);
 
-//        -------------------- Company Repository --------------------
+    //        -------------------- Company Repository --------------------
     @Select("SELECT * FROM company")
     List<Company> getAllCompanies();
 

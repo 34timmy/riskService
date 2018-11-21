@@ -1,7 +1,6 @@
 import {Component, Output, EventEmitter, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CompanyModel} from '../../model/company.model';
-import {log} from 'util';
 
 @Component({
   templateUrl: './company-edit.html',
@@ -33,7 +32,7 @@ export class CompanyEditComponent implements OnInit {
     this.companyForm.patchValue({
       id: company.id,
       name: company.descr,
-      INN: company.INN,
+      INN: company.inn,
       updating: false,
       creating: false
     });

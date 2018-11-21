@@ -10,6 +10,7 @@ import ru.mifi.constructor.repository.ConstructorMapper;
 import ru.mifi.service.risk.domain.Formula;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,6 +23,13 @@ public class MainModelService {
         return constructorMapper.getAllModels();
     }
 
+    public List<Model> getAllModelsOnly() throws SQLException {
+        return constructorMapper.getAllModelsOnly();
+    }
+
+    public Model getModel(String id) {
+        return constructorMapper.getModel(id);
+    }
 
     @Transactional
     public void updateModel(Model model) {
@@ -52,5 +60,13 @@ public class MainModelService {
 
     public void createCompanyList(CompanyList companyList) {
         constructorMapper.createCompanyList(companyList);
+    }
+
+    public List<TreeNodeDTO> getTreeNodeDTO(String modelId) {
+        List<Formula> allFormulas = constructorMapper.getAllFormulas();
+        List<Model> allModels = Collections.singletonList(getModel(modelId));
+        TreeNodeDTO treeNodeDTO = new TreeNodeDTO(allModels, allFormulas);
+
+        return treeNodeDTO.getResultList();
     }
 }

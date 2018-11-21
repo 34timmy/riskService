@@ -18,12 +18,10 @@ export class TreeDiagramService {
 
   constructor(private http: Http, private router: Router) {
     this.modelsLoaded = new BehaviorSubject<boolean>(false);
-    this.nodesLoaded = new BehaviorSubject<boolean>(false);
   }
 
   models: any;
   modelsNodes;
-  nodesLoaded: BehaviorSubject<boolean>;
   modelsLoaded: BehaviorSubject<boolean>;
   typeDialog = new BehaviorSubject<boolean>(false);
 
@@ -118,35 +116,49 @@ export class TreeDiagramService {
     return this.http.post(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), reqOptionsJson);
   }
 
-  getAllModels() {
-    //TODO MODELS only
+  getAllModelsOnly() {
     return this.http.get(basePath + constructorPath + modelPath, reqOptions);
   }
 
   private getAllNodes() {
+    return this.http.get(basePath + constructorPath + modelPath + "/treeNodes", reqOptions);
+  }
 
-    return this.http.get(basePath + constructorPath + modelPath + "/toNodes", reqOptions);
+  private getNodeForModel(id) {
+    return this.http.get(basePath + constructorPath + modelPath +
+      "/treeNodes" +
+      "/" + id
+      , reqOptions);
   }
 
   getTreeNodeDTOs() {
     this.modelsNodes = [];
-    this.setTheBooleanNodes(false);
     this.getAllNodes().toPromise().then(res => {
       for (let node of res.json()) {
         this.modelsNodes.push(node);
       }
-      // this.setTheBooleanNodes(true);
     });
     return this.modelsNodes;
+  }
+
+  getTreeNodeForModel(id) {
+    this.modelsNodes = [];
+    this.getNodeForModel(id).toPromise().then(res => {
+      for (let node of res.json()) {
+        this.modelsNodes.push(node);
+      }
+    });
+    return this.modelsNodes;
+  }
+
+  getTreeNodeForModelObserv(id) {
+    return this.getNodeForModel(id);
   }
 
   getTheBoolean(): Observable<boolean> {
     return this.modelsLoaded.asObservable();
   }
 
-  getTheBooleanNodes(): Observable<boolean> {
-    return this.nodesLoaded.asObservable();
-  }
 
   setTheBoolean(newValue: boolean): void {
     console.log('boolean in tree-diagr service', newValue);
@@ -162,20 +174,14 @@ export class TreeDiagramService {
     this.typeDialog.next(newValue);
   }
 
-
-  private setTheBooleanNodes(newValue: boolean) {
-    this.nodesLoaded.next(newValue);
-
-  }
-
   // @Deprecated
   private getModelsAndConvert() {
     this.modelsNodes = [];
     this.setTheBoolean(false);
-    this.getAllModels().toPromise().then(res => {
-      this.modelsToTreeNode(res.json());
-      // this.setTheBoolean(true);
-    });
+    // this.getAllModelsOnly().toPromise().then(res => {
+    //   this.modelsToTreeNode(res.json());
+    //   this.setTheBoolean(true);
+    // });
     return this.modelsNodes;
   }
 

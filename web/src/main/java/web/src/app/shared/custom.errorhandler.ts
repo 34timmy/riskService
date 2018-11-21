@@ -9,8 +9,8 @@ export class CustomErrorHandler implements ErrorHandler {
 
   handleError(error: any): void {
     this.showErrorInConsole(error);
-    setTimeout(() =>
-      this.notificationService.error(error.json().Message), 1);
+
+      this.notificationService.error(error.json().Message);
   }
 
   private showErrorInConsole(error: any) :void {

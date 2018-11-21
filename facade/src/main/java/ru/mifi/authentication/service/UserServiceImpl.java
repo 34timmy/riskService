@@ -81,14 +81,19 @@ public class UserServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User u = userMapper.getByEmail(email.toLowerCase());
+        User u = null;
+        try {
+            u = userMapper.getByEmail(email.toLowerCase());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         if (u == null) {
             throw new UsernameNotFoundException("User " + email + " is not found");
         }
         return new LoggedUser(u);
     }
 
-    private boolean emailExist(String email) {
+    private boolean emailExist(String email) throws SQLException {
         User user = userMapper.getByEmail(email);
         if (user != null) {
             return true;

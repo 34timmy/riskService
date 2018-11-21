@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NodesListService} from './services/nodesList.service'
 import {DomSanitizer} from "@angular/platform-browser";
 import {TreeDiagramService} from "../../service/tree-diagram.service";
-import {Observable, of} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
 import {FormulaEditComponent} from "./formula/formula-edit.component";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ModelEditComponent} from "./model/model-edit.component";
@@ -16,6 +16,7 @@ import {ChooseComponent} from "./choose_dialog/choose.component";
   templateUrl: './tree.component.html',
 })
 export class Tree implements OnInit {
+
   @ViewChild('formulaChild')
   private formulaEditChild: FormulaEditComponent;
 
@@ -52,10 +53,11 @@ export class Tree implements OnInit {
   private paneY = 0
   nodes;
   updatedNodes;
-
+  data;
   typeDialog;
   modelsLoaded: Observable<boolean>;
-  nodesLoaded: Observable<boolean>;
+  reloadModels = new BehaviorSubject<boolean>(false);
+  showToggle = false;
 
   constructor(
     private nodesSrv: NodesListService,
@@ -73,6 +75,7 @@ export class Tree implements OnInit {
   ngOnInit() {
     this.treeService.getTheBoolean().subscribe(value => {
         this.modelsLoaded = of(value);
+        console.log('moldesLoaded', this.modelsLoaded)
       }
     );
     this.treeService.getTypeDialog().subscribe(value => {
@@ -80,26 +83,40 @@ export class Tree implements OnInit {
       }
     );
 
-    let _data = this.treeService.getTreeNodeDTOs();
     // if (!_data || !Array.isArray(_data.json)) return
     // if (typeof _data.config === 'object') {
     //   this._config = Object.assign(this._config, _data.config)
+
     // }
+
+  }
+
+  loadView(modelId) {
+    this.treeService.setTheBoolean(false);
+    if (modelId != null) {
+      this.treeService.getTreeNodeForModelObserv(modelId).subscribe(res => {
+        this.data = res.json();
+        this.initData();
+      });
+    }
+    else {
+      this.data = [];
+      setTimeout(() => this.initData(), 0);
+    }
+  }
+
+  initData() {
+    this.reloadModels.next(false);
+    this._config.formulaEditChild = this.formulaEditChild;
+    this._config.ruleEditChild = this.ruleEditChild;
+    this._config.modelEditChild = this.modelEditChild;
+    this._config.modelCalcEditChild = this.modelCalcEditChild;
+    this._config.chooseChild = this.chooseChild;
     this.chooseChild.setModelCalcChild(this.modelCalcEditChild);
     this.chooseChild.setFormulaChild(this.formulaEditChild);
+    this.nodes = this.nodesSrv.loadNodes(this.data, this._config);
+    this.treeService.setTheBoolean(true)
 
-    if (_data) {
-      setTimeout(() => {
-          this._config.formulaEditChild = this.formulaEditChild;
-          this._config.ruleEditChild = this.ruleEditChild;
-          this._config.modelEditChild = this.modelEditChild;
-          this._config.modelCalcEditChild = this.modelCalcEditChild;
-          this._config.chooseChild = this.chooseChild;
-          this.nodes = this.nodesSrv.loadNodes(_data, this._config);
-          this.treeService.setTheBoolean(true)
-        }
-      );
-    }
   }
 
   public newNode() {
@@ -239,6 +256,7 @@ export class Tree implements OnInit {
           }
           else {
             this.nodesSrv.addNodeOnSaveModel();
+            this.reloadModels.next(true);
             this.successMessage(node,
               'Запись ' + node.descr + ' добавлена',
               null);
@@ -306,6 +324,16 @@ export class Tree implements OnInit {
       summary: error.cause,
       detail: error.url + '\n' + error.detail
     })
+  }
+
+
+  show(modelid) {
+    this.loadView(modelid);
+    this.showToggle = true;
+  }
+
+  closeModal() {
+    this.showToggle = false;
   }
 
 }

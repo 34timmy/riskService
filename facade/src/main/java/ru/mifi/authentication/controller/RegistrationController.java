@@ -13,20 +13,28 @@ import ru.mifi.authentication.utils.EmailExistException;
 import ru.mifi.service.risk.controllers.ResponseHelper;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.sql.SQLException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/registration")
+@RequestMapping()
 public class RegistrationController {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     @Autowired
     UserServiceImpl userService;
 
-    @PostMapping
+    @PostMapping(value = "/register")
     public ResponseEntity registerUser(@Valid @RequestBody User user) throws SQLException, EmailExistException {
         userService.create(user);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/login")
+    public Principal loginUser(
+                               Principal user) throws SQLException, EmailExistException {
+//        User user = userService.getByEmail(username);
+        return  user;
     }
 }

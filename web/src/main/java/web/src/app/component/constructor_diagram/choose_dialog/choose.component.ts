@@ -34,7 +34,7 @@ export class ChooseComponent implements OnInit {
   chooseAgr() {
     this.closeModal();
     this.modelCalcChild.resetForm();
-    this.modelCalcChild.fillModelcalcFormWithModelId(this.node);
+    this.modelCalcChild.fillModelcalcFormWithModelCalcId(this.node);
     this.modelCalcChild. showToggle = true;
   }
 

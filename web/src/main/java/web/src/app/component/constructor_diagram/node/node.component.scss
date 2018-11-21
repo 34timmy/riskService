@@ -33,6 +33,14 @@
   }
 
 }
+
+.tree-element-is-leaf{
+  > .tree-element-main{
+    .add{
+      display: none;
+    }
+  }
+}
 .rect {
   position: relative;
   background-color: #fafafa !important;

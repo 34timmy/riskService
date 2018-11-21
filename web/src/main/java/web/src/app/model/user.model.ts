@@ -2,11 +2,12 @@
 export interface UserModel {
 
     id: number;
-    name: string;
+    userName: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     enabled: boolean;
     roles: string[];
-    caloriesPerDay: number;
     registered: string;
 }

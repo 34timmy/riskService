@@ -61,7 +61,6 @@ public class Formula {
         this.c = c;
         this.d = d;
         this._XB = _XB;
-        this.weight = 1;
     }
 
     /**

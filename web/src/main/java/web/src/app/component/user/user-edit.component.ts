@@ -3,7 +3,7 @@ import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {UserModel} from "../../model/user.model";
 
 @Component({
-    templateUrl: 'templates/user/user-edit.html',
+    templateUrl: 'user-edit.html',
     selector: 'user-edit'
 })
 export class UserEditComponent implements OnInit {
@@ -30,7 +30,7 @@ export class UserEditComponent implements OnInit {
     fillUserForm(user: UserModel) {
         this.userForm.patchValue({
             id: user.id,
-            name: user.name,
+            name: user.userName,
             email: user.email,
             // password: user.password
         });

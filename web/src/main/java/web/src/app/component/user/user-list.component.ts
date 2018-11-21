@@ -2,13 +2,12 @@ import {Component, ViewChild, OnInit} from "@angular/core";
 import {UserEditComponent} from "./user-edit.component";
 import {UserModel} from "../../model/user.model";
 import {UserService} from "../../service/user.service";
-import {I18nService} from "../../service/i18n.service";
 import {Observable} from "rxjs";
 
 
 
 @Component({
-    templateUrl: "templates/user/user-list.html",
+    templateUrl: "user-list.html",
     selector: 'user-list'
 })
 export class UserListComponent implements OnInit {
@@ -18,8 +17,8 @@ export class UserListComponent implements OnInit {
     @ViewChild(UserEditComponent)
     private userEditChild: UserEditComponent;
 
-    constructor(private userService: UserService,
-                private i18Service: I18nService) {
+    constructor(private userService: UserService
+    ) {
     }
 
     ngOnInit(): void {

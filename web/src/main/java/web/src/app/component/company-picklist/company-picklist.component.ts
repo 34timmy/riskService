@@ -76,6 +76,7 @@ export class CompanyPicklistComponent implements OnInit {
     //TODO delete reload here
     this.companyListChild.reloadCompanyLists();
     // this.companyService.setListsLoaded(true);
+    this.companyListChild.calculationPerform = false;
     this.companyListChild.showToggle = true;
   }
 

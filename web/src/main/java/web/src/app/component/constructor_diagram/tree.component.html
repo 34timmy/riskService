@@ -1,11 +1,38 @@
-<app-formula-edit #formulaChild (onSaveEvent)="onSaveFormula($event)"></app-formula-edit>
-<app-rule-edit #ruleChild (onSaveEvent)="onSaveRule($event)"></app-rule-edit>
-<app-model-edit #modelChild (onSaveEvent)="onSaveModel($event)"></app-model-edit>
-<app-modelcalc-edit #modelCalcChild (onSaveEvent)="onSaveModelCalc($event)"></app-modelcalc-edit>
-<app-choose #chooseChild (onChooseAgr)="onChooseAgr()" (onChooseFormula)="onChooseFormula()"></app-choose>
-<p-confirmDialog icon="pi pi-exclamation-triangle" width="425" [closeOnEscape]="true">
-</p-confirmDialog>
-<div class="tree-pane"
+
+<div *ngIf="showToggle"
+     [style.display]="'block'"
+     [style.background-color]="'rgba(0,0,0,0.4)'"
+     class="modal fade in" role="dialog" id="editRow">
+  <app-choose #chooseChild (onChooseAgr)="onChooseAgr()" (onChooseFormula)="onChooseFormula()"></app-choose>
+  <app-formula-edit #formulaChild (onSaveEvent)="onSaveFormula($event)"></app-formula-edit>
+  <app-rule-edit #ruleChild (onSaveEvent)="onSaveRule($event)"></app-rule-edit>
+  <app-model-edit #modelChild (onSaveEvent)="onSaveModel($event)"></app-model-edit>
+  <app-modelcalc-edit #modelCalcChild (onSaveEvent)="onSaveModelCalc($event)"></app-modelcalc-edit>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
+                aria-hidden="true" (click)="closeModal()">
+        </button>
+          <button type="button" pButton icon="fa fa-save" style="float: left;"
+                  (click)="saveChanges(updatedNodes)" label="Сохранить">
+          </button>
+        <h2 class="modal-title">Списки компаний</h2>
+      </div>
+      <div class="modal-body">
+
+        <p-confirmDialog icon="pi pi-exclamation-triangle" width="425" [closeOnEscape]="true">
+        </p-confirmDialog>
+        <p-toast position="top-right">
+          <ng-template let-message pTemplate="message">
+            <div style="text-align:center">
+              <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+              <h4>{{message.summary}}</h4>
+              <p>{{message.detail}}</p>
+            </div>
+          </ng-template>
+        </p-toast>
+      <div class="tree-pane" *ngIf="(modelsLoaded | async)"
      (mousedown)="onmousedown($event)"
      (mouseup)="onmouseup($event)"
      (mousemove)="onmousemove($event)"
@@ -33,22 +60,11 @@
       ></div>
     </div>
   </div>
-  <footer>
-    <div class="ui-helper-clearfix" style="width:100%">
-      <button type="button" pButton icon="fa fa-save" style="float:right"
-              (click)="saveChanges(updatedNodes)" label="Сохранить">
-      </button>
-    </div>
-  </footer>
-  <p-toast position="top-right">
-    <ng-template let-message pTemplate="message">
-      <div style="text-align:center">
-        <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
-        <h4>{{message.summary}}</h4>
-        <p>{{message.detail}}</p>
-      </div>
-    </ng-template>
-  </p-toast>
+  </div>
+
+</div>
+</div>
+</div>
 </div>
 
 

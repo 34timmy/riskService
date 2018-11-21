@@ -3,6 +3,7 @@ import {UserModel} from "../model/user.model";
 import {Injectable} from "@angular/core";
 import {reqOptions, basePath, reqOptionsJson, registerPath, usersPath} from "../shared/config";
 import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 
 @Injectable()
@@ -18,7 +19,7 @@ export class UserService {
 
 
     getUsers(): Observable<UserModel[]> {
-        return this.http.get(basePath + usersPath, reqOptions).map(res => res.json());
+        return this.http.get(basePath + usersPath, reqOptions).pipe(map(res => res.json()));
     }
 
     delete(user: UserModel): Observable<Response> {

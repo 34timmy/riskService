@@ -6,13 +6,13 @@ import {ProfileService} from "../../service/profile.service";
 
 
 @Component({
-    templateUrl: "templates/user/profile.html",
+    templateUrl: "profile.html",
     selector: "profile"
 })
 export class ProfileComponent implements OnInit {
 
 
-    private profileForm: FormGroup = this.formBuilder.group({
+    public profileForm: FormGroup = this.formBuilder.group({
         'name': ['', Validators.required],
         'email': ['', Validators.required],
         'password': ['', Validators.required],
@@ -22,7 +22,7 @@ export class ProfileComponent implements OnInit {
     constructor(private formBuilder: FormBuilder,
                 private profileService: ProfileService,
                 private activatedRoute: ActivatedRoute,
-                private authService: AuthService) {
+                public authService: AuthService) {
 
     }
 

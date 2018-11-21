@@ -8,13 +8,15 @@
         <ng-template pTemplate="header">
           <tr >
             <th>Список компаний</th>
-            <th>Год</th>
+            <th>Расчёт по году</th>
+            <!--<th>Дата расчёта</th>-->
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-result>
           <tr [pSelectableRow]="result">
             <td>{{result.companyListName}}</td>
             <td>{{result.year}}</td>
+            <!--<td>{{result.date |  date:'MM/dd/yyyy'}}</td>-->
           </tr>
         </ng-template>
 

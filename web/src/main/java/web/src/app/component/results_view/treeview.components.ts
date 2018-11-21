@@ -39,12 +39,14 @@ export class TreeViewComponent implements OnInit {
     let allCompaniesListId;
     let year;
     // this.treeCompanyListResult = this.treeService.getResultTableNames(modelId, companyListId, allCompaniesListId, year);
+    //TODO show names correctly
     this.cols = [
       {field: 'inn', header: 'ИНН', width: '30%'},
       {field: 'name', header: 'Название', width: '30%'},
       {field: 'weight', header: 'Вес', width: '10%'},
       {field: 'value', header: 'Показатель риска', width: '10%'},
-      {field: 'actions', header: 'Действия', width: '20%'}
+      {field: 'level', header: 'Уровень', width: '10%'},
+      // {field: 'actions', header: 'Действия', width: '10%'}
     ];
   }
 
@@ -89,25 +91,27 @@ export class TreeViewComponent implements OnInit {
     let companyListId = data.companyListId;
     let allCompaniesListId = data.allCompaniesListId;
     let year = data.year;
-    this.treeService.getResultTableNamesRequest(modelId, companyListId, allCompaniesListId, year)
-      .subscribe(
-        tableName => {
-          this.treeService.getCalcResultDTOs(tableName.json().data).subscribe(calcResultDTOs => {
-              let calcResultDTOsJSON = calcResultDTOs.json().data;
-              this.treeCompanyListResult = this.convertResultListTableNamesToTreeNode(calcResultDTOsJSON, companyListId);
-              this.successMessage(calcResultDTOsJSON,
-                'Запись ' + calcResultDTOsJSON + 'с иерархией расчёта получена',
-                null);
-            },
-            err => {
-              this.errorMessage(err.json())
-            });
-          this.successMessage(tableName,
-            'Таблица '+tableName+' получена',
-            '');
-        }, err => {
+    let tableName = data.tableName;
+    // this.treeService.getResultTableNamesRequest(modelId, companyListId, allCompaniesListId, year)
+    //   .subscribe(
+    //     tableName => {
+    this.treeService.getCalcResultDTOs(tableName)
+      .subscribe(calcResultDTOs => {
+          let calcResultDTOsJSON = calcResultDTOs.json().data;
+          this.treeCompanyListResult = this.convertResultListTableNamesToTreeNode(calcResultDTOsJSON, companyListId);
+          this.successMessage(calcResultDTOsJSON,
+            'Запись ' + calcResultDTOsJSON + 'с иерархией расчёта получена',
+            null);
+        },
+        err => {
           this.errorMessage(err.json())
         });
+    //   this.successMessage(tableName,
+    //     'Таблица ' + tableName + ' получена',
+    //     '');
+    // }, err => {
+    //   this.errorMessage(err.json())
+    // });
     this.showToggle = true;
 
   }
@@ -116,22 +120,20 @@ export class TreeViewComponent implements OnInit {
 
     let keys = Object.keys(list);
     return keys.map(key => {
-        console.log('treeview', this.companies
-          .filter(x => x.data.id == companyListId)
-          .find(x => x.children.data ? x.children.data.id.toString() == key : false))
         return {
           data: {
             id: key,
             descr: this.companies
-              .filter(x => x.data.id == companyListId)
+              .find(x => x.data.id === companyListId)
+              .children
               .find(x => {
-                  for (let obj of x.children) {
-                    if (obj.data) {
-                      if (obj.data.id.toString() == key) {
-                        return obj;
-                      }
+                  // for (let obj of x.children) {
+                  if (x.data) {
+                    if (x.data.id.toString() == key) {
+                      return true;
                     }
                   }
+                  // }
                 }
               )
               .data.descr
@@ -158,6 +160,8 @@ export class TreeViewComponent implements OnInit {
           node: list.node,
           parentNode: list.parentNode,
           value: list.value,
+          normalizedValue: list.normalizedValue,
+          level: list.level,
           weight: list.weight
         },
         children: tempList

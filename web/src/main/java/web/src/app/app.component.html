@@ -1,17 +1,16 @@
 <!--<app-header-component></app-header-component>-->
 
-<!--<app-tabs (selected)="$event.selectedTab">-->
-<!--<app-tab [tabTitle]="'Title 1'">-->
-<!--<router-outlet></router-outlet>-->
-<!--</app-tab>-->
-<!--<app-tab tabTitle="Title 2">-->
-<!--Content 2-->
-<!--</app-tab>-->
-<!--</app-tabs>-->
-<app-tabpanel>
-</app-tabpanel>
-<div class="footer">
-  <div class="container">
+<!--<header-component></header-component>-->
 
+
+<div class="jumbotron">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 offset-sm-3">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
   </div>
 </div>
+
+<!--<app-tabpanel></app-tabpanel>-->

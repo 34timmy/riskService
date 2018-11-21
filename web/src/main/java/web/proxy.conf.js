@@ -5,7 +5,8 @@ const PROXY_CONFIG = [
       "/constructor",
       "/companies",
       "/perform",
-      "/import"
+      "/import",
+      "/login"
     ],
     target: "http://localhost:8080",
     secure: false
