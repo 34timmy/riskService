@@ -1,28 +1,11 @@
 package ru.mifi.service.risk.database;
 
 import lombok.SneakyThrows;
-import ru.mifi.service.risk.domain.CalculationParamKey;
-import ru.mifi.service.risk.domain.DataKey;
-import ru.mifi.service.risk.domain.Formula;
-import ru.mifi.service.risk.domain.FormulaResult;
-import ru.mifi.service.risk.domain.HierarchyNode;
-import ru.mifi.service.risk.domain.HierarchyResult;
+import ru.mifi.service.risk.domain.*;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.mifi.utils.StringUtils.extractComments;
@@ -87,6 +70,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     private static final String SQL_UPDATE_WEIGHT = "UPDATE %s t1 set t1.weight = (select weight from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
     private static final String SQL_UPDATE_IS_LEAF = "UPDATE %s t1 set t1.is_leaf = (select is_leaf from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
     private static final String SQL_UPDATE_PARENT_NODE = "UPDATE %s t1 set t1.parent_node = (select parent_node from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
+    private static final String SQL_GET_COMPANY_IDS_BY_INDUSTRY = "SELECT id FROM company WHERE industry=?";
     private final PreparedStatement getModelCalcStmt;
     private final PreparedStatement getModelLeafsStmt;
     private final Statement getFuncParamsStmt;
@@ -95,6 +79,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
     private final PreparedStatement saveResultToMapperTableStmt;
     private DataSource dataSource;
     private Connection connection;
+    private final PreparedStatement getCompanyIdsByIndustryId;
 
     public DatabaseCalculationAccessor(DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
@@ -106,6 +91,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
         this.getModelCalcStmt = connection.prepareStatement(SQL_GET_MODEL_CALC);
         this.getNormativeValueStmt = connection.prepareStatement(SQL_GET_NORMATIVE_VALUE_STMT);
         this.saveResultToMapperTableStmt = connection.prepareStatement(SQL_SAVE_RESULT_TABLE_NAME);
+        this.getCompanyIdsByIndustryId = connection.prepareStatement(SQL_GET_COMPANY_IDS_BY_INDUSTRY);
     }
 
     /**
@@ -122,6 +108,31 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                     .collect(Collectors.toSet());
         }
         throw new IllegalArgumentException("Результат не найден.");
+    }
+
+
+    /**
+     * Получаем расширенный список компаний по ключу. Если задан идентификатор списка - по берем по нему.
+     * Если идентификатор не задан - берем по отрасли.
+     * @param calcKey ключ с параметрами расчета
+     * @return идентификаторы компаний
+     * @throws SQLException
+     */
+    public Set<String> getExtendedCompanyList(CalculationParamKey calcKey) throws SQLException {
+        if (calcKey.getAllCompaniesListId() == null && calcKey.getIndustry() == null) {
+            throw new IllegalArgumentException("В полученном ключе с параметрами расчета не заданы ни расширенный " +
+                    "список компаний (allCompaniesListId), ни отрасль (industry)!");
+        }
+        if (calcKey.getAllCompaniesListId() != null) {
+            return getCompanyIdsByListId(calcKey.getAllCompaniesListId());
+        }
+        Set<String> resultSet = new HashSet<>();
+        getCompanyIdsByIndustryId.setString(1, calcKey.getIndustry());
+        ResultSet requestResult = getCompanyIdsByIndustryId.executeQuery();
+        while (requestResult.next()) {
+            resultSet.add(requestResult.getString(1));
+        }
+        return resultSet;
     }
 
     /**

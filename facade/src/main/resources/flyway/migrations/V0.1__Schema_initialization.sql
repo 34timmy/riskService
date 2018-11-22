@@ -1,12 +1,25 @@
 CREATE TABLE public.company (
-  id    VARCHAR2 (255) NOT NULL,
-  inn   VARCHAR2 (255),
-  descr VARCHAR2 (255)
+  id        VARCHAR2 (255) NOT NULL,
+  inn       VARCHAR2 (255),
+  industry  VARCHAR2 (255),
+  descr     VARCHAR2 (255)
 );
 
 
 ALTER TABLE public.company
   ADD CONSTRAINT company_pk PRIMARY KEY (id);
+ALTER TABLE public.model_calc
+  ADD CONSTRAINT company_industry_fk FOREIGN KEY (industry) REFERENCES industry (id)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
+
+CREATE TABLE public.industry (
+  id         VARCHAR2 (255) NOT NULL,
+  name       VARCHAR2 (255) NOT NULL,
+  description VARCHAR2(4000)
+);
+ALTER TABLE public.industry
+  ADD CONSTRAINT industry_pk PRIMARY KEY (id);
 
 CREATE TABLE public.users (
   id         VARCHAR2 (255) NOT NULL,
