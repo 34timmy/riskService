@@ -22,7 +22,6 @@ ALTER TABLE public.users
 
 
 CREATE TABLE public.roles (
-  id      varchar(255) NOT NULL,
   role    varchar(255) NOT NULL,
   user_id varchar(255)
 );
@@ -30,12 +29,9 @@ CREATE TABLE public.roles (
 ALTER TABLE public.roles
   ADD CONSTRAINT user_id_fk FOREIGN KEY (user_id) references users (id)
   ON DELETE CASCADE;
+
 ALTER TABLE public.roles
   ADD CONSTRAINT user_roles_idx UNIQUE (user_id, role);
-
-ALTER TABLE public.roles
-  ADD CONSTRAINT roles_id PRIMARY KEY (id);
-
 
 CREATE TABLE public.business_data (
   param_code  VARCHAR2 (255) NOT NULL,

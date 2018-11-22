@@ -1,35 +1,54 @@
-import {Http, Response} from '@angular/http';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {
-  reqOptions,
   basePath,
-  reqOptionsJson,
   companiesPath,
   constructorPath,
   companyLists, modelPath, companiesListsPath
 } from '../shared/config';
 import {CompanyModel} from '../model/company.model';
 import {v4 as uuid} from 'uuid';
+import {AuthService} from "./auth.service";
 
 @Injectable()
 export class CompanyService {
 
   listsLoaded = new BehaviorSubject<boolean>(false);
 
+  private headersJson = new Headers({
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + this.authenticationService.getToken()
+  });
 
-  constructor(private http: Http) {
+  private headers = new Headers({
+    'Authorization': 'Bearer ' + this.authenticationService.getToken()
+  });
+
+  reqOptions: RequestOptions = new RequestOptions({
+    withCredentials: true,
+    headers: this.headers
+  });
+
+  reqOptionsJson: RequestOptions = new RequestOptions({
+    withCredentials: true,
+    headers: this.headersJson
+  });
+
+  constructor(private http: Http,
+              private authenticationService: AuthService
+  ) {
   }
 
 
   getCompanies(): Observable<Response> {
-    return this.http.get(basePath + companiesPath, reqOptions);
+    return this.http.get(basePath + companiesPath, this.reqOptions);
   }
 
   delete(company: CompanyModel): Observable<Response> {
-    return this.http.delete(basePath + companiesPath + '/' + company.id, reqOptions);
+    return this.http.delete(basePath + companiesPath + '/' + company.id, this.reqOptions);
   }
 
   saveCompany(company: CompanyModel): Observable<Response> {
@@ -47,26 +66,27 @@ export class CompanyService {
   // }
 
   private updateCompany(company: CompanyModel): Observable<Response> {
-    return this.http.put(basePath + companiesPath + '/' + company.id, JSON.stringify(company), reqOptionsJson);
+    return this.http.put(basePath + companiesPath + '/' + company.id, JSON.stringify(company), this.reqOptionsJson);
   }
 
   private createCompany(company: CompanyModel): Observable<Response> {
 
-    return this.http.post(basePath + companiesPath, JSON.stringify(company), reqOptionsJson);
+    return this.http.post(basePath + companiesPath, JSON.stringify(company), this.reqOptionsJson);
   }
 
   createCompanyList(companiesList): Observable<Response> {
     //TODO create PAth
-    return this.http.post(basePath + constructorPath + modelPath + companiesListsPath, JSON.stringify(companiesList), reqOptionsJson);
+    return this.http.post(basePath + constructorPath + modelPath + companiesListsPath, JSON.stringify(companiesList),
+      this.reqOptionsJson);
   }
 
   updateCompanyList(companiesList): Observable<Response> {
 //TODO create PAth
-    return this.http.put(basePath + "", JSON.stringify(companiesList), reqOptionsJson);
+    return this.http.put(basePath + "", JSON.stringify(companiesList), this.reqOptionsJson);
   }
 
   getAllCompanyLists(): Observable<Response> {
-    return this.http.get(basePath + constructorPath + modelPath + companyLists, reqOptions);
+    return this.http.get(basePath + constructorPath + modelPath + companyLists, this.reqOptions);
   }
 
   isListsLoaded() {
@@ -85,7 +105,7 @@ export class CompanyService {
       "&companyListId=" + selectedListId +
       "&industryCompanyListId=" + "2" +
       "&year=" + selectedYear
-      , reqOptions)
+      , this.reqOptions)
   }
 
   companyLists = new BehaviorSubject<any[]>([]);

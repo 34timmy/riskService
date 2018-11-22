@@ -1,7 +1,7 @@
 import {RequestOptions, Headers} from '@angular/http';
 
 export const basePath = '';
-export const loginPath = '/login';
+export const loginPath = '/auth';
 export const profilePath = '/profile';
 export const registerPath = '/register';
 export const usersPath = '/users';
@@ -21,10 +21,10 @@ export const i18nPath = '/i18n';
 export const headers: Headers = new Headers({
   'Content-Type': 'application/json'
 });
-export const reqOptions: RequestOptions = new RequestOptions({
-  withCredentials: true
-});
-export const reqOptionsJson: RequestOptions = new RequestOptions({
-  withCredentials: true,
-  headers: headers
-});
+// export const reqOptions: RequestOptions = new RequestOptions({
+//   withCredentials: true
+// });
+// export const reqOptionsJson: RequestOptions = new RequestOptions({
+//   withCredentials: true,
+//   headers: headers
+// });

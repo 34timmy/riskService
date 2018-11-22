@@ -17,7 +17,11 @@ public class User {
 
     private String id;
 
-    protected String name;
+    protected String userName;
+
+    protected String firstName;
+
+    protected String lastName;
 
     @NotBlank
     @Email

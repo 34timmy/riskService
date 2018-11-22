@@ -1,22 +1,41 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import {
   basePath,
   constructorPath,
   formulaPath,
   modelCalcPath,
   modelPath,
-  reqOptions,
-  reqOptionsJson,
   rulePath
 } from '../shared/config';
 import {Router} from "@angular/router";
 import {BehaviorSubject, Observable} from "rxjs";
+import {AuthService} from "./auth.service";
 
 @Injectable()
 export class TreeDiagramService {
+  private headersJson = new Headers({
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + this.authenticationService.getToken()
+  });
 
-  constructor(private http: Http, private router: Router) {
+  private headers = new Headers({
+    'Authorization': 'Bearer ' + this.authenticationService.getToken()
+  });
+
+  reqOptions: RequestOptions = new RequestOptions({
+    withCredentials: true,
+    headers: this.headers
+  });
+
+  reqOptionsJson: RequestOptions = new RequestOptions({
+    withCredentials: true,
+    headers: this.headersJson
+  });
+
+  constructor(private http: Http, private router: Router,
+              private authenticationService: AuthService
+  ) {
     this.modelsLoaded = new BehaviorSubject<boolean>(false);
   }
 
@@ -36,16 +55,16 @@ export class TreeDiagramService {
 
   deleteFormula(formula) {
     console.log('delete fromula method', formula);
-    return this.http.delete(basePath + constructorPath + formulaPath + '/' + formula.id, reqOptions);
+    return this.http.delete(basePath + constructorPath + formulaPath + '/' + formula.id, this.reqOptions);
 
   }
 
   private updateFormula(formula) {
-    return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
+    return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), this.reqOptionsJson);
   }
 
   private createFormula(formula) {
-    return this.http.post(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
+    return this.http.post(basePath + constructorPath + formulaPath, JSON.stringify(formula), this.reqOptionsJson);
   }
 
   saveRule(rule) {
@@ -59,16 +78,16 @@ export class TreeDiagramService {
 
   deleteRule(rule) {
     console.log('delete rule method', rule);
-    return this.http.delete(basePath + constructorPath + rulePath + '/' + rule.id, reqOptions);
+    return this.http.delete(basePath + constructorPath + rulePath + '/' + rule.id, this.reqOptions);
 
   }
 
   private updateRule(rule) {
-    return this.http.put(basePath + constructorPath + rulePath, JSON.stringify(rule), reqOptionsJson);
+    return this.http.put(basePath + constructorPath + rulePath, JSON.stringify(rule), this.reqOptionsJson);
   }
 
   private createRule(rule) {
-    return this.http.post(basePath + constructorPath + rulePath, JSON.stringify(rule), reqOptionsJson);
+    return this.http.post(basePath + constructorPath + rulePath, JSON.stringify(rule), this.reqOptionsJson);
   }
 
   saveModel(model) {
@@ -82,16 +101,16 @@ export class TreeDiagramService {
 
   deleteModel(model) {
     console.log('delete fromula method', model);
-    return this.http.delete(basePath + constructorPath + modelPath + '/' + model.id, reqOptions);
+    return this.http.delete(basePath + constructorPath + modelPath + '/' + model.id, this.reqOptions);
 
   }
 
   private updateModel(model) {
-    return this.http.put(basePath + constructorPath + modelPath, JSON.stringify(model), reqOptionsJson);
+    return this.http.put(basePath + constructorPath + modelPath, JSON.stringify(model), this.reqOptionsJson);
   }
 
   private createModel(model) {
-    return this.http.post(basePath + constructorPath + modelPath, JSON.stringify(model), reqOptionsJson);
+    return this.http.post(basePath + constructorPath + modelPath, JSON.stringify(model), this.reqOptionsJson);
   }
 
   saveModelCalc(modelCalc) {
@@ -104,31 +123,31 @@ export class TreeDiagramService {
 
   deleteModelCalc(modelCalc) {
     console.log('delete fromula method', modelCalc);
-    return this.http.delete(basePath + constructorPath + modelCalcPath + '/' + modelCalc.id, reqOptions);
+    return this.http.delete(basePath + constructorPath + modelCalcPath + '/' + modelCalc.id, this.reqOptions);
 
   }
 
   private updateModelCalc(modelCalc) {
-    return this.http.put(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), reqOptionsJson);
+    return this.http.put(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), this.reqOptionsJson);
   }
 
   private createModelCalc(modelCalc) {
-    return this.http.post(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), reqOptionsJson);
+    return this.http.post(basePath + constructorPath + modelCalcPath, JSON.stringify(modelCalc), this.reqOptionsJson);
   }
 
   getAllModelsOnly() {
-    return this.http.get(basePath + constructorPath + modelPath, reqOptions);
+    return this.http.get(basePath + constructorPath + modelPath, this.reqOptions);
   }
 
   private getAllNodes() {
-    return this.http.get(basePath + constructorPath + modelPath + "/treeNodes", reqOptions);
+    return this.http.get(basePath + constructorPath + modelPath + "/treeNodes", this.reqOptions);
   }
 
   private getNodeForModel(id) {
     return this.http.get(basePath + constructorPath + modelPath +
       "/treeNodes" +
       "/" + id
-      , reqOptions);
+      , this.reqOptions);
   }
 
   getTreeNodeDTOs() {

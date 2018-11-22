@@ -6,7 +6,10 @@ const PROXY_CONFIG = [
       "/companies",
       "/perform",
       "/import",
-      "/login"
+      "/login",
+      "/auth",
+      "/refresh",
+      "/register"
     ],
     target: "http://localhost:8080",
     secure: false

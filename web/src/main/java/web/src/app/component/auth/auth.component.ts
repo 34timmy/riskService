@@ -36,14 +36,21 @@ export class AuthComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-
+    //TODO improve erroemessage
     this.loading = true;
     this.authenticationService.login(this.f.username.value, this.f.password.value)
       .subscribe(
-        data => {
-          this.submitted = true;
-          this.loading = false;
-          this.router.navigateByUrl("/profile")
+        result => {
+          if(result===true) {
+            this.submitted = true;
+            this.loading = false;
+            this.router.navigateByUrl("/main")
+          }
+          else
+          {
+            this.errorMessage({cause: "Login failed"})
+            this.loading = false;
+          }
         },
         error => {
           this.submitted = false;

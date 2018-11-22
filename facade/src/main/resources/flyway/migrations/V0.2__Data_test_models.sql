@@ -1,10 +1,15 @@
-insert into company_list (id, company_ids,descr)
-VALUES ('1', '8602166992;5410786860','Список 1');
-insert into company_list (id, company_ids,descr)
-VALUES ('2', '8602166992;5410786860','Список 2');
+insert into company_list (id, company_ids, descr)
+VALUES ('1', '8602166992;5410786860', 'Список 1');
+insert into company_list (id, company_ids, descr)
+VALUES ('2', '8602166992;5410786860', 'Список 2');
 insert into normative_parameters (param_name, value, descr)
 VALUES ('FIIJJJ', '0.55', 'Testers gonna test');
 
+INSERT INTO users(ID, NAME, EMAIL, PASSWORD)
+values (1, 'user', 'user@gmail.com', '$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC');
+
+INSERT INTO roles ( role, user_id)
+values ( 'ROLE_USER', 1);
 -- INSERT INTO COMPANY (ID, INN,descr)
 -- values (8602166992, 10,'Comp 1'),
 --        (5410786860, 20,'Comp 2');
@@ -27,7 +32,6 @@ INSERT into FORMULA (id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB)
 VALUES (8, 'Formula 1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),
        (9, 'Formula 2', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),
        (10, 'Formula 3', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB');
-
 
 
 INSERT INTO business_data (PARAM_CODE, DESCRIPTION)

@@ -1,9 +1,6 @@
 import {RouterModule, Routes} from '@angular/router';
 import {ModuleWithProviders} from '@angular/core';
 import {TabViewComponent} from './component/tabmenu2/tab-view.component';
-import {CompanyPicklistComponent} from './component/company-picklist/company-picklist.component';
-import {TreeViewComponent} from "./component/results_view/treeview.components";
-import {Tree} from "./component/constructor_diagram/tree.component";
 import {RegisterComponent} from "./component/auth/register.component";
 import {AuthComponent} from "./component/auth/auth.component";
 import {AuthActivateGuard} from "./shared/auth.activate.guard";
@@ -14,7 +11,7 @@ const appRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: '/app-tabpanel',
+    redirectTo: '/login',
   },
   {
     path: "login",
@@ -25,7 +22,7 @@ const appRoutes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'app-tabpanel',
+    path: 'main',
     component: TabViewComponent,
     canActivate: [AuthActivateGuard]
   },
@@ -38,6 +35,6 @@ const appRoutes: Routes = [
 
 export const routing: ModuleWithProviders = RouterModule
   .forRoot(appRoutes, {
-    useHash: true,
-    onSameUrlNavigation: 'reload'
+    useHash: true
+    , onSameUrlNavigation: 'reload'
   });

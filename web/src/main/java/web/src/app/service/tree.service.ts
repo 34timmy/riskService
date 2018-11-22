@@ -1,15 +1,36 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
-import {basePath, constructorPath, formulaPath, modelPath, reqOptions, reqOptionsJson} from '../shared/config';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {basePath, constructorPath, formulaPath, modelPath} from '../shared/config';
 import {TreeNode} from "primeng/api";
 import {Router} from "@angular/router";
 import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
+import {AuthService} from "./auth.service";
 
 @Injectable()
 export class TreeService {
+  private headersJson = new Headers({
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + this.authenticationService.getToken()
+  });
 
-  constructor(private http: Http, private router: Router) {
+  private headers = new Headers({
+    'Authorization': 'Bearer ' + this.authenticationService.getToken()
+  });
+
+  reqOptions: RequestOptions = new RequestOptions({
+    withCredentials: true,
+    headers: this.headers
+  });
+
+  reqOptionsJson: RequestOptions = new RequestOptions({
+    withCredentials: true,
+    headers: this.headersJson
+  });
+
+  constructor(private http: Http, private router: Router,
+              private authenticationService: AuthService
+  ) {
     this.modelsLoaded = new BehaviorSubject<boolean>(false);
   }
 
@@ -28,27 +49,27 @@ export class TreeService {
   }
 
   delete(formula) {
-    return this.http.delete(basePath + constructorPath + formulaPath + '/' + formula.id, reqOptions);
+    return this.http.delete(basePath + constructorPath + formulaPath + '/' + formula.id, this.reqOptions);
 
   }
 
   private update(formula) {
-    return this.http.post(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
+    return this.http.post(basePath + constructorPath + formulaPath, JSON.stringify(formula), this.reqOptionsJson);
   }
 
   private create(formula) {
-    return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), reqOptionsJson);
+    return this.http.put(basePath + constructorPath + formulaPath, JSON.stringify(formula), this.reqOptionsJson);
   }
 
   private getAll() {
-    return this.http.get(basePath + constructorPath + modelPath, reqOptions);
+    return this.http.get(basePath + constructorPath + modelPath, this.reqOptions);
   }
 
   getListOfResults() {
     return this.http.get(basePath +
       "/getData" +
       "/getListOfResults"
-      , reqOptions)
+      , this.reqOptions)
   }
 
 
@@ -60,7 +81,7 @@ export class TreeService {
       "&companyListId=" + companyListId +
       "&allCompaniesListId=" + allCompaniesListId +
       "&year=" + year
-      , reqOptions);
+      , this.reqOptions);
   }
 
   //  getResults(tableName) {
@@ -79,7 +100,7 @@ export class TreeService {
       "/getData" +
       "/byTable?" +
       "tableName=" + tableName
-      , reqOptions);
+      , this.reqOptions);
   }
 
     getTheBoolean(): Observable<boolean> {
