@@ -1,6 +1,5 @@
 package ru.mifi.service.risk.database;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.mifi.service.risk.dto.ModelCalcDto;
 import ru.mifi.service.risk.dto.ModelDto;
@@ -20,7 +19,6 @@ import java.util.List;
  * @author DenRUS
  */
 @Component
-@Profile("!nodb")
 public class DatabaseForWeightsCalcAccessor extends CustomAutoCloseable{
 
     public static final String SQL_GET_ALL_MODELS =
@@ -29,14 +27,15 @@ public class DatabaseForWeightsCalcAccessor extends CustomAutoCloseable{
             "select node, parent_node, descr, expert_value, weight FROM model_calc WHERE model_id = ?";
     public static final String SQL_UPDATE_WEIGHTS_MODEL_CALC =
             "UPDATE model_calc SET weight=?, expert_value=? WHERE node=?";
-    private final Connection connection;
+    private Connection connection;
 
-    private final PreparedStatement getAllModelsStmt;
-    private final PreparedStatement getModelCalcByModelIdStmt;
-    private final PreparedStatement updateWeightsOfModelCalcStmt;
+    private PreparedStatement getAllModelsStmt;
+    private PreparedStatement getModelCalcByModelIdStmt;
+    private PreparedStatement updateWeightsOfModelCalcStmt;
     private Integer updateBatchCounter = 0;
 
     private DataSource dataSource;
+    private boolean inited = false;
 
     /**
      * Стандартный конструктор. Получаем датасорс и подготавливаем все необходимые stmt.
@@ -45,10 +44,22 @@ public class DatabaseForWeightsCalcAccessor extends CustomAutoCloseable{
      */
     public DatabaseForWeightsCalcAccessor(DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
+    }
+
+    /**
+     * Сразу подготавливать конекшены не выходит - миграции выполняются позже, чем бин создается - таблиц ещё нет.
+     * @throws SQLException при косяке подготовки стейтментов
+     */
+    public DatabaseForWeightsCalcAccessor init() throws SQLException {
+        if (inited) {
+            return this;
+        }
         this.connection = dataSource.getConnection();
         this.getAllModelsStmt = connection.prepareStatement(SQL_GET_ALL_MODELS);
         this.getModelCalcByModelIdStmt = connection.prepareStatement(SQL_GET_MODEL_CALC_BY_MODEL_ID);
         this.updateWeightsOfModelCalcStmt = connection.prepareStatement(SQL_UPDATE_WEIGHTS_MODEL_CALC);
+        this.inited = true;
+        return this;
     }
 
     public void updateWeightsOfModelCalc(Collection<ModelCalcDto> forUpdate) throws SQLException {
