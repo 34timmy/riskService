@@ -1,4 +1,4 @@
-package ru.mifi.authentication.service;
+package ru.mifi.authentication.model;
 
 import lombok.Data;
 

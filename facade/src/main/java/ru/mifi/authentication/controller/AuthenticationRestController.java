@@ -2,7 +2,6 @@ package ru.mifi.authentication.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import ru.mifi.authentication.model.JwtAuthenticationRequest;
 import ru.mifi.authentication.utils.JwtTokenUtil;
 import ru.mifi.authentication.model.JwtUser;
 import ru.mifi.authentication.model.User;
-import ru.mifi.authentication.service.JwtAuthenticationResponse;
+import ru.mifi.authentication.model.JwtAuthenticationResponse;
 import ru.mifi.authentication.service.UserServiceImpl;
 import ru.mifi.authentication.utils.EmailExistException;
 

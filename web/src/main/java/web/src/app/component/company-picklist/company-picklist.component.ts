@@ -16,9 +16,6 @@ import {MenuItem} from "primeng/api";
   selector: 'app-company-picklist'
 })
 export class CompanyPicklistComponent implements OnInit {
-  items: MenuItem[];
-
-  activeItem: MenuItem;
 
 
   source: CompanyModel[];
@@ -44,11 +41,6 @@ export class CompanyPicklistComponent implements OnInit {
 
 
   ngOnInit() {
-    this.items = [
-      {label: 'Расчёт', icon: 'fa fa-money',routerLink: ['/calculation']},
-      {label: 'Результаты', icon: 'pi pi-inbox',routerLink: ['/results']},
-      {label: 'Конструктор', icon: 'pi pi-inbox',routerLink: ['/constructor']},
-    ];
 
     this.companyService.getCompanies().subscribe(res => {
         this.source = res.json();

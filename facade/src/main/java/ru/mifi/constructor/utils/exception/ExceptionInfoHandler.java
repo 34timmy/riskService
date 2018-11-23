@@ -36,6 +36,14 @@ public class ExceptionInfoHandler {
         return LOG.getErrorInfo(req.getRequestURL(), e);
     }
 
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)  // 401
+    @ExceptionHandler(AuthException.class)
+    @ResponseBody
+    @Order(Ordered.HIGHEST_PRECEDENCE )
+    ErrorInfo unauthorized(HttpServletRequest req, ValidationException e) {
+        return LOG.getErrorInfo(req.getRequestURL(), e);
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     @ResponseBody

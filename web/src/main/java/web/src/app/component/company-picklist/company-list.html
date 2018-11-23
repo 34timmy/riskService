@@ -1,14 +1,14 @@
 <div *ngIf="showToggle && (listsLoaded | async)"
      [style.display]="'block'"
      [style.background-color]="'rgba(0,0,0,0.4)'"
-     class="modal fade in" role="dialog" id="editRow">
-  <div class="modal-dialog">
+     class="modal" role="dialog" id="editRow">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
+        <h2 class="modal-title">Списки компаний</h2>
         <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
                 aria-hidden="true" (click)="closeModal()">
         </button>
-        <h2 class="modal-title">Списки компаний</h2>
       </div>
       <div class="modal-body">
         <div *ngIf="calculationPerform" class="ui-g ui-fluid">
@@ -24,14 +24,14 @@
           </div>
 
           <!--<div class="ui-g-12 ui-md-4 ">-->
-            <!--<p class="fa fa-list-ol" style="margin: 0 5px 0 0"></p>-->
-            <!--<p-dropdown [options]="stages" [(ngModel)]="selectedStage" [filter]="true"-->
-                        <!--placeholder="Стадия" [showClear]="true"-->
-                        <!--[style]="{'width':'150px'}">-->
-              <!--<ng-template let-item pTemplate="selectedItem">-->
-                <!--<div>{{item.label}}</div>-->
-              <!--</ng-template>-->
-            <!--</p-dropdown>-->
+          <!--<p class="fa fa-list-ol" style="margin: 0 5px 0 0"></p>-->
+          <!--<p-dropdown [options]="stages" [(ngModel)]="selectedStage" [filter]="true"-->
+          <!--placeholder="Стадия" [showClear]="true"-->
+          <!--[style]="{'width':'150px'}">-->
+          <!--<ng-template let-model pTemplate="selectedItem">-->
+          <!--<div>{{model.label}}</div>-->
+          <!--</ng-template>-->
+          <!--</p-dropdown>-->
           <!--</div>-->
           <div class="ui-g-12 ui-md-4">
             <p class="fa fa-calendar " style="margin: 0 5px 0 0"></p>
@@ -76,11 +76,12 @@
           </ng-template>
           <app-company-save #saveChild></app-company-save>
         </p-treeTable>
-        <footer *ngIf="calculationPerform">
-          <button type="button" pButton icon="fa fa-calculator" style="float:right;margin: 5px 5px 5px 5px"
-                  (click)="calculate()" label="Рассчитать">
-          </button>
-        </footer>
+      </div>
+
+      <div class="modal-footer" *ngIf="calculationPerform">
+        <button type="button" pButton icon="fa fa-calculator" style="float:right;margin: 5px 5px 5px 5px"
+                (click)="calculate()" label="Рассчитать">
+        </button>
       </div>
     </div>
   </div>

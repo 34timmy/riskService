@@ -1,14 +1,14 @@
 <div *ngIf="showToggle"
      [style.display]="'block'"
      [style.background-color]="'rgba(0,0,0,0.4)'"
-     class="modal fade in" role="dialog" id="editRow">
+     class="modal" role="dialog" id="editRow">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
+        <h2 class="modal-title">Выберите тип</h2>
         <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
                 aria-hidden="true" (click)="closeModal()">
         </button>
-        <h2 class="modal-title">Выберите тип</h2>
       </div>
       <div class="modal-body">
         <button type="button" pButton label="Промежуточный индекс" style="margin: 5px 5px 5px 5px"

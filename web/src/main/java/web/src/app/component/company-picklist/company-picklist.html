@@ -1,7 +1,7 @@
 <app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
 <app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
 <app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
-<p-tabMenu [model]="items">
+
 
 <div *ngIf="displayTopBar">
   <p-progressBar [value]="loadValue"></p-progressBar>
@@ -24,7 +24,8 @@
 </div>
 
 
-<p-pickList [source]="source" [target]="target" sourceHeader="Список компаний" targetHeader="Список выбранных компаний"
+<p-pickList [source]="source" [target]="target" sourceHeader="Список компаний"
+            targetHeader="Список выбранных компаний"
             dragdrop="true"
             dragdropScope="companies"
             [responsive]="true" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}"
@@ -36,7 +37,8 @@
       <button pButton icon="fa fa-trash" style="float:right;margin: 5px 5px 5px 5px" class="ui-button-danger "
               (click)="onDelete(company)">
       </button>
-      <button type="button" pButton icon="fa fa-edit" class="ui-button-success" style="float:right;margin: 5px 5px 5px 5px"
+      <button type="button" pButton icon="fa fa-edit" class="ui-button-success"
+              style="float:right;margin: 5px 5px 5px 5px"
               (click)="onEditCompany(company)">
       </button>
     </div>
@@ -44,7 +46,7 @@
       <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>Название:</b> {{company.descr}}</div>
     </div>
     <!--<div class="ui-helper-clearfix">-->
-      <!--<div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>ИНН:</b> {{company.inn}}</div>-->
+    <!--<div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>ИНН:</b> {{company.inn}}</div>-->
     <!--</div>-->
   </ng-template>
 
@@ -66,4 +68,3 @@
     </div>
   </ng-template>
 </p-toast>
-</p-tabMenu>

@@ -21,7 +21,7 @@ import {
 import {GrowlModule} from 'primeng/components/growl/growl';
 import {FooterComponent} from './component/auth/footer.component';
 import {TabMenuModule} from 'primeng/tabmenu';
-import {TabViewComponent} from './component/tabmenu2/tab-view.component';
+import {TabViewComponent} from './component/tabview/tab-view.component';
 import {ToastModule} from 'primeng/toast';
 import {PickListModule} from 'primeng/picklist';
 import {CompanyPicklistComponent} from './component/company-picklist/company-picklist.component';
@@ -68,6 +68,7 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {AuthActivateGuard} from "./shared/auth.activate.guard";
 import {MenuModule} from 'primeng/menu';
+import {MenuComponent} from "./component/mainmenu/menu.component";
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import {MenuModule} from 'primeng/menu';
     HeaderComponent,
     RegisterComponent,
     ModelsListComponent,
+    MenuComponent
 
   ],
   imports: [

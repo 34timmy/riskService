@@ -12,7 +12,6 @@ import java.util.Set;
 
 
 @Data
-@RequiredArgsConstructor
 public class User {
 
     private String id;

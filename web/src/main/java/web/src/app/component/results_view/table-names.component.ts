@@ -2,9 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {TreeService} from "../../service/tree.service";
 import {ResultTableModel} from "../../model/result-table.model";
 import {CompanyService} from "../../service/company.service";
-import {map} from "rxjs/operators";
 import {TreeViewComponent} from "./treeview.components";
-import {BehaviorSubject} from "rxjs";
 import {MessageService} from "primeng/api";
 
 @Component({
@@ -16,6 +14,7 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
   resultList;
   companyLists;
   selectedItem;
+
 
   @ViewChild(TreeViewComponent)
   treeViewChild: TreeViewComponent;

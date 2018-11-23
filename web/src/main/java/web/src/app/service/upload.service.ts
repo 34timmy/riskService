@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {basePath} from "../shared/config";
+import {basePath, headers} from "../shared/config";
 import {Headers, Http, RequestOptions} from "@angular/http";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AuthService} from "./auth.service";
@@ -17,20 +17,17 @@ export class UploadService {
     formData.append('file', file, file.name);
 
     let params = new HttpParams();
-    let headers = new HttpHeaders();
-    headers.set('Content-Type', 'multipart/form-data');
-    headers.set('Authorization', 'Bearer ' + this.authenticationService.getToken());
-    const options = {
-      params: params,
-      reportProgress: true
-    };
+    // const options = ;
 
     let url = basePath + "/import" + "/fromExcel";
     // const req = new HttpRequest('POST', url, formData, options);
     return this.http.post(url, formData, {
-      reportProgress: true,
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + this.authenticationService.getToken()}),
       observe: 'events',
-      headers: headers
-    });
+      params: params,
+      reportProgress: true
+
+    })
   }
 }

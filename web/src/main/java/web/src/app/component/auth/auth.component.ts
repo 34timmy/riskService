@@ -5,7 +5,10 @@ import {AuthService} from "../../service/auth.service";
 import {MessageService} from "primeng/api";
 import {first} from "rxjs/operators";
 
-@Component({templateUrl: 'auth.html'})
+@Component({
+  templateUrl: 'auth.html',
+  selector: 'auth'
+})
 export class AuthComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
@@ -24,6 +27,12 @@ export class AuthComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+    if (this.authenticationService.isLoggedIn())
+    {
+      this.router.navigateByUrl("/calculation")
+
+    }
     this.authenticationService.logout();
   }
 
@@ -41,13 +50,12 @@ export class AuthComponent implements OnInit {
     this.authenticationService.login(this.f.username.value, this.f.password.value)
       .subscribe(
         result => {
-          if(result===true) {
+          if (result === true) {
             this.submitted = true;
             this.loading = false;
             this.router.navigateByUrl("/calculation")
           }
-          else
-          {
+          else {
             this.errorMessage({cause: "Login failed"})
             this.loading = false;
           }

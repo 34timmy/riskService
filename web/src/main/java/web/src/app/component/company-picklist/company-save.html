@@ -1,23 +1,24 @@
 <div *ngIf="showToggle"
      [style.display]="'block'"
      [style.background-color]="'rgba(0,0,0,0.4)'"
-     class="modal fade in" role="dialog" id="editRow">
+     class="modal" role="dialog" id="editRow">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
+        <h2 class="modal-title">Введите название списка</h2>
         <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
                 aria-hidden="true" (click)="closeModal()">
         </button>
-        <h2 class="modal-title">Введите название списка</h2>
       </div>
       <div class="modal-body">
 
         <p-autoComplete [size]="50" [(ngModel)]="text" [suggestions]="autoCompleteResults"
                         (completeMethod)="search($event)"></p-autoComplete>
-        <p-footer>
-          <p-button type="button" style="margin: 5px 5px 5px 5px" (click)="onSaveCompanyListName(text)"
-                    label="Сохранить"></p-button>
-        </p-footer>
+      </div>
+
+      <div class="modal-footer">
+        <p-button type="button" style="margin: 5px 5px 5px 5px" (click)="onSaveCompanyListName(text)"
+                  label="Сохранить"></p-button>
       </div>
     </div>
   </div>

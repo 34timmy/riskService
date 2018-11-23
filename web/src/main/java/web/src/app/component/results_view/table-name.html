@@ -1,12 +1,13 @@
 <h3>Список расчётов</h3>
+<div *ngIf="resultList">
 <p-tabView>
-  <p-tabPanel *ngFor="let item of resultList | groupBy:'modelId'; let i = index" [selected]="i == 0">
-    <ng-template pTemplate="header">Модель {{item.key}}</ng-template>
+  <p-tabPanel *ngFor="let model of resultList | groupBy:'modelId'; let i = index" [selected]="i == 0">
+    <ng-template pTemplate="header">Модель {{model.key}}</ng-template>
     <div>
-      <p-table [value]="item.value" [paginator]="true" [rows]="10"
+      <p-table [value]="model.value" [paginator]="true" [rows]="10"
                selectionMode="single" [(selection)]="selectedItem" (onRowSelect)="onRowSelect($event)">
         <ng-template pTemplate="header">
-          <tr >
+          <tr>
             <th>Список компаний</th>
             <th>Расчёт по году</th>
             <!--<th>Дата расчёта</th>-->
@@ -24,4 +25,5 @@
     </div>
   </p-tabPanel>
 </p-tabView>
+</div>
 <app-treeview></app-treeview>

@@ -29,15 +29,15 @@ values ('33416230-d0e5-43d5-9901-829572bec3b6', 'Agr 1', '36edd6cc-1e68-46a6-82e
        ('741073e4-70d1-488c-828e-5000437df48c', 'Formula 3', '417275ff-a7a8-4360-b97a-81ac40fa3e8a', '53ceb373-47a7-452c-8f40-cbb8fd390d83', 1, 2, 1);
 
 INSERT into FORMULA (id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB)
-VALUES (8, 'Formula 1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),
-       (9, 'Formula 2', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),
-       (10, 'Formula 3', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB');
+VALUES ('eab215a1-fa52-4a2e-a456-90a44c579b20', 'Formula 1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),
+       ('501e6562-66a4-455a-8448-e1e97f23f468', 'Formula 2', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),
+       ('417275ff-a7a8-4360-b97a-81ac40fa3e8a', 'Formula 3', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB');
 
 
 INSERT INTO business_data (PARAM_CODE, DESCRIPTION)
 VALUES (10, 'Code 10');
 INSERT INTO FORMULA_PARAMS (NODE, PARAM_CODE)
-VALUES (8, 10);
+VALUES ('501e6562-66a4-455a-8448-e1e97f23f468', 10);
 
 INSERT INTO COMPANY_business_data (COMPANY_ID, PARAM_CODE, YEAR, PARAM_VALUE)
 VALUES (1, 10, 2000, 'Val');

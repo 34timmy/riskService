@@ -1,105 +1,103 @@
 <div *ngIf="showToggle"
      [style.display]="'block'"
      [style.background-color]="'rgba(0,0,0,0.4)'"
-     class="modal fade in" role="dialog" id="editRow">
-  <div class="modal-dialog">
+     class="modal" role="dialog" id="editRow">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
+        <div class="col-xs-offset-2 col-xs-9">
+          <h3 class="modal-title">Изменение листового индекса</h3>
+        </div>
         <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
                 aria-hidden="true" (click)="closeModal()">
         </button>
-        <div class="col-xs-offset-2 col-xs-9">
-          <h2 class="modal-title">Изменение листового индекса</h2>
-        </div>
       </div>
-  <div class="modal-body">
-    <form [formGroup]="formulaForm" class="form-horizontal" method="post" id="detailsForm">
-      <input type="text" hidden="hidden" id="id" name="id">
+      <div class="modal-body">
+        <form [formGroup]="formulaForm" class="form-horizontal" method="post" id="detailsForm">
+          <input type="text" hidden="hidden" id="id" name="id">
 
-      <!--<div class="form-group row">-->
-        <!--<label for="name" class="control-label col-xs-3">Descr</label>-->
-        <!--<div class="col-xs-9">-->
+          <!--<div class="form-group row">-->
+          <!--<label for="name" class="control-label col-xs-3">Descr</label>-->
+          <!--<div class="col-xs-9">-->
           <!--<input formControlName="descr" type="text" class="form-control" id="descr" placeholder="Name">-->
-        <!--</div>-->
-      <!--</div>-->
+          <!--</div>-->
+          <!--</div>-->
 
-      <div class="form-group">
-        <label for="descr" class="control-label col-xs-3">Descr</label>
-        <div class="col-xs-9">
-          <input formControlName="descr" type="text" class="form-control" id="descr" name="name"
-                 placeholder="Name">
-        </div>
-      </div>
-      <div class="form-group">
-        <label  class="control-label col-xs-3">Calculation</label>
-        <div class="col-xs-9">
-          <!--<input formControlName="calculation" type="text" class="form-control" id="calculation" name="calculation"-->
-                 <!--placeholder="Calculation">-->
-          <textarea class="form-control" name="calculation" formControlName="calculation" [rows]="5" [cols]="55" pInputTextarea autoResize="autoResize" id="calculation"></textarea>
+          <div class="form-group">
+            <label for="descr" class="control-label col-xs-3">Descr</label>
+            <div class="col-xs-9">
+              <input formControlName="descr" type="text" class="form-control" id="descr" name="name"
+                     placeholder="Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-xs-3">Calculation</label>
+            <div class="col-xs-9">
+              <!--<input formControlName="calculation" type="text" class="form-control" id="calculation" name="calculation"-->
+              <!--placeholder="Calculation">-->
+              <textarea class="form-control" name="calculation" formControlName="calculation" [rows]="5" [cols]="55"
+                        pInputTextarea autoResize="autoResize" id="calculation"></textarea>
 
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="formulaType" class="control-label col-xs-3">Formula Type</label>
+            <div class="col-xs-9">
+              <input formControlName="formulaType" type="text" class="form-control" id="formulaType" name="formulaType"
+                     placeholder="Type">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="paramA" class="control-label col-xs-3">paramA</label>
+            <div class="col-xs-9">
+              <input formControlName="a" type="text" class="form-control" id="paramA" name="paramA"
+                     placeholder="Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="paramB" class="control-label col-xs-3">paramB</label>
+            <div class="col-xs-9">
+              <input formControlName="b" type="text" class="form-control" id="paramB" name="paramB"
+                     placeholder="Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="paramC" class="control-label col-xs-3">paramC</label>
+            <div class="col-xs-9">
+              <input formControlName="c" type="text" class="form-control" id="paramC" name="paramC"
+                     placeholder="Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="paramD" class="control-label col-xs-3">paramD</label>
+            <div class="col-xs-9">
+              <input formControlName="d" type="text" class="form-control" id="paramD" name="paramD"
+                     placeholder="D">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="paramXB" class="control-label col-xs-3">paramXB</label>
+            <div class="col-xs-9">
+              <input formControlName="xb" type="text" class="form-control" id="paramXB" name="paramXB"
+                     placeholder="XB">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="comments" class="control-label col-xs-3">Comments</label>
+            <div class="col-xs-9">
+              <input formControlName="comments" type="text" class="form-control" id="comments" name="comments"
+                     placeholder="">
+            </div>
+          </div>
+        </form>
       </div>
-      </div>
-      <div class="form-group">
-        <label for="formulaType" class="control-label col-xs-3">Formula Type</label>
-        <div class="col-xs-9">
-          <input formControlName="formulaType" type="text" class="form-control" id="formulaType" name="formulaType"
-                 placeholder="Type">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="paramA" class="control-label col-xs-3">paramA</label>
-        <div class="col-xs-9">
-          <input formControlName="a" type="text" class="form-control" id="paramA" name="paramA"
-                 placeholder="Name">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="paramB" class="control-label col-xs-3">paramB</label>
-        <div class="col-xs-9">
-          <input formControlName="b" type="text" class="form-control" id="paramB" name="paramB"
-                 placeholder="Name">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="paramC" class="control-label col-xs-3">paramC</label>
-        <div class="col-xs-9">
-          <input formControlName="c" type="text" class="form-control" id="paramC" name="paramC"
-                 placeholder="Name">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="paramD" class="control-label col-xs-3">paramD</label>
-        <div class="col-xs-9">
-          <input formControlName="d" type="text" class="form-control" id="paramD" name="paramD"
-                 placeholder="D">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="paramXB" class="control-label col-xs-3">paramXB</label>
-        <div class="col-xs-9">
-          <input formControlName="xb" type="text" class="form-control" id="paramXB" name="paramXB"
-                 placeholder="XB">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="comments" class="control-label col-xs-3">Comments</label>
-        <div class="col-xs-9">
-          <input formControlName="comments" type="text" class="form-control" id="comments" name="comments"
-                 placeholder="">
-        </div>
-      </div>
-      <p-footer>
-        <div class="form-group">
-          <div class="col-xs-offset-2 col-xs-9">
+      <div class="modal-footer">
             <button type="button"
                     [disabled]="!formulaForm.valid"
                     class="btn btn-primary" (click)="onSaveFormula()">Сохранить
             </button>
-          </div>
-        </div>
-      </p-footer>
-    </form>
+      </div>
+
+    </div>
   </div>
-  </div>
-  </div>
-  </div>
+</div>

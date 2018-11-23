@@ -8,7 +8,6 @@ import ru.mifi.constructor.model.CompanyList;
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
 public class CompanyListDTO {
     private String id;
     private String descr;

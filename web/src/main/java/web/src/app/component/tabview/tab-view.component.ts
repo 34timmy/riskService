@@ -14,18 +14,4 @@ export class TabViewComponent {
   onTabChange(event) {
     this.messageService.add({severity: 'info', summary: 'Tab Expanded', detail: 'Index: ' + event.index});
   }
-
-  items: MenuItem[];
-
-  activeItem: MenuItem;
-
-  ngOnInit() {
-    this.items = [
-      {label: 'Расчёт', icon: 'fa fa-money',routerLink: ['/calculation']},
-      {label: 'Результаты', icon: 'pi pi-inbox',routerLink: ['/results']},
-      {label: 'Конструктор', icon: 'pi pi-inbox',routerLink: ['/constructor']},
-    ];
-
-    this.activeItem = this.items[2];
-  }
 }

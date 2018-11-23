@@ -7,7 +7,6 @@ import ru.mifi.service.risk.domain.Formula;
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
 public class ModelCalc {
     private String model_id;
     private String descr;

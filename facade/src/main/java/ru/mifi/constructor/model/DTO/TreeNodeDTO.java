@@ -11,7 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Data
-@RequiredArgsConstructor
 public class TreeNodeDTO {
 
     private String guid;
@@ -48,9 +47,10 @@ public class TreeNodeDTO {
         this.displayName = modelCalc.getDescr();
         if (modelCalc.is_leaf()) {
             Formula formula = formulas.get(this.guid);
+            if (formula!=null) {
             this.is_leaf = true;
             this.data = formula;
-            this.type = formula.getClass().getSimpleName().toLowerCase();
+            this.type = formula.getClass().getSimpleName().toLowerCase();}
         } else {
             this.type = modelCalc.getClass().getSimpleName().toLowerCase();
             this.data = modelCalc;
@@ -72,8 +72,10 @@ public class TreeNodeDTO {
     public TreeNodeDTO(List<Model> models, List<Formula> formulas) {
         resultList = new ArrayList<TreeNodeDTO>();
         for (Model model : models) {
+            if (model==null) continue;
             resultList.add(new TreeNodeDTO(model));
             for (ModelCalc modelCalc : model.getModelCalcs()) {
+                if (modelCalc==null) continue;
                 resultList.add(new TreeNodeDTO(model.getModelCalcs(), modelCalc,
                         formulas.stream().collect(Collectors.toMap(Formula::getId, Function.identity()))));
             }
