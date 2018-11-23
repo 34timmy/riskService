@@ -21,9 +21,8 @@ public class SwaggerConfig {
                         ".*getData.*"
                         + "|.*import.*"
                         + "|.*export.*"
+                        + "|.*utility.*"
                         + "|.*perform.*"
-                        + "|.*2nd_keyword.*"
-
                 ))
                 .build()
                 .pathMapping("/");

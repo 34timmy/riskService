@@ -14,14 +14,15 @@ import java.sql.Statement;
  */
 abstract class CustomAutoCloseable implements AutoCloseable{
 
+    //Oracle так советует
+    private static final int SQL_BATCH_COUNT = 100;
     private static final Logger LOG = LoggerFactory.getLogger(CustomAutoCloseable.class);
-
     boolean hasErrors = false;
 
     Integer addReqToStmtBatch(Integer counter, PreparedStatement stmt) throws SQLException {
         stmt.addBatch();
         stmt.clearParameters();
-        if (++counter % 100 == 0) {
+        if (++counter % SQL_BATCH_COUNT == 0) {
             try {
                 stmt.executeBatch();
             } catch (Exception ex) {

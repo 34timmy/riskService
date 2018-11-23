@@ -47,7 +47,7 @@ public class DataService {
             {
                 Set<Formula> leafs = accessor.getFormulasForCalc(calcKey.getModelId());
                 Set<String> companies = accessor.getCompanyIdsByListId(calcKey.getCompanyListId());
-                Set<String> allCompanies = accessor.getCompanyIdsByListId(calcKey.getAllCompaniesListId());
+                Set<String> allCompanies = accessor.getExtendedCompanyList(calcKey);
 
                 Map<DataKey, Map<String, Double>> params = accessor.getParamsForFormula(
                         leafs.stream()

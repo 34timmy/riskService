@@ -14,19 +14,19 @@ values ( 'ROLE_USER', 1);
 -- values (8602166992, 10,'Comp 1'),
 --        (5410786860, 20,'Comp 2');
 --
-INSERT INTO MODEL (ID, DESCR)
-VALUES (1, 'Model 1'),
-       (2, 'Model 2');
+INSERT INTO MODEL (ID, NAME, DESCR)
+VALUES ('33416230-d0e5-43d5-9901-829572bec3b6', 'Model 1', 'Очень сложна модель 1'),
+       ('741073e4-70d1-488c-828e-5000437df48c', 'Model 2', 'Очень сложна модель 2');
 
 INSERT INTO MODEL_CALC (MODEL_ID, DESCR, NODE, PARENT_NODE, WEIGHT, LEVEL, IS_LEAF)
-values (1, 'Agr 1', 3, null, 4, 1, 0),
-       (1, 'Agr 1.1', 5, 3, 4, 2, 0),
-       (1, 'Agr 1.2', 7, 3, 4, 2, 0),
-       (1, 'Formula 1', 8, 5, 4, 2, 1),
-       (1, 'Formula 2', 9, 5, 4, 2, 1),
-       (2, 'Agr 2', 4, null, 4, 1, 0),
-       (2, 'Agr 2.1', 6, 4, 4, 2, 0),
-       (2, 'Formula 3', 10, 6, 4, 2, 1);
+values ('33416230-d0e5-43d5-9901-829572bec3b6', 'Agr 1', '36edd6cc-1e68-46a6-82e0-3c8d2e643c51', null, 1, 1, 0),
+       ('33416230-d0e5-43d5-9901-829572bec3b6', 'Agr 1.1', '52e1f310-9fb4-4944-9cc5-a297b149f980', '36edd6cc-1e68-46a6-82e0-3c8d2e643c51', 4, 2, 0),
+       ('33416230-d0e5-43d5-9901-829572bec3b6', 'Agr 1.2', '46419c9e-7af9-4f6a-8408-dbf9faa7146c', '36edd6cc-1e68-46a6-82e0-3c8d2e643c51', 1, 2, 0),
+       ('33416230-d0e5-43d5-9901-829572bec3b6', 'Formula 1', 'eab215a1-fa52-4a2e-a456-90a44c579b20', '52e1f310-9fb4-4944-9cc5-a297b149f980', 1, 2, 1),
+       ('33416230-d0e5-43d5-9901-829572bec3b6', 'Formula 2', '501e6562-66a4-455a-8448-e1e97f23f468', '52e1f310-9fb4-4944-9cc5-a297b149f980', 1, 2, 1),
+       ('741073e4-70d1-488c-828e-5000437df48c', 'Agr 2', '2d4f7e55-85fc-4780-9d70-8065d71db788', null, 1, 1, 0),
+       ('741073e4-70d1-488c-828e-5000437df48c', 'Agr 2.1', '53ceb373-47a7-452c-8f40-cbb8fd390d83', '2d4f7e55-85fc-4780-9d70-8065d71db788', 1, 2, 0),
+       ('741073e4-70d1-488c-828e-5000437df48c', 'Formula 3', '417275ff-a7a8-4360-b97a-81ac40fa3e8a', '53ceb373-47a7-452c-8f40-cbb8fd390d83', 1, 2, 1);
 
 INSERT into FORMULA (id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB)
 VALUES (8, 'Formula 1', 'calc', 'S', 'A', 'B', 'C', 'D', 'XB'),

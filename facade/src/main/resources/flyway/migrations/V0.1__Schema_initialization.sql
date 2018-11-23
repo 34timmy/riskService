@@ -1,12 +1,25 @@
+CREATE TABLE public.industry (
+  id         VARCHAR2 (255) NOT NULL,
+  name       VARCHAR2 (255) NOT NULL,
+  description VARCHAR2(4000)
+);
+ALTER TABLE public.industry
+  ADD CONSTRAINT industry_pk PRIMARY KEY (id);
+
 CREATE TABLE public.company (
-  id    VARCHAR2 (255) NOT NULL,
-  inn   VARCHAR2 (255),
-  descr VARCHAR2 (255)
+  id        VARCHAR2 (255) NOT NULL,
+  inn       VARCHAR2 (255),
+  industry  VARCHAR2 (255),
+  descr     VARCHAR2 (255)
 );
 
 
 ALTER TABLE public.company
   ADD CONSTRAINT company_pk PRIMARY KEY (id);
+ALTER TABLE public.company
+  ADD CONSTRAINT company_industry_fk FOREIGN KEY (industry) REFERENCES industry (id)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
 
 CREATE TABLE public.users (
   id         VARCHAR2 (255) NOT NULL,
@@ -55,20 +68,22 @@ ALTER TABLE public.company_business_data
 
 CREATE TABLE public.model (
   id    VARCHAR2 (255) NOT NULL,
+  name  VARCHAR2 (500),
   descr VARCHAR2 (4000)
 );
 ALTER TABLE public.model
   ADD CONSTRAINT model_pk PRIMARY KEY (id);
 
 CREATE TABLE public.model_calc (
-  model_id    VARCHAR2 (255) NOT NULL,
-  descr       VARCHAR2 (255),
-  node        VARCHAR2 (255) NOT NULL,
-  parent_node VARCHAR2 (255),
-  weight      DOUBLE PRECISION,
-  level       INTEGER,
-  is_leaf     INTEGER,
-  comments     text
+  model_id      VARCHAR2 (255) NOT NULL,
+  descr         VARCHAR2 (4000),
+  node          VARCHAR2 (255) NOT NULL,
+  parent_node   VARCHAR2 (255),
+  weight        DOUBLE PRECISION,
+  expert_value  DOUBLE PRECISION,
+  level         INTEGER,
+  is_leaf       INTEGER,
+  comments      text
 );
 ALTER TABLE public.model_calc
   ADD CONSTRAINT model_calc_pk PRIMARY KEY (model_id, node);
@@ -77,6 +92,8 @@ ALTER TABLE public.model_calc
   ON DELETE CASCADE;
 ALTER TABLE public.model_calc
   ADD CONSTRAINT weight_val_check CHECK (weight BETWEEN 0 AND 100);
+ALTER TABLE public.model_calc
+  ADD CONSTRAINT node_unique UNIQUE(node);
 ALTER TABLE public.model_calc
   ADD CONSTRAINT leaf_val_check CHECK (is_leaf BETWEEN 0 AND 1);
 
