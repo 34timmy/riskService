@@ -1,5 +1,8 @@
 package ru.mifi.authentication.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 
 @RestController
+@Api(value = "Контроллер для аутентификации")
 public class AuthenticationRestController {
 
     @Value("Authorization")
@@ -39,6 +43,7 @@ public class AuthenticationRestController {
     private UserServiceImpl userService;
 
     @PostMapping(value = "/auth")
+    @ApiOperation(value = "Аутентификация")
     public ResponseEntity<?> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
 
