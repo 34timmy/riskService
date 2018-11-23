@@ -44,7 +44,7 @@ export class AuthComponent implements OnInit {
           if(result===true) {
             this.submitted = true;
             this.loading = false;
-            this.router.navigateByUrl("/main")
+            this.router.navigateByUrl("/calculation")
           }
           else
           {

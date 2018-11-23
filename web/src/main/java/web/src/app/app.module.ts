@@ -11,7 +11,8 @@ import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
 import {
   CodeHighlighterModule,
-  DataListModule, MessageService,
+  DataListModule,
+  MessageService,
   ProgressBarModule,
   SharedModule,
   SidebarModule,
@@ -66,6 +67,7 @@ import {ModelsListComponent} from "./component/constructor_diagram/models_list/m
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {AuthActivateGuard} from "./shared/auth.activate.guard";
+import {MenuModule} from 'primeng/menu';
 
 @NgModule({
   declarations: [
@@ -92,7 +94,8 @@ import {AuthActivateGuard} from "./shared/auth.activate.guard";
     AuthComponent,
     HeaderComponent,
     RegisterComponent,
-    ModelsListComponent
+    ModelsListComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -118,7 +121,8 @@ import {AuthActivateGuard} from "./shared/auth.activate.guard";
     SidebarModule,
     ProgressBarModule,
     OverlayPanelModule,
-    InputTextareaModule
+    InputTextareaModule,
+    MenuModule
   ],
   providers: [CompanyService, UserService, TreeService,
     NodesListService, TreeDiagramService,

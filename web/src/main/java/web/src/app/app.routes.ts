@@ -5,6 +5,9 @@ import {RegisterComponent} from "./component/auth/register.component";
 import {AuthComponent} from "./component/auth/auth.component";
 import {AuthActivateGuard} from "./shared/auth.activate.guard";
 import {ProfileComponent} from "./component/user/profile.component";
+import {TableNamesComponent} from "./component/results_view/table-names.component";
+import {ModelsListComponent} from "./component/constructor_diagram/models_list/models-list.component";
+import {CompanyPicklistComponent} from "./component/company-picklist/company-picklist.component";
 
 
 const appRoutes: Routes = [
@@ -21,16 +24,31 @@ const appRoutes: Routes = [
     path: "register",
     component: RegisterComponent
   },
-  {
-    path: 'main',
-    component: TabViewComponent,
-    canActivate: [AuthActivateGuard]
-  },
+  // {
+  //   path: 'main',
+  //   component: TabViewComponent,
+  //   canActivate: [AuthActivateGuard]
+  // },
   {
     path: "profile",
     component: ProfileComponent,
     canActivate: [AuthActivateGuard]
   },
+  {
+    path: "results",
+    component: TableNamesComponent,
+    canActivate: [AuthActivateGuard]
+  },
+  {
+    path: "constructor",
+    component: ModelsListComponent,
+    canActivate: [AuthActivateGuard]
+  },{
+    path: "calculation",
+    component: CompanyPicklistComponent,
+    canActivate: [AuthActivateGuard]
+  },
+
 ];
 
 export const routing: ModuleWithProviders = RouterModule

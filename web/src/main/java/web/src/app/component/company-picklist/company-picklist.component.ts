@@ -9,12 +9,17 @@ import {UploadService} from "../../service/upload.service";
 import {FileUploader} from "ng2-file-upload";
 import {NotificationService} from "../../shared/notification.service";
 import {MessageService} from "primeng/api";
+import {MenuItem} from "primeng/api";
 
 @Component({
   templateUrl: './company-picklist.html',
   selector: 'app-company-picklist'
 })
 export class CompanyPicklistComponent implements OnInit {
+  items: MenuItem[];
+
+  activeItem: MenuItem;
+
 
   source: CompanyModel[];
 
@@ -39,6 +44,12 @@ export class CompanyPicklistComponent implements OnInit {
 
 
   ngOnInit() {
+    this.items = [
+      {label: 'Расчёт', icon: 'fa fa-money',routerLink: ['/calculation']},
+      {label: 'Результаты', icon: 'pi pi-inbox',routerLink: ['/results']},
+      {label: 'Конструктор', icon: 'pi pi-inbox',routerLink: ['/constructor']},
+    ];
+
     this.companyService.getCompanies().subscribe(res => {
         this.source = res.json();
         this.companyListChild.setSaveChildComponent(this.companySaveChild);

@@ -1,6 +1,7 @@
 <app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
 <app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
 <app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
+<p-tabMenu [model]="items">
 
 <div *ngIf="displayTopBar">
   <p-progressBar [value]="loadValue"></p-progressBar>
@@ -65,3 +66,4 @@
     </div>
   </ng-template>
 </p-toast>
+</p-tabMenu>
