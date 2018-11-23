@@ -28,8 +28,8 @@ public interface UserMapper {
     @Update("UPDATE users u SET u.name=#{name} where u.id=#{id}")
     void updateUser(User user);
 
-    @Insert("INSERT INTO users(ID, NAME, EMAIL, PASSWORD)" +
-            " values (#{id},#{name},#{email}, #{password}) ")
+    @Insert("INSERT INTO users(ID, FIRSTNAME,LASTNAME, EMAIL, PASSWORD)" +
+            " values (#{id},#{firstName},#{lastName}, #{email}, #{password}) ")
     void createUser(User user);
 
     @Delete("Delete from users u where u.id = #{id}")
@@ -41,7 +41,7 @@ public interface UserMapper {
             @Result(property = "roles", javaType = Set.class, column = "id",
                     many = @Many(select = "getRolesForUser"))
     })
-    User getByEmail(String email)throws SQLException;
+    User getByEmail(String email) throws SQLException;
 
     @Select("SELECT r.role from roles r where r.user_id=#{id}")
     Set<Role> getRolesForUser(String id);

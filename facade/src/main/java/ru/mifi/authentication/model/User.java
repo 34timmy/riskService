@@ -1,9 +1,7 @@
 package ru.mifi.authentication.model;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -16,15 +14,12 @@ public class User {
 
     private String id;
 
-    protected String userName;
-
     protected String firstName;
 
     protected String lastName;
 
     @NotBlank
     @Email
-    @SafeHtml
     private String email;
 
     @NotBlank

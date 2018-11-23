@@ -13,6 +13,7 @@ export class AuthComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   submitted = false;
+  checked = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,12 +29,13 @@ export class AuthComponent implements OnInit {
       password: ['', Validators.required]
     });
 
-    if (this.authenticationService.isLoggedIn())
-    {
-      this.router.navigateByUrl("/calculation")
-
+    if (this.authenticationService.isLoggedIn()) {
+      if (!this.authenticationService.isSavedPass()) {
+        this.authenticationService.logout();
+      } else {
+        this.router.navigateByUrl("/calculation")
+      }
     }
-    this.authenticationService.logout();
   }
 
   get f() {
@@ -47,7 +49,7 @@ export class AuthComponent implements OnInit {
     }
     //TODO improve erroemessage
     this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
+    this.authenticationService.login(this.f.username.value, this.f.password.value, this.checked)
       .subscribe(
         result => {
           if (result === true) {

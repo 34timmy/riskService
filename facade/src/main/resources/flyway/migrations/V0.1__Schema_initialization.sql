@@ -23,7 +23,8 @@ ALTER TABLE public.company
 
 CREATE TABLE public.users (
   id         VARCHAR2 (255) NOT NULL,
-  name       VARCHAR2 (255) NOT NULL,
+  firstName       VARCHAR2 (255) NOT NULL,
+  lastName       VARCHAR2 (255) NOT NULL,
   email      VARCHAR2 (255) NOT NULL,
   password   VARCHAR2 (255) NOT NULL,
   enabled    boolean  default true,

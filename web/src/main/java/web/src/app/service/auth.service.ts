@@ -17,7 +17,7 @@ export class AuthService {
               private router: Router) {
   }
 
-  login(username: string, password: string) {
+  login(username: string, password: string, savePass: boolean) {
     let headers = new Headers({'Content-Type': 'application/json'});
     return this.http
       .post(basePath + loginPath
@@ -26,7 +26,11 @@ export class AuthService {
       .pipe(map((response: Response) => {
         let token = response.json() && response.json().token;
         if (token) {
-          localStorage.setItem('currentUser', JSON.stringify({username: username, token: token}));
+          localStorage.setItem('currentUser', JSON.stringify({
+            username: username,
+            token: token,
+            savePass: savePass
+          }));
 
           // return true to indicate successful login
           return true;
@@ -49,6 +53,12 @@ export class AuthService {
     return token && token.length > 0;
   }
 
+  isSavedPass(): boolean {
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    let isSaved = currentUser && currentUser.savePass;
+    return isSaved;
+  }
+
   get authenticatedAs(): UserModel {
     return this._authenticatedAs;
   }
@@ -62,7 +72,8 @@ export class AuthService {
   }
 
   logout() {
-    this.http.get(basePath + "/logout").subscribe();
+    localStorage.clear();
+    // this.http.get(basePath + "/logout").subscribe();
     this._authenticatedAs = null;
   }
 

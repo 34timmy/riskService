@@ -1,37 +1,29 @@
-<div class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-light" role="navigation">
-  <div *ngIf="authService.isLoggedIn()" class="container">
 
-    <a [routerLink]="['/calculation']" class="navbar-brand">Расчёт</a>
-    <a [routerLink]="['/results']" class="navbar-brand">Результаты</a>
-    <a [routerLink]="['/constructor']" class="navbar-brand">Конструктор</a>
+<nav *ngIf="authService.isLoggedIn()"
+  class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-light"
+  role="navigation">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav ">
+      <li class="active">
+        <a [routerLink]="['/calculation']" class="navbar-brand"><i class="fa fa-calculator"></i> Расчёт</a>
+      </li>
+      <li>
+        <a [routerLink]="['/results']" class="navbar-brand"><i class="fa fa-align-justify"></i> Результаты</a>
+      </li>
+      <li>
+        <a [routerLink]="['/constructor']" class="navbar-brand"><i class="fas fa-boxes"></i> Конструктор</a>
+      </li>
+    </ul>
 
-
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-right">
-        <li *ngIf="authService.authenticatedAs">
-          <div class="navbar-form">
-            <a *ngIf="authService.hasAdminRole()" class="btn btn-info" role="button"
-               [routerLink]="['/user-list']">{{'users.title' }}</a>
-            <a class="btn btn-info" role="button" [routerLink]="['/profile']">{{authService.authenticatedAs.name}}
-              {{'app.profile' }}</a>
-            <button type="button" class="btn btn-primary" (click)="onLogout()">{{'app.logout' }}
-            </button>
-          </div>
-        </li>
-        <!--<li *ngIf="!authService.authenticatedAs">-->
-          <!--<form [formGroup]="loginForm" class="navbar-form" role="form" (ngSubmit)="onSubmit()"-->
-                <!--method="post">-->
-            <!--<div class="form-group">-->
-              <!--<input type="text" formControlName="login" placeholder="{{'users.email' }}" class="form-control">-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-              <!--<input type="password" formControlName="password" placeholder="{{'users.password' }}"-->
-                     <!--class="form-control">-->
-            <!--</div>-->
-            <!--<button type="submit" class="btn btn-success">{{'app.login' }}</button>-->
-          <!--</form>-->
-        <!--</li>-->
-      </ul>
-    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        <a   routerLink="[/profile]" (click)="onProfile()" class="navbar-brand" role="button"><span *ngIf="true" class="fas fa-user"></span></a>
+      </li>
+      <li>
+        <a routerLink="[/login]" class="navbar-brand" role="button" (click)="onLogout()">
+          <span class="fas fa-sign-out-alt"></span>
+        </a>
+      </li>
+    </ul>
   </div>
-</div>
+</nav>

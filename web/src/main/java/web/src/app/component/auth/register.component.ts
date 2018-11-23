@@ -4,6 +4,7 @@ import {UserService} from "../../service/user.service";
 import {Router} from "@angular/router";
 import {first} from "rxjs/operators";
 import {MessageService} from "primeng/api";
+import {v4 as uuid} from 'uuid';
 
 @Component({
   templateUrl: 'register.html'
@@ -23,9 +24,10 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
+      id:[''],
+      email: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -41,6 +43,7 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
+    this.registerForm.value.id=uuid ();
     this.loading = true;
     this.userService.registerUser(this.registerForm.value)
       .pipe(first())

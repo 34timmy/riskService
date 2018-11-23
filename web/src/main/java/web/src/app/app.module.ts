@@ -69,6 +69,7 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
 import {AuthActivateGuard} from "./shared/auth.activate.guard";
 import {MenuModule} from 'primeng/menu';
 import {MenuComponent} from "./component/mainmenu/menu.component";
+import {CheckboxModule} from 'primeng/checkbox';
 
 @NgModule({
   declarations: [
@@ -124,7 +125,8 @@ import {MenuComponent} from "./component/mainmenu/menu.component";
     ProgressBarModule,
     OverlayPanelModule,
     InputTextareaModule,
-    MenuModule
+    MenuModule,
+    CheckboxModule
   ],
   providers: [CompanyService, UserService, TreeService,
     NodesListService, TreeDiagramService,
