@@ -174,6 +174,13 @@ export class TreeDiagramService {
     return this.getNodeForModel(id);
   }
 
+  getNormParams() {
+    return this.http.get(basePath +
+      constructorPath +
+      formulaPath +
+      "/normParams", this.reqOptions)
+  }
+
   getTheBoolean(): Observable<boolean> {
     return this.modelsLoaded.asObservable();
   }
@@ -192,96 +199,4 @@ export class TreeDiagramService {
   setTheTypeDalog(newValue: boolean): void {
     this.typeDialog.next(newValue);
   }
-
-  // @Deprecated
-  private getModelsAndConvert() {
-    this.modelsNodes = [];
-    this.setTheBoolean(false);
-    // this.getAllModelsOnly().toPromise().then(res => {
-    //   this.modelsToTreeNode(res.json());
-    //   this.setTheBoolean(true);
-    // });
-    return this.modelsNodes;
-  }
-
-  // @Deprecated
-  private modelsToTreeNode(models) {
-    for (let mod of models) {
-      this.modelsNodes.push(this.modelToTreeNode(mod));
-    }
-  }
-
-  // @Deprecated
-  private modelToTreeNode(mod): any {
-    let modelCalcsTreeNodes = [];
-    if (mod.modelCalcs !== undefined) {
-      for (let modelCalc of mod.modelCalcs) {
-        let modelCalcToTreeNode = this.modelCalcToTreeNode(modelCalc, mod);
-        modelCalcsTreeNodes.push(modelCalcToTreeNode.guid);
-        this.modelsNodes.push(modelCalcToTreeNode)
-      }
-    }
-    return {
-      guid: (mod.id + '_' + mod.descr).toString(),
-      displayName: mod.descr,
-      updated: false,
-      type: 'model',
-      data: {
-        id: mod.id,
-        name: mod.descr
-      },
-      children: modelCalcsTreeNodes
-    };
-  }
-
-  // @Deprecated
-  private modelCalcToTreeNode(modelCalc, parent) {
-    let formulaTreeNodes = [];
-    if (modelCalc.formulas !== undefined) {
-      for (let formula of modelCalc.formulas) {
-        let formulaToTreeNode = this.formulaToTreeNode(formula, modelCalc);
-        formulaTreeNodes.push(formulaToTreeNode.guid);
-        this.modelsNodes.push(formulaToTreeNode);
-      }
-    }
-    return {
-      guid: (modelCalc.id + '_' + modelCalc.name).toString(),
-      parentId: (parent.id + '_' + parent.descr).toString(),
-      displayName: modelCalc.descr,
-      updated: false,
-      type: 'modelCalc',
-      data: {
-        id: modelCalc.id,
-        name: modelCalc.name
-      },
-      children: formulaTreeNodes
-    }
-  }
-
-  // @Deprecated
-  private formulaToTreeNode(formula, parent) {
-    return {
-      guid: (formula.id + '_' + formula.descr).toString(),
-      parentId: (parent.id + '_' + parent.name).toString(),
-      displayName: formula.descr,
-      updated: false,
-      type: 'formula',
-      data: {
-        id: formula.id,
-        descr: formula.descr,
-        calculation: formula.calculation,
-        formulaType: formula.formulaType,
-        a: formula.a,
-        b: formula.b,
-        c: formula.c,
-        d: formula.d,
-        xb: formula._xb,
-        comments: formula.comments,
-        rule_id: parent.id,
-      },
-      children: []
-    }
-  }
-
-
 }

@@ -49,6 +49,8 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
+    //TODO for dev: Logged always true
+    // return true;
     var token: String = this.getToken();
     return token && token.length > 0;
   }

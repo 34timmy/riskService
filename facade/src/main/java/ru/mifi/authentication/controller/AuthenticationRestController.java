@@ -50,7 +50,7 @@ public class AuthenticationRestController {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authenticationRequest.getUsername(),
-                         authenticationRequest.getPassword(),
+                        authenticationRequest.getPassword(),
                         Collections.emptyList()
                 )
         );
@@ -82,5 +82,30 @@ public class AuthenticationRestController {
     public ResponseEntity registerUser(@Valid @RequestBody User user) throws SQLException, EmailExistException {
         userService.create(user);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/profile")
+    public ResponseEntity getUserProfile(@RequestParam("id") String id) throws SQLException, EmailExistException {
+        String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUsername();
+        User user = userService.get(id);
+        if (user != null && user.getEmail().equals(email)) {
+            user.setPassword("");
+            user.setRoles(Collections.emptySet());
+            user.setRegistered(null);
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping(value = "/profile")
+    public ResponseEntity updateUserProfile(@Valid @RequestBody User user) throws SQLException, EmailExistException {
+        String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUsername();
+        if (user.getEmail().equals(email)) {
+            userService.save(user);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

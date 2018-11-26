@@ -1,0 +1,80 @@
+<div *ngIf="showToggle"
+     [style.display]="'block'"
+     [style.background-color]="'rgba(0,0,0,0.4)'"
+     class="modal" role="dialog" id="editRow">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="col-xs-offset-2 col-xs-9">
+          <h2 class="modal-title">{{company.descr}}</h2>
+        </div>
+        <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
+                aria-hidden="true" (click)="closeModal()">
+        </button>
+      </div>
+      <div class="modal-body">
+        <p-table #dt [value]="companyData" [scrollable]="true" scrollHeight="200%">
+            <ng-template pTemplate="caption">
+              <div style="text-align: right">
+                <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+              </div>
+            </ng-template>
+          <ng-template pTemplate="header">
+          <tr>
+              <!--<th style="width: 3em"></th>-->
+              <th *ngFor="let col of cols" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-expanded="expanded" let-data>
+            <tr>
+              <!--<td>-->
+                <!--<a href="" [pRowToggler]="data">-->
+                  <!--<i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>-->
+                <!--</a>-->
+              <!--</td>-->
+              <td [pEditableColumn]="data" [pEditableColumnField]="col.field" *ngFor="let col of cols">
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="data[col.field]">
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{data[col.field]}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+            <tr>
+              <td [attr.colspan]="columns.length + 1">
+                <div class="ui-g ui-fluid" style="font-size:16px;padding:20px">
+                  <div class="ui-g-12 ui-md-9">
+                    <div class="ui-g">
+                      <div class="ui-g-12">
+                        <b>Код:</b> {{rowData.vin}}
+                      </div>
+                      <div class="ui-g-12">
+                        <b>Описание:</b> {{rowData.year}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <p-footer>
+            <button type="button"
+                    class="btn btn-primary" (click)="onSaveData()">Сохранить
+            </button>
+          </p-footer>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>

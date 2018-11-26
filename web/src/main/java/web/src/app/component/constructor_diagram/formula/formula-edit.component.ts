@@ -1,6 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {v4 as uuid} from 'uuid';
+import {SelectItem} from "primeng/api";
+import {TreeDiagramService} from "../../../service/tree-diagram.service";
 
 @Component({
   selector: 'app-formula-edit',
@@ -13,13 +15,24 @@ export class FormulaEditComponent implements OnInit {
   @Output()
   onSaveEvent = new EventEmitter();
 
-  constructor(private formBuilder: FormBuilder) {
+  normParams;
+  normParam: SelectItem;
+
+
+  constructor(private formBuilder: FormBuilder,
+              private treeService: TreeDiagramService) {
     // this.innerToggle = new BehaviorSubject<boolean>(false);
     // this.showToggle = this.getTheBoolean();
 
   }
 
   ngOnInit(): void {
+    this.treeService.getNormParams().subscribe(res => {
+      this.normParams = (<any[]>res.json()).map(param => {
+        return {label: param.descr, value: param.value}
+      })
+    });
+
     this.formulaForm = this.formBuilder.group(
       {
         id: [''],
@@ -27,11 +40,11 @@ export class FormulaEditComponent implements OnInit {
         calculation: [''],
         formulaType: [''],
         weight: [''],
-        a: [''],
-        b: [''],
-        c: [''],
-        d: [''],
-        xb: [''],
+        a: new FormControl('a'),
+        b: new FormControl('b'),
+        c: new FormControl('c'),
+        d: new FormControl('d'),
+        xb: new FormControl('xb'),
         comments: [''],
         rule_id: [''],
         model_calc_id: [''],
@@ -49,7 +62,7 @@ export class FormulaEditComponent implements OnInit {
   fillFormulaForm(formula) {
     this.formulaForm.patchValue({
       id: formula.id,
-      guid:[''],
+      guid: [''],
       descr: formula.descr,
       calculation: formula.calculationFormula,
       formulaType: formula.formulaType,
@@ -58,7 +71,7 @@ export class FormulaEditComponent implements OnInit {
       b: formula.b,
       c: formula.c,
       d: formula.d,
-      xb: formula._xb,
+      xb: formula._XB,
       comments: formula.comments,
       model_calc_id: formula.model_calc_id,
       updating: false,

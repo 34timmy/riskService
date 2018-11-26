@@ -86,7 +86,15 @@ public interface ConstructorMapper {
     })
     List<Formula> getAllFormulas();
 
-    @Update("UPDATE formula f SET f.descr=#{descr} where f.id=#{id}")
+    @Update("UPDATE formula f SET f.descr=#{descr}" +
+            ",f.calculation = #{calculation}" +
+            ",f.formula_type = #{formulaType}" +
+            ",f.A = #{a}" +
+            ",f.B = #{b}" +
+            ",f.C = #{c}" +
+            ",f.D = #{d}" +
+            ",f.XB = #{xb}" +
+            " where f.id=#{id}")
     void updateFormula(Formula formula);
 
     @Insert("INSERT INTO formula(id, DESCR, CALCULATION, FORMULA_TYPE, A, B, C, D, XB)" +
@@ -96,6 +104,9 @@ public interface ConstructorMapper {
     //    TODO DELETE  CASCADE
     @Delete("Delete from formula f where f.node = #{id}")
     void deleteFormula(String id);
+
+    @Select("SELECT * FROM normative_parameters np ")
+    List<NormParam> getAllNormParams();
 
     //        -------------------- ModelCalc Repository --------------------
     @Select("SELECT * from model_calc mc where mc.model_id = #{id}")
@@ -125,9 +136,13 @@ public interface ConstructorMapper {
             " values (#{id},#{company_ids},#{descr})")
     void createCompanyList(CompanyList companyList);
 
+    @Select("SELECT * FROM company_business_data cbd WHERE cbd.company_id = #{id}")
+    List<CompanyData> getAllDataForCompany(String id);
+
     //        -------------------- Company Repository --------------------
     @Select("SELECT * FROM company")
     List<Company> getAllCompanies();
+
 
 }
 

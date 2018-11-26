@@ -1,6 +1,7 @@
 <app-company-save (onSaveCompanyListEvent)="onSaveCompanyList()"></app-company-save>
 <app-company-edit (onSaveEvent)="onSave($event)"></app-company-edit>
 <app-company-list (onSaveEvent)="onSaveCompanyList($event)"></app-company-list>
+<app-company-data></app-company-data>
 
 
 <div *ngIf="displayTopBar">
@@ -40,6 +41,10 @@
       <button type="button" pButton icon="fa fa-edit" class="ui-button-success"
               style="float:right;margin: 5px 5px 5px 5px"
               (click)="onEditCompany(company)">
+      </button>
+      <button type="button" pButton icon="fa fa-info" class="ui-button-primary"
+              style="float:right;margin: 5px 5px 5px 5px"
+              (click)="onGetCompanyData(company)">
       </button>
     </div>
     <div class="ui-helper-clearfix">

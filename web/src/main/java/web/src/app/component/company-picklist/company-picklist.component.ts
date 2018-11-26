@@ -10,6 +10,8 @@ import {FileUploader} from "ng2-file-upload";
 import {NotificationService} from "../../shared/notification.service";
 import {MessageService} from "primeng/api";
 import {MenuItem} from "primeng/api";
+import {CompanyDataComponent} from "../company-data/company-data.component";
+import {CompanyDataModel} from "../../model/company-data.model";
 
 @Component({
   templateUrl: './company-picklist.html',
@@ -38,6 +40,9 @@ export class CompanyPicklistComponent implements OnInit {
 
   @ViewChild(CompanySaveComponent)
   private companySaveChild: CompanySaveComponent;
+
+  @ViewChild(CompanyDataComponent)
+  private companyDataChild: CompanyDataComponent;
 
 
   ngOnInit() {
@@ -120,6 +125,11 @@ export class CompanyPicklistComponent implements OnInit {
 
       }
     );
+  }
+
+  onGetCompanyData(company) {
+    this.companyDataChild.showModal(company);
+
   }
 
   public uploader: FileUploader = new FileUploader({url: '', itemAlias: 'photo'});

@@ -2,11 +2,11 @@
      [style.display]="'block'"
      [style.background-color]="'rgba(0,0,0,0.4)'"
      class="modal" role="dialog" id="editRow">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <div class="col-xs-offset-2 col-xs-9">
-          <h2 class="modal-title">Изменение модели</h2>
+          <h2 class="modal-title">Модель</h2>
         </div>
         <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
                 aria-hidden="true" (click)="closeModal()">
@@ -16,7 +16,7 @@
         <form [formGroup]="modelForm" class="form-horizontal" method="post" id="detailsForm">
           <input type="text" hidden="hidden" id="id" name="id">
 
-          <div class="form-group row">
+          <div class="form-group">
             <label for="descr" class="control-label col-xs-3">Название</label>
             <div class="col-xs-9">
               <input formControlName="descr" type="text" class="form-control" id="descr" placeholder="Name">

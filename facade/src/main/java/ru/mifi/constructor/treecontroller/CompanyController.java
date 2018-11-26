@@ -1,11 +1,9 @@
 package ru.mifi.constructor.treecontroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.mifi.constructor.model.Company;
+import ru.mifi.constructor.model.CompanyData;
 import ru.mifi.constructor.service.CompanyService;
 
 import java.util.List;
@@ -26,4 +24,10 @@ public class CompanyController {
     }
 
 
+    @GetMapping(value = "/companyData",produces = "application/json")
+    List<CompanyData> getAllDataForCompany(@RequestParam("companyId") String companyId)
+    {
+
+        return companyService.getDataForCompany(companyId);
+    }
 }

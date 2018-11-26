@@ -3,9 +3,11 @@ package ru.mifi.constructor.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mifi.constructor.model.NormParam;
 import ru.mifi.constructor.repository.ConstructorMapper;
 import ru.mifi.service.risk.domain.Formula;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -30,5 +32,9 @@ public class FormulaService {
     @Transactional
     public void deleteFormula(String id) {
         constructorMapper.deleteFormula(id);
+    }
+
+    public List<NormParam> getAllNormParams() {
+        return constructorMapper.getAllNormParams();
     }
 }

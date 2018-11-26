@@ -9,7 +9,7 @@ INSERT INTO users (ID, firstName, lastName, EMAIL, PASSWORD)
 values (1, 'user', 'last', 'user@gmail.com', '$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC');
 
 INSERT INTO roles (role, user_id)
-values ('ROLE_USER', 1);
+values ('ROLE_ADMIN', 1);
 -- INSERT INTO COMPANY (ID, INN,descr)
 -- values (8602166992, 10,'Comp 1'),
 --        (5410786860, 20,'Comp 2');

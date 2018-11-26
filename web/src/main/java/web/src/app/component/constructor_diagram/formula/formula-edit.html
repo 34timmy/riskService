@@ -6,7 +6,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <div class="col-xs-offset-2 col-xs-9">
-          <h3 class="modal-title">Изменение листового индекса</h3>
+          <h3 class="modal-title">Листовой индекс</h3>
         </div>
         <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
                 aria-hidden="true" (click)="closeModal()">
@@ -24,14 +24,14 @@
           <!--</div>-->
 
           <div class="form-group">
-            <label for="descr" class="control-label col-xs-3">Descr</label>
+            <label for="descr" class="control-label col-xs-3">Описание </label>
             <div class="col-xs-9">
               <input formControlName="descr" type="text" class="form-control" id="descr" name="name"
                      placeholder="Name">
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label col-xs-3">Calculation</label>
+            <label class="control-label col-xs-3">Формула для расчёта </label>
             <div class="col-xs-9">
               <!--<input formControlName="calculation" type="text" class="form-control" id="calculation" name="calculation"-->
               <!--placeholder="Calculation">-->
@@ -41,50 +41,46 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="formulaType" class="control-label col-xs-3">Formula Type</label>
+            <label for="formulaType" class="control-label col-xs-3">Тип </label>
             <div class="col-xs-9">
               <input formControlName="formulaType" type="text" class="form-control" id="formulaType" name="formulaType"
                      placeholder="Type">
             </div>
           </div>
           <div class="form-group">
-            <label for="paramA" class="control-label col-xs-3">paramA</label>
             <div class="col-xs-9">
-              <input formControlName="a" type="text" class="form-control" id="paramA" name="paramA"
-                     placeholder="Name">
+              <label for="paramA" style="margin: 0 5px 0 5px " class="control-label col-xs-3">Параметр A</label>
+              <p-dropdown id="paramA" [options]="normParams" formControlName="a" [autoWidth]="false"
+                          editable="true" placeholder="Параметр А"></p-dropdown>
+
+              <label for="paramB" style="margin: 0 5px 0 5px " class="control-label col-xs-3">Параметр B </label>
+              <p-dropdown id="paramB" [options]="normParams" formControlName="b" [autoWidth]="false"
+                          editable="true" placeholder="Параметр B"></p-dropdown>
             </div>
           </div>
           <div class="form-group">
-            <label for="paramB" class="control-label col-xs-3">paramB</label>
             <div class="col-xs-9">
-              <input formControlName="b" type="text" class="form-control" id="paramB" name="paramB"
-                     placeholder="Name">
+
+              <label for="paramC" style="margin: 0 5px 0 5px " class="control-label col-xs-3">Параметр С </label>
+              <p-dropdown id="paramC" [options]="normParams" formControlName="c" [autoWidth]="false"
+                          editable="true" placeholder="Параметр C"></p-dropdown>
+              <label for="paramD" style="margin: 0 5px 0 5px " class="control-label col-xs-3">Параметр D </label>
+              <p-dropdown id="paramD" [options]="normParams" formControlName="d" [autoWidth]="false"
+                          editable="true" placeholder="Параметр D"></p-dropdown>   <!--</div>-->
             </div>
           </div>
           <div class="form-group">
-            <label for="paramC" class="control-label col-xs-3">paramC</label>
             <div class="col-xs-9">
-              <input formControlName="c" type="text" class="form-control" id="paramC" name="paramC"
-                     placeholder="Name">
+              <label for="paramXB" style="margin: 0 5px 0 5px " class="control-label col-xs-3">Параметр XB </label>
+              <p-dropdown id="paramXB" class="control-label col-xs-3" [options]="normParams" formControlName="xb"
+                          [autoWidth]="false"
+                          editable="true" placeholder="Параметр XB"></p-dropdown>
             </div>
           </div>
           <div class="form-group">
-            <label for="paramD" class="control-label col-xs-3">paramD</label>
             <div class="col-xs-9">
-              <input formControlName="d" type="text" class="form-control" id="paramD" name="paramD"
-                     placeholder="D">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="paramXB" class="control-label col-xs-3">paramXB</label>
-            <div class="col-xs-9">
-              <input formControlName="xb" type="text" class="form-control" id="paramXB" name="paramXB"
-                     placeholder="XB">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="comments" class="control-label col-xs-3">Comments</label>
-            <div class="col-xs-9">
+              <label for="comments" class="control-label col-xs-3">Комментарии </label>
+
               <input formControlName="comments" type="text" class="form-control" id="comments" name="comments"
                      placeholder="">
             </div>
@@ -92,10 +88,10 @@
         </form>
       </div>
       <div class="modal-footer">
-            <button type="button"
-                    [disabled]="!formulaForm.valid"
-                    class="btn btn-primary" (click)="onSaveFormula()">Сохранить
-            </button>
+        <button type="button"
+                [disabled]="!formulaForm.valid"
+                class="btn btn-primary" (click)="onSaveFormula()">Сохранить
+        </button>
       </div>
 
     </div>

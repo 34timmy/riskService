@@ -119,4 +119,12 @@ export class CompanyService {
   setFlagForreloadNames(flag) {
     this.reloadNames.next(flag);
   }
+
+  getCompanyData(id) {
+    return this.http.get(basePath +
+      companiesPath +
+      "/companyData" +
+      "?companyId=" + id,
+      this.reqOptions)
+  }
 }

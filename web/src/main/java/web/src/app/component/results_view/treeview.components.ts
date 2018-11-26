@@ -155,7 +155,7 @@ export class TreeViewComponent implements OnInit {
       convertedObj = {
         data: {
           comment: list.comment,
-          companyId: list.companyId,
+          companyId: list.descr,
           isLeaf: list.isLeaf,
           node: list.node,
           parentNode: list.parentNode,

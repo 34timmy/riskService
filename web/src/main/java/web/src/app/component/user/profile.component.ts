@@ -3,6 +3,7 @@ import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {AuthService} from "../../service/auth.service";
 import {ProfileService} from "../../service/profile.service";
+import {UserModel} from "../../model/user.model";
 
 
 @Component({
@@ -14,7 +15,9 @@ export class ProfileComponent implements OnInit {
 
 
   public profileForm: FormGroup = this.formBuilder.group({
-    'name': ['', Validators.required],
+    'userName': ['', Validators.required],
+    'firstName': ['', Validators.required],
+    'lastName': ['', Validators.required],
     'email': ['', Validators.required],
     'password': ['', Validators.required],
   });
@@ -30,9 +33,21 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.profileService.getOwnProfile().subscribe(
       res => {
-        let auth = res.json();
+        let auth = res.json() as UserModel;
         this.authService.authenticatedAs = auth;
-        this.profileForm.patchValue(auth);
+        this.fillForm(auth);
+      }
+    )
+  }
+
+  fillForm(user) {
+    this.profileForm.patchValue(
+      {
+        'id': user.id,
+        'userName': user.userName,
+        'firstName': user.firstName,
+        'lastName': [user.lastName],
+        'email': user.email
       }
     )
   }
