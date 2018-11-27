@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static ru.mifi.service.risk.dto.ModelCalcDto.initIndexCode;
+
 /**
  * Содержит запросы к БД, необходимые для расчета внешней утилитой весов для иерархии модели.
  *
@@ -24,7 +26,7 @@ public class DatabaseForWeightsCalcAccessor extends CustomAutoCloseable{
     public static final String SQL_GET_ALL_MODELS =
             "SELECT id, name, descr FROM model";
     public static final String SQL_GET_MODEL_CALC_BY_MODEL_ID =
-            "select node, parent_node, descr, expert_value, weight FROM model_calc WHERE model_id = ?";
+            "select node, parent_node, descr, expert_value, weight, level FROM model_calc WHERE model_id = ?";
     public static final String SQL_UPDATE_WEIGHTS_MODEL_CALC =
             "UPDATE model_calc SET weight=?, expert_value=? WHERE node=?";
     private Connection connection;
@@ -88,11 +90,12 @@ public class DatabaseForWeightsCalcAccessor extends CustomAutoCloseable{
                             rs.getString(2),
                             rs.getString(3),
                             rs.getDouble(4),
-                            rs.getDouble(5)
+                            rs.getDouble(5),
+                            rs.getInt(6)
                     )
             );
         }
-        return resultList;
+        return initIndexCode(resultList);
     }
     /**
      * Получаем все имеющиеся модели с их описанием.

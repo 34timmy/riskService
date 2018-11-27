@@ -19,6 +19,9 @@ import ru.mifi.authentication.controller.JwtAuthenticationEntryPoint;
 import ru.mifi.authentication.utils.JwtAuthenticationTokenFilter;
 import ru.mifi.authentication.service.UserServiceImpl;
 
+import java.util.Arrays;
+import java.util.List;
+
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @EnableWebSecurity
@@ -52,6 +55,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    private static final String[] AUTH_WHITE_LIST = {
+            "/h2/**/**",
+            "/auth/**",
+            "/register/**",
+            "/swagger-ui.html**",
+            "/v2/**",
+            "/utility/**",
+            "/swagger-resources/**"
+    };
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -63,9 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
                 // Un-secure H2 Database
 //                .antMatchers("/companies/**").hasAuthority("USER")
-                .antMatchers("/h2/**/**").permitAll()
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/register/**").permitAll()
+                .antMatchers(AUTH_WHITE_LIST).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
