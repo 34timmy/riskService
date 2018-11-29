@@ -3,14 +3,15 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {
   basePath,
   constructorPath,
-  formulaPath,
+  formulaPath, industryPath,
   modelCalcPath,
   modelPath,
-  rulePath
+  rulePath, treeNodesPath
 } from '../shared/config';
 import {Router} from "@angular/router";
 import {BehaviorSubject, Observable} from "rxjs";
 import {AuthService} from "./auth.service";
+import {tree} from "d3-hierarchy";
 
 @Injectable()
 export class TreeDiagramService {
@@ -140,13 +141,17 @@ export class TreeDiagramService {
     return this.http.get(basePath + constructorPath + modelPath, this.reqOptions);
   }
 
+  getAllIndustries() {
+    return this.http.get(basePath + constructorPath + industryPath, this.reqOptions);
+  }
+
   private getAllNodes() {
-    return this.http.get(basePath + constructorPath + modelPath + "/treeNodes", this.reqOptions);
+    return this.http.get(basePath + constructorPath + modelPath + treeNodesPath, this.reqOptions);
   }
 
   private getNodeForModel(id) {
     return this.http.get(basePath + constructorPath + modelPath +
-      "/treeNodes" +
+      treeNodesPath +
       "/" + id
       , this.reqOptions);
   }
@@ -200,4 +205,5 @@ export class TreeDiagramService {
   setTheTypeDalog(newValue: boolean): void {
     this.typeDialog.next(newValue);
   }
+
 }

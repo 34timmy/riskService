@@ -43,8 +43,20 @@
               </ng-template>
             </p-dropdown>
           </div>
+          <div class="ui-g-12 ui-md-4">
+            <p class="fa fa-industry " style="margin: 0 5px 0 0"></p>
+            <p-dropdown  [disabled]="selectedNodes && selectedNodes.length>0" [options]="industries" [(ngModel)]="selectedIndustry"
+                        [filter]="true"
+                        placeholder="Отрасль" [showClear]="true"
+                        [style]="{'width':'150px'}">
+              <ng-template let-item pTemplate="selectedItem">
+                <div>{{item.label}}</div>
+              </ng-template>
+            </p-dropdown>
+          </div>
         </div>
-        <p-treeTable [value]="companiesListNodes" [columns]="cols" selectionMode="single" [(selection)]="selectedNode"
+        <p-treeTable [value]="companiesListNodes" [columns]="cols" selectionMode="multiple"
+                     [(selection)]="selectedNodes"
         >
           <ng-template pTemplate="header" let-columns>
             <tr>
@@ -67,10 +79,12 @@
               <td>
                 {{rowData.descr || rowData.name }}
               </td>
-              <td >
-                <p-button *ngIf="!calculationPerform" type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px" styleClass="ui-button-success"
+              <td>
+                <p-button *ngIf="!calculationPerform" type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px"
+                          styleClass="ui-button-success"
                           (click)="onEdit(rowData)"></p-button>
-                <p-button *ngIf="!calculationPerform" icon="fa fa-trash" style="margin: 5px 5px 5px 5px" styleClass="ui-button-danger "
+                <p-button *ngIf="!calculationPerform" icon="fa fa-trash" style="margin: 5px 5px 5px 5px"
+                          styleClass="ui-button-danger "
                           (click)="onDelete(rowData)"></p-button>
               </td>
             </tr>

@@ -22,6 +22,9 @@ export class CompanyListComponent implements OnInit {
   years: any[];
   selectedYear: string;
 
+  industries: any[];
+  selectedIndustry: string;
+
   showToggle = false;
   listsLoaded: Observable<boolean>;
   calculationPerform = false;
@@ -33,7 +36,9 @@ export class CompanyListComponent implements OnInit {
   selectedCompanies = [];
 
   cols: any[];
-  selectedNode: TreeNode;
+  // selectedNode: TreeNode;
+  selectedNodes: TreeNode[];
+
   saveChild: CompanySaveComponent;
 
   @Output()
@@ -49,11 +54,11 @@ export class CompanyListComponent implements OnInit {
 
     this.companyService.isListsLoaded().subscribe(val =>
       this.listsLoaded = of(val));
-      this.cols = [
-        {field: 'id', header: 'Id'},
-        {field: 'name', header: 'Name'},
-        {field: 'actions', header: 'Actions'}
-      ];
+    this.cols = [
+      {field: 'id', header: 'Id'},
+      {field: 'name', header: 'Name'},
+      {field: 'actions', header: 'Actions'}
+    ];
     this.reloadCompanyLists();
 
   }
@@ -61,6 +66,7 @@ export class CompanyListComponent implements OnInit {
   reloadCompanyLists() {
     this.loadModels();
     this.years = this.loadYears();
+
     this.companyService.getAllCompanyLists().subscribe(
       res => {
 
@@ -95,7 +101,17 @@ export class CompanyListComponent implements OnInit {
       {label: 2015, value: 2015},
       {label: 2014, value: 2014}
     ]
+  }
 
+  loadIndustries() {
+    this.treeService.getAllIndustries().subscribe(res => {
+        this.industries = res.json().map(industry => {
+          return {label: industry.name, value: industry.id}
+        });
+      },
+      err => {
+        this.errorMessage(err.json())
+      })
   }
 
   onEdit(data) {
@@ -109,24 +125,45 @@ export class CompanyListComponent implements OnInit {
   calculate() {
     //TODO change ids to ids in some sphere
     this.companyService.setFlagForreloadNames(false);
-    this.companyService.calculate(this.selectedModel,
-      this.selectedNode.data.id,
-      this.selectedNode.children.map(x => {
-        return x.data.id;
-      }).join(";"),
-      this.selectedYear)
-      .subscribe(res => {
-          this.companyService.setFlagForreloadNames(true);
-          this.showToggle = false
-          this.successMessage(res,
-            'Расчёт завершен',
-            '')
+    if (this.selectedNodes.length > 1) {
+      this.companyService.calculate(this.selectedModel,
+        this.selectedNodes[0].data.id,
+        this.selectedNodes[1]
+          .data.id,
+        // .children.map(x => {
+        // return x.data.id;
+        // }).join(";"),
+        this.selectedYear)
+        .subscribe(res => {
+            this.companyService.setFlagForreloadNames(true);
+            this.showToggle = false
+            this.successMessage(res,
+              'Расчёт завершен',
+              '')
 
-        },
-        err => {
-          this.errorMessage(err.json())
-        });
+          },
+          err => {
+            this.errorMessage(err.json())
+          });
+    }
+    else {
+      this.companyService.calculateByIndustry(this.selectedModel,
+        this.selectedIndustry,
+        this.selectedIndustry,
+        this.selectedYear)
+        .subscribe(res => {
+            this.companyService.setFlagForreloadNames(true);
+            this.showToggle = false
+            this.successMessage(res,
+              'Расчёт завершен',
+              '')
 
+          },
+          err => {
+            this.errorMessage(err.json())
+          });
+
+    }
   }
 
   onSaveCompanyList() {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mifi.constructor.model.Company;
 import ru.mifi.constructor.model.CompanyData;
+import ru.mifi.constructor.model.Industry;
 import ru.mifi.constructor.repository.ConstructorMapper;
 
 import java.util.List;
@@ -20,5 +21,11 @@ public class CompanyService {
 
     public List<CompanyData> getDataForCompany(String companyId) {
         return constructorMapper.getAllDataForCompany(companyId);
+    }
+
+    public List<Industry> getAllIndustries() {
+        return constructorMapper.getAllIndustries();
+
+
     }
 }

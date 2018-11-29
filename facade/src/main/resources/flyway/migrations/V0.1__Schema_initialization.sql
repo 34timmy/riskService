@@ -1,7 +1,7 @@
 CREATE TABLE public.industry (
   id         VARCHAR2 (255) NOT NULL,
   name       VARCHAR2 (255) NOT NULL,
-  description VARCHAR2(4000)
+  descr VARCHAR2(4000)
 );
 ALTER TABLE public.industry
   ADD CONSTRAINT industry_pk PRIMARY KEY (id);

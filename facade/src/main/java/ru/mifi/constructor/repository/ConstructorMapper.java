@@ -143,6 +143,8 @@ public interface ConstructorMapper {
     @Select("SELECT * FROM company")
     List<Company> getAllCompanies();
 
+    @Select("SELECT * FROM industries")
+    List<Industry> getAllIndustries();
 
 }
 

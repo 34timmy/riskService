@@ -103,7 +103,18 @@ export class CompanyService {
       "/calculation?" +
       "modelId=" + selectedModel +
       "&companyListId=" + selectedListId +
-      "&industryCompanyListId=" + "2" +
+      "&industryCompanyListId=" + selectedCompaniesId +
+      "&year=" + selectedYear
+      , this.reqOptions)
+  }
+
+  calculateByIndustry(selectedModel, industryId, industryCompanyListId, selectedYear) {
+    return this.http.get(basePath +
+      "/perform" +
+      "/calculation?" +
+      "modelId=" + selectedModel +
+      "&industryId=" + industryId +
+      "&industryCompanyListId=" + industryCompanyListId +
       "&year=" + selectedYear
       , this.reqOptions)
   }
