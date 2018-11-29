@@ -19,7 +19,8 @@ export class TreeDiagramNodesList {
   public notificationService: MessageService;
   private _nodeTemplate = {
     displayName: 'New node',
-    updated: false,
+    updating: false,
+    creating: false,
     type: '',
     children: [],
     guid: '',
@@ -58,7 +59,8 @@ export class TreeDiagramNodesList {
       guid: this.makerGuid,
       parentId: 'root',
       children: [],
-      displayName: 'New node'
+      displayName: 'New node',
+      updating: false
     }
     let maker = new TreeDiagramNodeMaker(node, this.config, this.getThisNodeList.bind(this))
     this._nodesList.set(this.makerGuid, maker)
@@ -108,22 +110,85 @@ export class TreeDiagramNodesList {
     if (_origin.parentId === target || origin === target) {
       return;
     }
+    if ((_origin.type === 'model' || _origin.type === 'formula')
+      && _origin.type === _target.type) {
+      return;
+    }
+    if (_origin.type === 'model'
+      && (_target.type === 'modelcalc' || _target.type === 'formula')) {
+      return;
+    }
+    if (_origin.type === 'modelcalc' && _target.type === 'formula') {
+      return;
+    }
     let remakeRoots = _origin.isRoot();
     if (_origin.parentId) {
       let _parent = this.getNode(_origin.parentId);
-      _parent.children.delete(origin);
+      // _parent.children.delete(origin);
       if (!_parent.hasChildren()) {
         _parent.toggle(false)
       }
-    }
-    _target.children.add(origin);
+      else {
 
-    _origin.parentId = target;
-    remakeRoots && this._makeRoots()
+        this.createNewNodesOnDrop(_parent, _target);
+        _target.children.add(origin);
+        _origin.parentId = target;
+        // _origin.updating = true;
+      }
+    }
+
+
+    remakeRoots && this._makeRoots();
 
     this.serialize()
   }
+  //--------------------------------------------------------------------------------
+  private createNewNodesOnDrop(parent, _target) {
+    if (parent.children) {
+      parent.children.forEach(childGuid => {
+        let child = this.createChildForDrop(this.getNode(childGuid), _target);
+        return this.createNewNodesOnDrop(child, _target)
 
+      })
+    }
+    else {
+      return this.createChildForDrop(parent, _target);
+    }
+  }
+
+  private createChildForDrop(child, _target) {
+    if (child.type != 'formula') {
+      child.data.model_id
+        = _target.type === 'model' ? _target.data.id : _target.data.model_id;
+      child.data.updating = true;
+      child.updating = true;
+      child.creating = true;
+      let uid = uuid();
+      child.guid = uid;
+      if (child.type === 'modelcalc') {
+        child.data.node = uid;
+      } else {
+        child.data.id = uid;
+      }
+      this.newNodeFromDrop(child, child);
+    }
+    return child;
+  }
+
+  public newNodeFromDrop(node = null, value = null) {
+    let _nodeTemplate = Object.assign({}, this._nodeTemplate);
+    _nodeTemplate.guid = value.guid;
+    _nodeTemplate.parentId = node ? node.parentId : null;
+    _nodeTemplate.displayName = value.descr ? value.descr : value.displayName;
+    _nodeTemplate.updating = value.updating;
+    _nodeTemplate.creating = value.creating;
+    _nodeTemplate.type = value.type;
+    _nodeTemplate.data = value.data ? value.data : value;
+    this._nodesList.set(_nodeTemplate.guid, new TreeDiagramNode(_nodeTemplate, this.config, this.getThisNodeList.bind(this)))
+    this._makeRoots();
+    return _nodeTemplate.guid
+  }
+  //--------------------------------------------------------------------------------
   public getThisNodeList() {
     return this;
   }
@@ -270,16 +335,19 @@ export class TreeDiagramNodesList {
   public newNode(node = null, value = null) {
     let _nodeTemplate = Object.assign({}, this._nodeTemplate);
     _nodeTemplate.guid = value.guid;
-    //TODO guid must be id from DB
     _nodeTemplate.parentId = node ? node.guid : null;
-    _nodeTemplate.displayName = value.descr;
-    _nodeTemplate.updated = value.updated;
+    _nodeTemplate.displayName = value.descr ? value.descr : value.displayName;
+    _nodeTemplate.updating = value.updating;
+    _nodeTemplate.creating = value.creating;
     _nodeTemplate.type = value.type;
+    _nodeTemplate.data = value.data ? value.data : value;
     this._nodesList.set(_nodeTemplate.guid, new TreeDiagramNode(_nodeTemplate, this.config, this.getThisNodeList.bind(this)))
     this._makeRoots();
     return _nodeTemplate.guid
 
   }
+
+
 
   private showChooseDialog(node) {
     this.chooseChild.showToggle = true;
@@ -344,7 +412,7 @@ export class TreeDiagramNodesList {
   }
 
   addNodeOnSaveModel() {
-    this.newNode(null,this.modelEditChild.modelForm.value)
+    this.newNode(null, this.modelEditChild.modelForm.value)
   }
 
 

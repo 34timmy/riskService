@@ -23,7 +23,7 @@ export class ModelcalcEditComponent implements OnInit {
         guid:[''],
         descr: ['', Validators.required],
         model_id: [''],
-        parent_node: [''],
+        parent_id: [''],
         weight: [''],
         is_leaf: [''],
         updating: false,
@@ -40,7 +40,7 @@ export class ModelcalcEditComponent implements OnInit {
       node: modelcalc.node,
       descr: modelcalc.descr,
       model_id: modelcalc.model_id,
-      parent_node: modelcalc.parent_node,
+      parent_id: modelcalc.parent_id,
       weight: modelcalc.weight,
       is_leaf: modelcalc.is_leaf,
       updating: false,
@@ -55,7 +55,7 @@ export class ModelcalcEditComponent implements OnInit {
       guid: guid,
       descr: '',
       model_id: model.guid,
-      parent_node: model.guid,
+      parent_id: model.guid,
       weight: '',
       is_leaf: false,
       updating: false,
@@ -71,7 +71,7 @@ export class ModelcalcEditComponent implements OnInit {
       guid: guid,
       descr: '',
       model_id: modelCalc.data.model_id,
-      parent_node: modelCalc.data.node,
+      parent_id: modelCalc.data.node,
       weight: '',
       is_leaf: false,
       updating: false,
@@ -82,7 +82,7 @@ export class ModelcalcEditComponent implements OnInit {
 
   onSaveModelcalc() {
     console.log('modelcalc value ', this.modelcalcForm.value);
-    this.modelcalcForm.value.updating = true;
+    // this.modelcalcForm.value.updating = true;
     this.onSaveEvent.emit(this.modelcalcForm.value);
     this.closeModal();
   }

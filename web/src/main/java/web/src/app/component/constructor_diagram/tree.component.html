@@ -1,4 +1,3 @@
-
 <div *ngIf="showToggle"
      [style.display]="'block'"
      [style.background-color]="'rgba(0,0,0,0.4)'"
@@ -30,48 +29,48 @@
             </div>
           </ng-template>
         </p-toast>
-      <div class="tree-pane" *ngIf="(modelsLoaded | async)"
-     (mousedown)="onmousedown($event)"
-     (mouseup)="onmouseup($event)"
-     (mousemove)="onmousemove($event)"
-     (mousewheel)="onmousewheel($event)"
->
+        <div class="tree-pane" *ngIf="(modelsLoaded | async)"
+             (mousedown)="onmousedown($event)"
+             (mouseup)="onmouseup($event)"
+             (mousemove)="onmousemove($event)"
+             (mousewheel)="onmousewheel($event)"
+        >
 
-  <div
-    class="tree-paning-container"
-    [style.transform]="paneTransform"
-  >
-    <div *ngIf="nodes"
-         class="tree-roots-elements"
+          <div
+            class="tree-paning-container"
+            [style.transform]="paneTransform"
+          >
+            <div *ngIf="nodes"
+                 class="tree-roots-elements"
 
-    >
+            >
 
-      <div [treeDiagramNode]="node.guid"
-           class="tree-root tree-node"
-           (mousedown)="preventMouse($event)"
-           *ngFor="let node of nodes.roots"
-      ></div>
-      <div [treeDiagramNode]="nodeMaker"
-           (click)="newNode()"
-           (mousedown)="preventMouse($event)"
-           class="tree-root tree-new-node tree-node"
-      ></div>
-    </div>
-  </div>
-  </div>
+              <div [treeDiagramNode]="node.guid"
+                   class="tree-root tree-node"
+                   (mousedown)="preventMouse($event)"
+                   *ngFor="let node of nodes.roots"
+              ></div>
+              <div [treeDiagramNode]="nodeMaker"
+                   (click)="newNode()"
+                   (mousedown)="preventMouse($event)"
+                   class="tree-root tree-new-node tree-node"
+              ></div>
+            </div>
+          </div>
+        </div>
 
-</div>
       <div class="modal-footer">
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-9">
-            <button type="button" pButton icon="fa fa-save" style="float: right;"
-                    (click)="saveChanges(updatedNodes)" label="Сохранить">
-            </button>
+            <!--<button type="button" pButton icon="fa fa-save" style="float: right;"-->
+                    <!--(click)="saveChanges(updatedNodes)" label="Сохранить">-->
+            <!--</button>-->
           </div>
         </div>
       </div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 
 </div>
 

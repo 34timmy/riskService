@@ -26,7 +26,7 @@ public class DatabaseForWeightsCalcAccessor extends CustomAutoCloseable{
     public static final String SQL_GET_ALL_MODELS =
             "SELECT id, name, descr FROM model";
     public static final String SQL_GET_MODEL_CALC_BY_MODEL_ID =
-            "select node, parent_node, descr, expert_value, weight, level FROM model_calc WHERE model_id = ?";
+            "select node, parent_id, descr, expert_value, weight, level FROM model_calc WHERE model_id = ?";
     public static final String SQL_UPDATE_WEIGHTS_MODEL_CALC =
             "UPDATE model_calc SET weight=?, expert_value=? WHERE node=?";
     private Connection connection;

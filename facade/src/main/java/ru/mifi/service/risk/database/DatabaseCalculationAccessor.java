@@ -62,14 +62,14 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
             "MERGE INTO";
     private static final String SQL_GET_MODEL_CALC =
             "SELECT " +
-                    "  mc.descr, mc.node, mc.parent_node, mc.weight, mc.is_leaf, mc.level, mc.comments, mc_parent.comments as parent_comments, mc_parent.weight as parent_weight " +
+                    "  mc.descr, mc.node, mc.parent_id, mc.weight, mc.is_leaf, mc.level, mc.comments, mc_parent.comments as parent_comments, mc_parent.weight as parent_weight " +
                     "FROM model_calc mc " +
-                    "LEFT JOIN model_calc mc_parent ON (mc_parent.node = mc.parent_node) " +
+                    "LEFT JOIN model_calc mc_parent ON (mc_parent.node = mc.parent_id) " +
                     "WHERE mc.model_id = ?";
     private static final int SQL_BATCH_SIZE = 100;
     private static final String SQL_UPDATE_WEIGHT = "UPDATE %s t1 set t1.weight = (select weight from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
     private static final String SQL_UPDATE_IS_LEAF = "UPDATE %s t1 set t1.is_leaf = (select is_leaf from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
-    private static final String SQL_UPDATE_PARENT_NODE = "UPDATE %s t1 set t1.parent_node = (select parent_node from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
+    private static final String SQL_UPDATE_PARENT_NODE = "UPDATE %s t1 set t1.parent_node = (select parent_id from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
     private static final String SQL_GET_COMPANY_IDS_BY_INDUSTRY = "SELECT id FROM company WHERE industry=?";
     private final PreparedStatement getModelCalcStmt;
     private final PreparedStatement getModelLeafsStmt;
@@ -218,7 +218,7 @@ public class DatabaseCalculationAccessor extends CustomAutoCloseable {
                                 extractComments(resultSet.getString("comments"))
                         ),
                         new HierarchyNode(
-                                resultSet.getString("parent_node"),
+                                resultSet.getString("parent_id"),
                                 resultSet.getDouble("parent_weight"),
                                 extractComments(resultSet.getString("parent_comments"))
                         )

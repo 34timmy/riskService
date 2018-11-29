@@ -56,7 +56,7 @@ export class ModelEditComponent implements OnInit {
 
   onSaveModel() {
     console.log('model value ', this.modelForm.value);
-    this.modelForm.value.updating = true;
+    // this.modelForm.value.updating = true;
     this.onSaveEvent.emit(this.modelForm.value);
     this.closeModal();
   }

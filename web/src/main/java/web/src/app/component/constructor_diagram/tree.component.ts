@@ -186,7 +186,7 @@ export class Tree implements OnInit {
               node: node.guid,
               descr: node.descr,
               model_id: node.model_id,
-              parent_node: node.node,
+              parent_id: node.node,
               weight: node.weight,
               is_leaf: node.is_leaf,
               level: 0,
@@ -271,6 +271,9 @@ export class Tree implements OnInit {
 
   private onSaveModelCalc(node) {
     console.log('model ', node);
+    if (node.data) {
+      node = node.data;
+    }
     this.treeService.saveModelCalc(node)
       .subscribe(
         res => {
@@ -298,7 +301,21 @@ export class Tree implements OnInit {
   private saveChanges(nodes) {
     //TODO save changes after drag and drop
     this.updatedNodes = Array.from(this.nodesSrv.getNodes())
-      .filter((val) => val.updated === true);
+      .filter((val) => val.updating === true);
+
+    this.updatedNodes.forEach(node => {
+        if (node.type === 'model') {
+          this.onSaveModel(node.data);
+
+        }
+        else if (node.type === 'modelcalc') {
+          this.onSaveModelCalc(node.data);
+        }
+        else if (node.type === 'formula') {
+          this.onSaveFormula(node);
+        }
+      }
+    )
     console.log('updatedNodes ', this.updatedNodes)
   }
 

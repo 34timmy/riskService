@@ -49,7 +49,7 @@ export class FormulaEditComponent implements OnInit {
         rule_id: [''],
         model_calc_id: [''],
         node: [''],
-        parent_node: [''],
+        parent_id: [''],
         is_leaf: [''],
         model_id: [''],
         updating: false,
@@ -97,7 +97,7 @@ export class FormulaEditComponent implements OnInit {
       guid: guid,
       descr: modelcalc.data.descr,
       model_id: modelcalc.data.model_id,
-      parent_node: modelcalc.data.node,
+      parent_id: modelcalc.data.node,
       weight: modelcalc.data.weight,
       is_leaf: true,
       model_calc_id: modelcalc.guid,
@@ -109,7 +109,7 @@ export class FormulaEditComponent implements OnInit {
 
   onSaveFormula() {
     console.log('formula value ', this.formulaForm.value);
-    this.formulaForm.value.updating = true;
+    // this.formulaForm.value.updating = true;
     this.onSaveEvent.emit(this.formulaForm.value);
     this.closeModal();
   }

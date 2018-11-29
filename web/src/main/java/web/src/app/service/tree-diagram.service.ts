@@ -114,10 +114,11 @@ export class TreeDiagramService {
   }
 
   saveModelCalc(modelCalc) {
-    if (!modelCalc.creating) {
-      return this.updateModelCalc(modelCalc);
-    } else {
+    if (modelCalc.creating == true || modelCalc.creating == undefined) {
       return this.createModelCalc(modelCalc);
+    } else {
+      return this.updateModelCalc(modelCalc);
+
     }
   }
 

@@ -152,7 +152,6 @@ export class CompanyListComponent implements OnInit {
 
   resultsWithCompanies(companyLists) {
     let companyListsWithCompanies = [];
-    //TODO temo name
     for (let list of companyLists) {
       let companyObjs =
         this.allCompanies.filter(

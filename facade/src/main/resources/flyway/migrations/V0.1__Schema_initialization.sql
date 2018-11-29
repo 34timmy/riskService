@@ -79,7 +79,7 @@ CREATE TABLE public.model_calc (
   model_id      VARCHAR2 (255) NOT NULL,
   descr         VARCHAR2 (4000),
   node          VARCHAR2 (255) NOT NULL,
-  parent_node   VARCHAR2 (255),
+  parent_id   VARCHAR2 (255),
   weight        DOUBLE PRECISION,
   expert_value  DOUBLE PRECISION,
   level         INTEGER,

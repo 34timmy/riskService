@@ -6,6 +6,9 @@ import {ConfirmationService} from "primeng/api";
 
 export class TreeDiagramNode {
   public parentId: string | null;
+  public updating: boolean;
+  public creating: boolean;
+  public type: string;
   public guid: string;
   public width: number;
   public height: number;
