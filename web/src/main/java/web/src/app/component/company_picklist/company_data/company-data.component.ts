@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {CompanyDataModel} from "../../model/company-data.model";
-import {CompanyService} from "../../service/company.service";
-import {UserModel} from "../../model/user.model";
+import {CompanyDataModel} from "../../../model/company-data.model";
+import {CompanyService} from "../../../service/company.service";
+import {BehaviorSubject} from "rxjs";
 
 
 @Component({
@@ -17,12 +17,13 @@ export class CompanyDataComponent implements OnInit {
   onSave: EventEmitter<CompanyDataModel> = new EventEmitter<CompanyDataModel>();
 
   showToggle = false;
+  fromDataTab = false;
+  loadingSpinner = new BehaviorSubject(false);
 
   constructor(private companyService: CompanyService) {
   }
 
   ngOnInit(): void {
-
     this.cols = [
       {field: 'year', header: 'Год'},
       {field: 'paramCode', header: 'Код'},
@@ -32,6 +33,8 @@ export class CompanyDataComponent implements OnInit {
   }
 
   showModal(company) {
+    this.showToggle = true;
+    this.loadingSpinner.next(true);
     this.company = company;
     this.companyService.getCompanyData(company.id).subscribe(res => {
       this.companyData = res.json().map(data => {
@@ -41,7 +44,7 @@ export class CompanyDataComponent implements OnInit {
           paramValue: data.param_value
         }
       });
-      this.showToggle = true;
+      this.loadingSpinner.next(false);
     });
   }
 

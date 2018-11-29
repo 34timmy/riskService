@@ -85,10 +85,11 @@ public class AuthenticationRestController {
     }
 
     @GetMapping(value = "/profile")
-    public ResponseEntity getUserProfile(@RequestParam("id") String id) throws SQLException, EmailExistException {
+    public ResponseEntity getUserProfile(@RequestParam("token") String token) throws SQLException, EmailExistException {
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUsername();
-        User user = userService.get(id);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = userService.getByEmail(username);
         if (user != null && user.getEmail().equals(email)) {
             user.setPassword("");
             user.setRoles(Collections.emptySet());
@@ -103,6 +104,8 @@ public class AuthenticationRestController {
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUsername();
         if (user.getEmail().equals(email)) {
+            User byEmail = userService.getByEmail(email);
+            user.setPassword(byEmail.getPassword());
             userService.save(user);
             return ResponseEntity.ok().build();
         }

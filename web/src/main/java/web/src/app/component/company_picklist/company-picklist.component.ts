@@ -10,11 +10,13 @@ import {FileUploader} from "ng2-file-upload";
 import {NotificationService} from "../../shared/notification.service";
 import {MessageService} from "primeng/api";
 import {MenuItem} from "primeng/api";
-import {CompanyDataComponent} from "../company-data/company-data.component";
+import {CompanyDataComponent} from "./company_data/company-data.component";
 import {CompanyDataModel} from "../../model/company-data.model";
+import {Observable, of} from "rxjs";
 
 @Component({
   templateUrl: './company-picklist.html',
+  // styleUrls: ['picklist.css'],
   selector: 'app-company-picklist'
 })
 export class CompanyPicklistComponent implements OnInit {
@@ -46,7 +48,6 @@ export class CompanyPicklistComponent implements OnInit {
 
 
   ngOnInit() {
-
     this.companyService.getCompanies().subscribe(res => {
         this.source = res.json();
         this.companyListChild.setSaveChildComponent(this.companySaveChild);

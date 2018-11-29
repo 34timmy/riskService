@@ -6,8 +6,8 @@ import {AuthActivateGuard} from "./shared/auth.activate.guard";
 import {ProfileComponent} from "./component/user/profile.component";
 import {TableNamesComponent} from "./component/results_view/table-names.component";
 import {ModelsListComponent} from "./component/constructor_diagram/models_list/models-list.component";
-import {CompanyPicklistComponent} from "./component/company-picklist/company-picklist.component";
-import {CompanyDataComponent} from "./component/company-data/company-data.component";
+import {CompanyPicklistComponent} from "./component/company_picklist/company-picklist.component";
+import {CompanyDataComponent} from "./component/company_picklist/company_data/company-data.component";
 
 
 const appRoutes: Routes = [
@@ -46,7 +46,8 @@ const appRoutes: Routes = [
   },
   {
     path: 'data',
-    component: CompanyDataComponent
+    component: CompanyDataComponent,
+    canActivate: [AuthActivateGuard]
   }
 ];
 

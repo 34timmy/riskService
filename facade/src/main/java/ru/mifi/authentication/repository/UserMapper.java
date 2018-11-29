@@ -25,7 +25,7 @@ public interface UserMapper {
     @Select("SELECT * FROM users u where u.id = #{id}")
     User getUser(String id);
 
-    @Update("UPDATE users u SET u.name=#{name} where u.id=#{id}")
+    @Update("UPDATE users u SET u.firstName=#{firstName},u.lastName=#{lastName} where u.id=#{id}")
     void updateUser(User user);
 
     @Insert("INSERT INTO users(ID, FIRSTNAME,LASTNAME, EMAIL, PASSWORD)" +

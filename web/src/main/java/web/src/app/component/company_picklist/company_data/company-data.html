@@ -2,6 +2,7 @@
      [style.display]="'block'"
      [style.background-color]="'rgba(0,0,0,0.4)'"
      class="modal" role="dialog" id="editRow">
+
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -13,16 +14,17 @@
         </button>
       </div>
       <div class="modal-body">
-        <p-table #dt [value]="companyData" [scrollable]="true" scrollHeight="200%">
+        <p-table #dt [columns]="cols" [value]="companyData" [scrollable]="true" scrollHeight="200%">
             <ng-template pTemplate="caption">
               <div style="text-align: right">
                 <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-                <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+                <input type="text" pInputText size="50" placeholder="Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
               </div>
             </ng-template>
           <ng-template pTemplate="header">
           <tr>
-              <!--<th style="width: 3em"></th>-->
+
+              <!--<th *ngIf="fromDataTab" style="width: 3em"></th>-->
               <th *ngFor="let col of cols" [pSortableColumn]="col.field">
                 {{col.header}}
                 <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
@@ -33,8 +35,8 @@
           </ng-template>
           <ng-template pTemplate="body" let-expanded="expanded" let-data>
             <tr>
-              <!--<td>-->
-                <!--<a href="" [pRowToggler]="data">-->
+              <!--<td *ngIf="fromDataTab">-->
+                <!--<a href="#" [pRowToggler]="data">-->
                   <!--<i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>-->
                 <!--</a>-->
               <!--</td>-->

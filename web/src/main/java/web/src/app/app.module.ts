@@ -6,7 +6,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AppComponent} from './app.component';
 import {CommonModule} from '@angular/common';
 import {HeaderComponent} from './component/auth/header.component';
-import {CompanyEditComponent} from './component/company-picklist/company-edit.component';
+import {CompanyEditComponent} from './component/company_picklist/company-edit.component';
 import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
 import {
@@ -23,7 +23,7 @@ import {FooterComponent} from './component/auth/footer.component';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {ToastModule} from 'primeng/toast';
 import {PickListModule} from 'primeng/picklist';
-import {CompanyPicklistComponent} from './component/company-picklist/company-picklist.component';
+import {CompanyPicklistComponent} from './component/company_picklist/company-picklist.component';
 import {DropdownModule} from 'primeng/dropdown';
 import {TreeTableModule} from 'primeng/treetable';
 import {TreeViewComponent} from './component/results_view/treeview.components';
@@ -43,9 +43,9 @@ import {NotificationService} from "./shared/notification.service";
 import {CustomErrorHandler} from "./shared/custom.errorhandler";
 import {RuleEditComponent} from "./component/rule/rule-edit.component";
 import {ModelcalcEditComponent} from "./component/constructor_diagram/modelcalc/modelcalc-edit.component";
-import {CompanySaveComponent} from "./component/company-picklist/company-save.component";
+import {CompanySaveComponent} from "./component/company_picklist/company-save.component";
 import {AutoCompleteModule} from 'primeng/autocomplete';
-import {CompanyListComponent} from "./component/company-picklist/company-list.component";
+import {CompanyListComponent} from "./component/company_picklist/company-list.component";
 import {TableNamesComponent} from "./component/results_view/table-names.component";
 import {GroupByPipe} from "./shared/groupBy.pipe";
 import {TableModule} from "primeng/table";
@@ -68,7 +68,9 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
 import {AuthActivateGuard} from "./shared/auth.activate.guard";
 import {MenuModule} from 'primeng/menu';
 import {CheckboxModule} from 'primeng/checkbox';
-import {CompanyDataComponent} from "./component/company-data/company-data.component";
+import {CompanyDataComponent} from "./component/company_picklist/company_data/company-data.component";
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {DataTabComponent} from "./component/data_tab/data-tab.component";
 
 @NgModule({
   declarations: [
@@ -96,7 +98,8 @@ import {CompanyDataComponent} from "./component/company-data/company-data.compon
     HeaderComponent,
     RegisterComponent,
     ModelsListComponent,
-    CompanyDataComponent
+    CompanyDataComponent,
+    DataTabComponent
 
   ],
   imports: [
@@ -125,7 +128,8 @@ import {CompanyDataComponent} from "./component/company-data/company-data.compon
     OverlayPanelModule,
     InputTextareaModule,
     MenuModule,
-    CheckboxModule
+    CheckboxModule,
+    ProgressSpinnerModule
   ],
   providers: [CompanyService, UserService, TreeService,
     NodesListService, TreeDiagramService,

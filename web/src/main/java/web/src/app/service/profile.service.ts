@@ -29,15 +29,17 @@ export class ProfileService {
   });
 
   constructor(private http: Http,
-                private authenticationService: AuthService
-    ) {
-    }
+              private authenticationService: AuthService
+  ) {
+  }
 
-    getOwnProfile(): Observable<Response> {
-        return this.http.get(basePath + profilePath, this.reqOptions);
-    }
+  getOwnProfile(): Observable<Response> {
+    return this.http.get(basePath + profilePath +
+      "?token=" + JSON.parse(localStorage.getItem('currentUser')).token
+      , this.reqOptions);
+  }
 
-    saveOwnProfle(value: UserModel): Observable<Response> {
-        return this.http.put(basePath + profilePath, JSON.stringify(value), this.reqOptionsJson);
-    }
+  saveOwnProfle(value: UserModel): Observable<Response> {
+    return this.http.put(basePath + profilePath, JSON.stringify(value), this.reqOptionsJson);
+  }
 }

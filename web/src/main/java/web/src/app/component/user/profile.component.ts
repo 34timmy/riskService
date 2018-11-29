@@ -15,6 +15,7 @@ export class ProfileComponent implements OnInit {
 
 
   public profileForm: FormGroup = this.formBuilder.group({
+    'id':[''],
     'userName': ['', Validators.required],
     'firstName': ['', Validators.required],
     'lastName': ['', Validators.required],
@@ -46,13 +47,13 @@ export class ProfileComponent implements OnInit {
         'id': user.id,
         'userName': user.userName,
         'firstName': user.firstName,
-        'lastName': [user.lastName],
+        'lastName': user.lastName,
         'email': user.email
       }
     )
   }
 
-  save() {
+  onSave() {
     this.profileService.saveOwnProfle(this.profileForm.value).subscribe(
       res => this.ngOnInit()
     );

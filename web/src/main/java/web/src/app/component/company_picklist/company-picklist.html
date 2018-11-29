@@ -23,16 +23,20 @@
           (click)="showCompanyList()" label="Списки компаний">
   </button>
 </div>
-
-
 <p-pickList [source]="source" [target]="target" sourceHeader="Список компаний"
             targetHeader="Список выбранных компаний"
             dragdrop="true"
             dragdropScope="companies"
-            [responsive]="true" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}"
+            [showSourceControls]="false"
+            [showTargetControls]="false"
+            [responsive]="true"
+            [sourceStyle]="{'height':'300px'}"
+            [targetStyle]="{'height':'300px'}"
+            styleClass="marg"
             filterBy="name,INN"
             sourceFilterPlaceholder="Поиск по названию и ИНН" targetFilterPlaceholder="Поиск по названию и ИНН">
   <ng-template let-company pTemplate="item">
+
     <div class="ui-helper-clearfix">
       <div style="font-size:14px;float:left;margin:15px 5px 0 0"><b>ИНН:</b> {{company.id}}</div>
       <button pButton icon="fa fa-trash" style="float:right;margin: 5px 5px 5px 5px" class="ui-button-danger "

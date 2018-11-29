@@ -48,7 +48,8 @@
         >
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th *ngFor="let col of columns" [ttSortableColumn]="col.field">{{col.header}}
+              <th *ngFor="let col of columns"
+                  [ttSortableColumn]="col.field">{{col.header}}
                 <p-treeTableSortIcon [field]="col.field"></p-treeTableSortIcon>
               </th>
             </tr>
@@ -66,10 +67,10 @@
               <td>
                 {{rowData.descr || rowData.name }}
               </td>
-              <td>
-                <p-button type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px" styleClass="ui-button-success"
+              <td >
+                <p-button *ngIf="!calculationPerform" type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px" styleClass="ui-button-success"
                           (click)="onEdit(rowData)"></p-button>
-                <p-button icon="fa fa-trash" style="margin: 5px 5px 5px 5px" styleClass="ui-button-danger "
+                <p-button *ngIf="!calculationPerform" icon="fa fa-trash" style="margin: 5px 5px 5px 5px" styleClass="ui-button-danger "
                           (click)="onDelete(rowData)"></p-button>
               </td>
             </tr>

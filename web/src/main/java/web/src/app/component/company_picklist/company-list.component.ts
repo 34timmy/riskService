@@ -49,11 +49,11 @@ export class CompanyListComponent implements OnInit {
 
     this.companyService.isListsLoaded().subscribe(val =>
       this.listsLoaded = of(val));
-    this.cols = [
-      {field: 'id', header: 'Id'},
-      {field: 'name', header: 'Name'},
-      {field: 'actions', header: 'Actions'}
-    ];
+      this.cols = [
+        {field: 'id', header: 'Id'},
+        {field: 'name', header: 'Name'},
+        {field: 'actions', header: 'Actions'}
+      ];
     this.reloadCompanyLists();
 
   }
@@ -158,7 +158,7 @@ export class CompanyListComponent implements OnInit {
         this.allCompanies.filter(
           val => list.company_ids.toString().split(";")
             .map(Number).includes(val.id)).map(val => {
-          return {data: {id: val.id, descr: "Temp Name", INN: val.inn}}
+          return {data: {id: val.id, descr: val.descr, INN: val.inn}}
         });
 
       companyListsWithCompanies.push({

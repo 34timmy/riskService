@@ -9,7 +9,8 @@ const PROXY_CONFIG = [
       "/login",
       "/auth",
       "/refresh",
-      "/register"
+      "/register",
+      "/profile"
     ],
     target: "http://localhost:8080",
     secure: false
