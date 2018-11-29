@@ -250,6 +250,7 @@ export class Tree implements OnInit {
         res => {
           if (!node.creating) {
             this.nodesSrv.editNodeOnSaveModel();
+            this.reloadModels.next(true);
             this.successMessage(node,
               'Запись ' + node.descr + ' изменена',
               null);

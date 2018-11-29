@@ -12,7 +12,7 @@
 }
 
 .modal-body {
-  max-height: calc(100vh - 210px );
+  max-height: calc(100vh - 170px );
   overflow-y: scroll;
 }
 
