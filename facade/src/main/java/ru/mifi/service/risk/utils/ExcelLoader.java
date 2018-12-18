@@ -15,7 +15,7 @@ import ru.mifi.service.risk.domain.FormulaParam;
 import ru.mifi.service.risk.exception.DatabaseException;
 import ru.mifi.service.risk.exception.ImportException;
 import ru.mifi.service.risk.exception.WrongFormulaValueException;
-import ru.mifi.service.risk.utils.params.type.ParamsTypeEnum;
+import ru.mifi.service.risk.utils.type.ParamsTypeEnum;
 import ru.mifi.service.risk.utils.validation.ValidationUtil;
 import ru.mifi.utils.StringUtils;
 

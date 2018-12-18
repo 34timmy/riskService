@@ -20,7 +20,6 @@ import static ru.mifi.utils.StringUtils.extractComments;
  * @author DenRUS on 07.10.2017.
  */
 @Data
-@NoArgsConstructor
 public class Formula {
 
     /**

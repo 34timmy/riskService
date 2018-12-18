@@ -70,7 +70,7 @@ public class TreeNodeDTO {
     }
 
     public TreeNodeDTO(List<Model> models, List<Formula> formulas) {
-        resultList = new ArrayList<TreeNodeDTO>();
+        resultList = new ArrayList<>();
         for (Model model : models) {
             if (model==null) continue;
             resultList.add(new TreeNodeDTO(model));

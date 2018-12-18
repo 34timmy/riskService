@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import ru.mifi.service.risk.utils.params.type.ParamsTypeEnum;
+import ru.mifi.service.risk.utils.type.ParamsTypeEnum;
 
 import java.util.Arrays;
 import java.util.List;

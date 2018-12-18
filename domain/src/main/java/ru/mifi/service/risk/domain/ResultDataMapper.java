@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Data
-@RequiredArgsConstructor
 public class ResultDataMapper {
 
     private String modelId;

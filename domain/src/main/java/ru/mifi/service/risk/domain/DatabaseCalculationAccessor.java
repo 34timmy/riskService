@@ -1,4 +1,5 @@
 package ru.mifi.service.risk.domain;
 
-public class DatabaseCalculationAccessor {
+public interface DatabaseCalculationAccessor {
+    Double getNormativeValueByCode(String paramCode);
 }

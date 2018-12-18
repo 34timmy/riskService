@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>bd679f72-8072-4430-b675-8eccddf93470.SCHEMA:TESTDB.PUBLIC</OriginalElement>
+  <nodes>
+    <node x="232.5" y="0.0">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.INDUSTRY</node>
+    <node x="224.0" y="134.1071991592223">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY</node>
+    <node x="501.0" y="0.0">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL</node>
+    <node x="540.1313715186549" y="450.24119810825005">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA</node>
+    <node x="102.75" y="314.0">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_BUSINESS_DATA</node>
+    <node x="542.6313715186549" y="728.24119810825">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA_PARAMS</node>
+    <node x="-1.6862848134525166" y="454.2054650551761">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.USERS</node>
+    <node x="727.0" y="0.0">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_LIST</node>
+    <node x="7.813715186547483" y="688.2054650551761">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.ROLES</node>
+    <node x="450.0" y="196.54440357330532">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL_CALC</node>
+    <node x="654.9910667367316" y="241.93720441408306">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER</node>
+    <node x="0.9910667367314545" y="137.27693116132423">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.BUSINESS_DATA</node>
+    <node x="231.31371518654748" y="454.2054650551761">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.NORMATIVE_PARAMETERS</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_LIST">
+      <point x="83.66666666666663" y="-80.5" />
+      <point x="864.1577334033981" y="165.59800315291645" />
+      <point x="886.4821334734629" y="165.59800315291645" />
+      <point x="52.5" y="48.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_BUSINESS_DATA" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.BUSINESS_DATA">
+      <point x="-52.75" y="-59.0" />
+      <point x="155.5" y="289.0" />
+      <point x="102.0" y="289.0" />
+      <point x="0.0" y="37.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA_PARAMS" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA">
+      <point x="0.0" y="-47.5" />
+      <point x="0.0" y="114.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_BUSINESS_DATA" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY">
+      <point x="52.75" y="-59.0" />
+      <point x="261.0" y="289.0" />
+      <point x="314.5" y="289.0" />
+      <point x="0.0" y="59.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL">
+      <point x="-83.66666666666674" y="-80.5" />
+      <point x="696.8244000700648" y="169.56227009984238" />
+      <point x="624.9910667367315" y="169.56227009984235" />
+      <point x="41.0" y="48.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL_CALC" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL">
+      <point x="0.0" y="-114.0" />
+      <point x="-41.0" y="48.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.INDUSTRY">
+      <point x="0.0" y="-59.0" />
+      <point x="0.0" y="48.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.ROLES" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.USERS">
+      <point x="0.0" y="-36.5" />
+      <point x="0.0" y="92.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="467.5" y="412.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+  </Categories>
+</Diagram>
+

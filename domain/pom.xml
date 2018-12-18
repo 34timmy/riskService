@@ -9,32 +9,23 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>constructor</artifactId>
+    <artifactId>domain</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>ru.mifi</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
+        <!--Math Expressions-->
+        <!-- https://mvnrepository.com/artifact/org.mariuszgromada.math/MathParser.org-mXparser -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>${mybatis.version}</version>
+            <groupId>org.mariuszgromada.math</groupId>
+            <artifactId>MathParser.org-mXparser</artifactId>
+            <version>4.1.1</version>
         </dependency>
     </dependencies>
 

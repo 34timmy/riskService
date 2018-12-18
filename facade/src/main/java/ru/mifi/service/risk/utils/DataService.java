@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
+import ru.mifi.service.risk.database.DatabaseCalculationAccessorImpl;
 import ru.mifi.service.risk.database.DatabaseSelectAccessor;
 import ru.mifi.service.risk.domain.CalculationParamKey;
 import ru.mifi.service.risk.domain.DataKey;
@@ -42,7 +42,7 @@ public class DataService {
      * @return надо подумать: либо id таблицы с данными, либо сообщение-статус расчета.
      */
     public Map<String, Object> performCalculation(CalculationParamKey calcKey) {
-        try (DatabaseCalculationAccessor accessor = new DatabaseCalculationAccessor(dataSource)) {
+        try (DatabaseCalculationAccessorImpl accessor = new DatabaseCalculationAccessorImpl(dataSource)) {
             HierarchyResult finalResult;
             {
                 Set<Formula> leafs = accessor.getFormulasForCalc(calcKey.getModelId());

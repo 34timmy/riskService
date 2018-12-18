@@ -14,7 +14,7 @@ import static ru.mifi.utils.StringUtils.extractComments;
  * Работа с базой при непосредственном расчете.
  * Created by DenRUS on 08.10.2018.
  */
-public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable {
+public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable implements DatabaseCalculationAccessor{
 
     //TODO надо сортировать формулы и потом доставать по 1000 для расчета. Чтоб не все сразу
     private static final String SQL_GET_MODEL_LEAFS =
