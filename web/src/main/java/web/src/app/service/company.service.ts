@@ -85,6 +85,12 @@ export class CompanyService {
     return this.http.put(basePath + "", JSON.stringify(companiesList), this.reqOptionsJson);
   }
 
+  deleteCompanyList(id) {
+    return this.http.delete(basePath + constructorPath + modelPath + companiesListsPath +
+      '?id=' + id,
+      this.reqOptionsJson)
+  }
+
   getAllCompanyLists(): Observable<Response> {
     return this.http.get(basePath + constructorPath + modelPath + companyLists, this.reqOptions);
   }

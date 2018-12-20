@@ -57,6 +57,12 @@ public class MainModelController {
         mainModelService.createCompanyList(companyList);
     }
 
+    @DeleteMapping(value = "/companyLists")
+    public void deleteCompanyList(@RequestParam("id") String id)
+    {
+        mainModelService.deleteCompanyList(id);
+    }
+
     @PostMapping(consumes = "application/json")
     public void createModel(@Valid @RequestBody Model model) {
 //        TODO responseEntity

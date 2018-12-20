@@ -15,8 +15,8 @@ values ('ROLE_ADMIN', 1);
 --        (5410786860, 20,'Comp 2');
 --
 INSERT INTO MODEL (ID, NAME, DESCR)
-VALUES ('33416230-d0e5-43d5-9901-829572bec3b6', 'Model 1', 'Очень сложна модель 1'),
-       ('741073e4-70d1-488c-828e-5000437df48c', 'Model 2', 'Очень сложна модель 2');
+VALUES ('33416230-d0e5-43d5-9901-829572bec3b6', 'Model 1', 'Cложная модель 1'),
+       ('741073e4-70d1-488c-828e-5000437df48c', 'Model 2', 'Сложная модель 2');
 
 INSERT INTO MODEL_CALC (MODEL_ID, DESCR, NODE, PARENT_ID, WEIGHT, LEVEL, IS_LEAF)
 values ('33416230-d0e5-43d5-9901-829572bec3b6', 'Agr 1', '36edd6cc-1e68-46a6-82e0-3c8d2e643c51', null, 1, 1, 0),

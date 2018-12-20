@@ -125,7 +125,7 @@ export class TreeDiagramService {
 
   deleteModelCalc(modelCalc) {
     console.log('delete fromula method', modelCalc);
-    return this.http.delete(basePath + constructorPath + modelCalcPath + '/' + modelCalc.id, this.reqOptions);
+    return this.http.delete(basePath + constructorPath + modelCalcPath + '?id=' + modelCalc, this.reqOptions);
 
   }
 

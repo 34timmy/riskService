@@ -120,6 +120,12 @@ export class CompanyListComponent implements OnInit {
 
   onDelete(data) {
 
+    this.companyService.deleteCompanyList(data.id).subscribe(res => {
+      this.reloadCompanyLists()
+    }, err => {
+      this.errorMessage(err.json())
+    })
+
   }
 
   calculate() {

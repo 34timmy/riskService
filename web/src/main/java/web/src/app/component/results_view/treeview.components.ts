@@ -45,7 +45,7 @@ export class TreeViewComponent implements OnInit {
       {field: 'name', header: 'Название', width: '30%'},
       {field: 'weight', header: 'Вес', width: '10%'},
       {field: 'value', header: 'Значение индекса', width: '10%'},
-      {field: 'level', header: 'Уровень', width: '10%'},
+      // {field: 'level', header: 'Уровень', width: '10%'},
       // {field: 'actions', header: 'Действия', width: '10%'}
     ];
   }

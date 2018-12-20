@@ -248,11 +248,11 @@ export class TreeDiagramNodesList {
           );
         }
         else if (node.type === 'modelcalc') {
-          node.treeService.deleteRule(node.data).subscribe((val) => {
+          node.treeService.deleteModelCalc(node.guid).subscribe((val) => {
               if (val.ok) {
                 this.delete(node);
                 this.successMessage(node,
-                  'Записб ' + node.descr + ' удалена',
+                  'Записб ' + node.data.descr + ' удалена',
                   null)
               }
             },

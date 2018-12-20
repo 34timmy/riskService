@@ -32,7 +32,7 @@ export class CompanySaveComponent implements OnInit {
   search(event) {
 
     this.autoCompleteResults = this.allCompaniesLists.map(val => {
-      if (val.descr.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+      if (val.descr && val.descr.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
         return val.descr
       }
     });
@@ -95,7 +95,7 @@ export class CompanySaveComponent implements OnInit {
       descr: name,
       company_ids: companies.map(val => {
         return val.id
-      }).toString()
+      }).toString().replace(/,/g,';')
     }
   }
 

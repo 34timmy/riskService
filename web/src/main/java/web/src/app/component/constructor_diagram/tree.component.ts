@@ -183,8 +183,8 @@ export class Tree implements OnInit {
           else {
 
             let modelCalc = {
-              node: node.guid,
-              descr: node.descr,
+              node: node.id,
+              descr: node.model_calc_descr,
               model_id: node.model_id,
               parent_id: node.node,
               weight: node.weight,
@@ -194,14 +194,16 @@ export class Tree implements OnInit {
               model_calc_id: node.model_calc_id,
             };
             this.treeService.saveModelCalc(modelCalc).subscribe(res => {
+              this.nodesSrv.addNodeOnSaveFormula();
+              this.successMessage(node,
+                'Запись ' + node.descr + ' добавлена',
+                null);
             }, err => {
               this.errorMessage(err.json());
+
             });
 
-            this.nodesSrv.addNodeOnSaveFormula();
-            this.successMessage(node,
-              'Запись ' + node.descr + ' добавлена',
-              null);
+
           }
         },
         err => {

@@ -102,7 +102,7 @@ public interface ConstructorMapper {
     void createFormula(Formula formula);
 
     //    TODO DELETE  CASCADE
-    @Delete("Delete from formula f where f.node = #{id}")
+    @Delete("Delete from formula f where f.id = #{id}")
     void deleteFormula(String id);
 
     @Select("SELECT * FROM normative_parameters np ")
@@ -120,8 +120,8 @@ public interface ConstructorMapper {
     @Update("UPDATE model_calc mc SET mc.descr=#{descr}, mc.weight=#{weight} where mc.node=#{node}")
     void updateModelCalc(ModelCalc modelCalc);
 
-    @Insert("INSERT INTO model_calc(NODE, DESCR, MODEL_ID)" +
-            " values (#{node},#{descr},#{model_id}) ")
+    @Insert("INSERT INTO model_calc(NODE, DESCR, MODEL_ID, PARENT_ID, WEIGHT, IS_LEAF)" +
+            " values (#{node},#{descr},#{model_id},#{parent_id}, #{weight},#{is_leaf}) ")
     void createModelCalc(ModelCalc modelCalc);
 
     @Delete("Delete from model_calc mc where mc.node = #{node}")
@@ -146,5 +146,7 @@ public interface ConstructorMapper {
     @Select("SELECT * FROM industries")
     List<Industry> getAllIndustries();
 
+    @Delete("DELETE FROM company_list cl where cl.id = #{id}")
+    void deleteCompanyList(String id);
 }
 

@@ -35,8 +35,8 @@
             <div class="col-xs-9">
               <!--<input formControlName="calculation" type="text" class="form-control" id="calculation" name="calculation"-->
               <!--placeholder="Calculation">-->
-              <textarea class="form-control" name="calculation" formControlName="calculation" [rows]="5" [cols]="55"
-                        pInputTextarea autoResize="autoResize" id="calculation"></textarea>
+              <textarea class="form-control" name="calculationFormula" formControlName="calculationFormula" [rows]="5" [cols]="55"
+                        pInputTextarea autoResize="autoResize" id="calculationFormula"></textarea>
 
             </div>
           </div>
@@ -72,7 +72,7 @@
           <div class="form-group">
             <div class="col-xs-9">
               <label for="paramXB" style="margin: 0 5px 0 5px " class="control-label col-xs-3">Параметр XB </label>
-              <p-dropdown id="paramXB" class="control-label col-xs-3" [options]="normParams" formControlName="xb"
+              <p-dropdown id="paramXB" class="control-label col-xs-3" [options]="normParams" formControlName="_XB"
                           [autoWidth]="false"
                           editable="true" placeholder="Параметр XB"></p-dropdown>
             </div>

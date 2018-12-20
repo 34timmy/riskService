@@ -69,4 +69,8 @@ public class MainModelService {
 
         return treeNodeDTO.getResultList();
     }
+
+    public void deleteCompanyList(String id) {
+        constructorMapper.deleteCompanyList(id);
+    }
 }
