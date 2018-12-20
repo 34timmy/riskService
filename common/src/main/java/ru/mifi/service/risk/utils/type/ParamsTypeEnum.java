@@ -1,4 +1,4 @@
-package ru.mifi.service.risk.utils.params.type;
+package ru.mifi.service.risk.utils.type;
 
 import java.util.Arrays;
 import java.util.List;

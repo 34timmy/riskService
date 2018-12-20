@@ -1,16 +1,20 @@
 package ru.mifi.service.risk.domain;
 
 
+import org.mariuszgromada.math.mxparser.Expression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
 import ru.mifi.service.risk.domain.enums.AggregateTypeEnum;
 import ru.mifi.service.risk.exception.DataLeakException;
 import ru.mifi.service.risk.exception.WrongFormulaValueException;
 import ru.mifi.service.risk.utils.validation.ValidationUtil;
-import org.mariuszgromada.math.mxparser.Expression;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -26,6 +30,7 @@ public class DataReplacer {
     private int yearInDevelop;
     private Set<String> allInns;
     private Map<String, String> replacerCache = new HashMap<>();
+
     public void initializeCache() {
         replacerCache = new HashMap<>();
     }
@@ -34,9 +39,11 @@ public class DataReplacer {
 
     private static final String NORMATIVE_KEY_WORD = "NORMATIVE";
     private static final String END_KEY_WORD = "END";
+
     /**
      * Конструктор
-     *  @param data          данные
+     *
+     * @param data          данные
      * @param innsInDevelop инн в анализа
      * @param yearInDevelop год анализа
      * @param allInns       все инн

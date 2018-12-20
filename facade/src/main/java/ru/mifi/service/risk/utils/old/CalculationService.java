@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.mifi.service.risk.database.DatabaseCalculationAccessor;
+import ru.mifi.service.risk.database.DatabaseCalculationAccessorImpl;
 import ru.mifi.service.risk.domain.DataKey;
 import ru.mifi.service.risk.domain.DataReplacer;
 import ru.mifi.service.risk.domain.Formula;
@@ -44,7 +44,7 @@ public class CalculationService {
     private final Set<String> allInns;
     private final Set<Formula> formulas;
     private final Map<DataKey, Map<String, Double>> dataKeyMap;
-    private final DatabaseCalculationAccessor accessor;
+    private final DatabaseCalculationAccessorImpl accessor;
     private final String modelId;
     /**
      * Массив неверных формул при вычислении
