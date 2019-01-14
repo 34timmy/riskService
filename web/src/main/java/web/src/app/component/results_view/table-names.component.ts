@@ -4,6 +4,7 @@ import {ResultTableModel} from "../../model/result-table.model";
 import {CompanyService} from "../../service/company.service";
 import {TreeViewComponent} from "./treeview.components";
 import {MessageService} from "primeng/api";
+import {ResultTableComponent} from "./result-table.component";
 
 @Component({
   selector: 'app-tableName',
@@ -16,8 +17,10 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
   selectedItem;
 
 
-  @ViewChild(TreeViewComponent)
-  treeViewChild: TreeViewComponent;
+  @ViewChild(ResultTableComponent)
+  resultTable: ResultTableComponent;
+  // @ViewChild(TreeViewComponent)
+  // treeViewChild: TreeViewComponent;
 
   constructor(private treeService: TreeService,
               private companyService: CompanyService,
@@ -63,16 +66,21 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
   }
 
   private onRowSelect(event) {
-    this.treeViewChild.showTreeView(event.data);
+    // this.treeViewChild.showTreeView(event.data);
+    this.resultTable.showTreeView(event.data);
 
 
   }
 
 
+
+
+
   private getCompaniesLists() {
     this.companyService.companyLists.subscribe(res => {
       this.companyLists = res;
-      this.treeViewChild.setCompanies(res)
+      this.resultTable.setCompanies(res)
+      // this.treeViewChild.setCompanies(res)
     });
   }
 

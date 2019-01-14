@@ -38,7 +38,7 @@ export class TreeViewComponent implements OnInit {
     let companyListId;
     let allCompaniesListId;
     let year;
-    // this.treeCompanyListResult = this.treeService.getResultTableNames(modelId, companyListId, allCompaniesListId, year);
+    // this.companyListResult = this.treeService.getResultTableNames(modelId, companyListId, allCompaniesListId, year);
     //TODO show names correctly
     this.cols = [
       {field: 'inn', header: 'ИНН', width: '30%'},
@@ -51,7 +51,7 @@ export class TreeViewComponent implements OnInit {
   }
 
   reloadTree() {
-    // this.treeCompanyListResult = this.treeService.getModelsAndConvert();
+    // this.companyListResult = this.treeService.getModelsAndConvert();
   }
 
   //------------------------------------------------------------------------------------

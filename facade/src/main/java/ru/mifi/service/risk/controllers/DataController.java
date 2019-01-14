@@ -14,6 +14,7 @@ import ru.mifi.service.risk.dto.CalcResultDto;
 import ru.mifi.service.risk.exception.RestException;
 import ru.mifi.service.risk.utils.DataService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class DataController extends ExceptionHandlerController {
             @ApiParam(value = "Имя таблицы")
             @RequestParam("tableName") String tableName
     ) throws RestException {
-        Map<String, CalcResultDto> result = accessor.getDataFromTable(tableName);
+        Map<String, List<CalcResultDto>> result = accessor.getDataFromTableAsList(tableName);
         return ResponseHelper.successResponse(result);
     }
 

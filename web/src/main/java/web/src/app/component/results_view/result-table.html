@@ -1,0 +1,49 @@
+<div *ngIf="showToggle"
+     [style.display]="'block'"
+     [style.background-color]="'rgba(0,0,0,0.4)'"
+     class="modal" role="dialog" id="editRow">
+  <div class=" modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Результаты</h2>
+        <button pButton type="button" style="color:#ff0d20" class="close" data-dismiss="modal" icon="fa fa-close"
+                aria-hidden="true" (click)="closeModal()">
+        </button>
+      </div>
+      <div class="modal-body">
+        <!--<div *ngIf="tempListFilteredByLevel">-->
+          <div>
+            <p-table [value]="filteredList"
+                     [columns]="baseCols"
+                     [resizableColumns]="true"
+                     selectionMode="single" [(selection)]="selectedItem" (onRowSelect)="onRowSelect($event)">
+              <ng-template pTemplate="caption">
+                <div style="text-align:left">
+                  <!--<p-dropdown [options]="levels" [(ngModel)]="selectedLevel" [filter]="true"  editable="true"-->
+                              <!--placeholder="Модель" [showClear]="true" [style]="{minWidth: '200px'}"></p-dropdown>-->
+                  <button pButton type="button" label="Search" (click)="reloadTable(selectedLevel)"></button>
+                  <input id="input" type="text" size="30" pInputText [(ngModel)]="selectedLevel">
+
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">{{col.header}}
+                    <p-sortIcon  [field]="col.field"></p-sortIcon >
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                  <td *ngFor="let col of columns">
+                    {{rowData[col.field]}}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          <!--</div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

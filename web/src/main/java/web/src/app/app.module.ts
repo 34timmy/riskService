@@ -71,6 +71,7 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {CompanyDataComponent} from "./component/company_picklist/company_data/company-data.component";
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {DataTabComponent} from "./component/data_tab/data-tab.component";
+import {ResultTableComponent} from "./component/results_view/result-table.component";
 
 @NgModule({
   declarations: [
@@ -99,7 +100,8 @@ import {DataTabComponent} from "./component/data_tab/data-tab.component";
     RegisterComponent,
     ModelsListComponent,
     CompanyDataComponent,
-    DataTabComponent
+    DataTabComponent,
+    ResultTableComponent
 
   ],
   imports: [
