@@ -63,8 +63,8 @@ CREATE TABLE public.company_business_data (
 ALTER TABLE public.company_business_data
   ADD CONSTRAINT company_bus_param_pk PRIMARY KEY (company_id, param_code, year);
 --Нужны ли эти констрейнты? ну нет описания и нет - рассчитать-то всё можем.
-ALTER TABLE public.company_business_data ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id) ON DELETE CASCADE;
-ALTER TABLE public.company_business_data ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
+-- ALTER TABLE public.company_business_data ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id) ON DELETE CASCADE;
+-- ALTER TABLE public.company_business_data ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
 
 
 CREATE TABLE public.model (

@@ -8,11 +8,11 @@ import ru.mifi.service.risk.domain.CalculationParamKey;
 import ru.mifi.service.risk.domain.ResultDataMapper;
 import ru.mifi.service.risk.dto.CalcResultDto;
 import ru.mifi.service.risk.exception.DatabaseException;
-import ru.mifi.service.risk.utils.ExcelLoader;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,6 +84,25 @@ public class DatabaseSelectAccessor {
                 dtos.add(new CalcResultDto(res));
             }
             return CalcResultDto.setLinksAmongDtos(dtos);
+        } catch (SQLException e) {
+            throw new DatabaseException("Ошибка БД при получении имен таблиц с результатами", e);
+        } catch (Exception ex) {
+            throw new DatabaseException("Ошибка при получении имен таблиц с результатами", ex);
+        }
+    }
+
+    public Map<String, List<CalcResultDto>> getDataFromTableAsList(String tableName) {
+        Set<CalcResultDto> dtos = new HashSet<>();
+        try (
+                Connection conn = dataSource.getConnection();
+                Statement stmt = conn.createStatement()
+        ) {
+            ResultSet res = stmt.executeQuery(String.format(SQL_GET_RES_FROM_TABLE, tableName));
+            while (res.next()) {
+                dtos.add(new CalcResultDto(res));
+            }
+//            return CalcResultDto.setLinksAmongDtos(dtos);
+            return CalcResultDto.setDtosAsList(dtos);
         } catch (SQLException e) {
             throw new DatabaseException("Ошибка БД при получении имен таблиц с результатами", e);
         } catch (Exception ex) {

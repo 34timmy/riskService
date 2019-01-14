@@ -2,15 +2,11 @@ package ru.mifi.service.risk.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Класс с результами расчета, к оторый отдаем на клиент
@@ -76,6 +72,19 @@ public class CalcResultDto implements Serializable {
             }
         }
         return resultDtoMap;
+    }
+
+    public static Map<String, List<CalcResultDto>> setDtosAsList(Set<CalcResultDto> dtos) {
+        Map<String, CalcResultDto> resultDtoMap = new HashMap<>();
+
+        Map<String, List<CalcResultDto>> idToElemMap = new HashMap<>();
+        for (CalcResultDto dto : dtos) {
+             List<CalcResultDto> nodesList = idToElemMap.getOrDefault(dto.getCompanyId(), new ArrayList<CalcResultDto>());
+            nodesList.add( dto);
+            idToElemMap.put(dto.getCompanyId(), nodesList);
+        }
+
+        return idToElemMap;
     }
 
     public void addChild(CalcResultDto child) {
