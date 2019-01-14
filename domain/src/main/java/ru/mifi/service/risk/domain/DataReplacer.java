@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -72,10 +73,15 @@ public class DataReplacer {
                                                Map<String, Double> curYearData,
                                                Map<String, Double> prevYearData,
                                                Map<String, Double> prevPrevYearData) throws DataLeakException {
-        Map<String, Double> notNullYearData = Stream.of(curYearData,
+        List<String> notNullYearData = Stream.of(curYearData,
                 prevYearData, prevPrevYearData)
                 .filter(Objects::nonNull)
-                .findAny().orElseThrow(() -> new DataLeakException("Нет данных ни по одному году"));
+                .flatMap(elem -> elem.keySet().stream())
+                .distinct()
+                .collect(Collectors.toList());
+        if (notNullYearData == null || notNullYearData.size() == 0) {
+            throw new DataLeakException("Нет данных ни по одному году");
+        }
         while (formula.contains(NORMATIVE_KEY_WORD)) {
             int actionPos = formula.indexOf(NORMATIVE_KEY_WORD + "(");
             int endActionPos = getEndIndex(formula, actionPos);
@@ -88,7 +94,7 @@ public class DataReplacer {
             }
             formula = formula.replaceAll(NORMATIVE_KEY_WORD + "\\(" + paramCode + "\\)" + END_KEY_WORD, normativeValue);
         }
-        for (String key : notNullYearData.keySet()) {
+        for (String key : notNullYearData) {
             if (!formula.contains("SB")) {
                 break;
             }

@@ -23,8 +23,13 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -169,7 +174,7 @@ public class ExcelLoader {
 
                     String calculation = editInput(formatCellVal(row.getCell(2)));  //calculation
                     String nodeId = formatCellVal(row.getCell(0));                  //id
-                    parseAndSaveParams(nodeId, calculation, accessor);
+                    Set<String> allParams = new HashSet<>();
                     String parentNode = getParentNode(nodeId);
 
                     accessor.insertFormula(
@@ -183,6 +188,13 @@ public class ExcelLoader {
                             formatCellVal(row.getCell(7)),                              //D
                             formatCellVal(row.getCell(8))                             //_XB
                     );
+                    allParams.addAll(ParamsTypeEnum.SB.parseCalculationToParams(calculation));
+                    allParams.addAll(ParamsTypeEnum.SB.parseCalculationToParams(formatCellVal(row.getCell(8))));
+                    allParams.addAll(ParamsTypeEnum.SB.parseCalculationToParams(formatCellVal(row.getCell(4))));
+                    allParams.addAll(ParamsTypeEnum.SB.parseCalculationToParams(formatCellVal(row.getCell(5))));
+                    allParams.addAll(ParamsTypeEnum.SB.parseCalculationToParams(formatCellVal(row.getCell(6))));
+                    allParams.addAll(ParamsTypeEnum.SB.parseCalculationToParams(formatCellVal(row.getCell(7))));
+                    parseAndSaveParams(nodeId, allParams, accessor);
 
                 }
             } catch (WrongFormulaValueException e) {
@@ -194,8 +206,8 @@ public class ExcelLoader {
         }
     }
 
-    private void parseAndSaveParams(String nodeId, String calculation, DatabaseExcelImportAccessor accessor) {
-        ParamsTypeEnum.SB.parseCalculationToParams(calculation).stream()
+    private void parseAndSaveParams(String nodeId, Collection<String> allParams, DatabaseExcelImportAccessor accessor) {
+        allParams.stream()
                 .map(FormulaParam::new)
                 .forEach(elem -> {
                     try {

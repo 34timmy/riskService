@@ -36,7 +36,7 @@ ALTER TABLE public.users
 
 CREATE TABLE public.role (
   id          VARCHAR2 (255) NOT NULL,
-  descr        VARCHAR2 (255),
+  desc        VARCHAR2 (255),
   parent_role VARCHAR2 (255)
 );
 ALTER TABLE public.role
@@ -74,8 +74,14 @@ CREATE TABLE public.company_business_data (
 ALTER TABLE public.company_business_data
   ADD CONSTRAINT company_bus_param_pk PRIMARY KEY (company_id, param_code, year);
 --Нужны ли эти констрейнты? ну нет описания и нет - рассчитать-то всё можем.
+<<<<<<< HEAD
 -- TODO ALTER TABLE public.company_business_data ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id) ON DELETE CASCADE;
 -- TODO ALTER TABLE public.company_business_data ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
+=======
+-- ALTER TABLE public.company_business_data ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id) ON DELETE CASCADE;
+-- ALTER TABLE public.company_business_data ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
+>>>>>>> refs/remotes/origin/master
+
 
 CREATE TABLE public.model (
   id      VARCHAR2 (255) NOT NULL,

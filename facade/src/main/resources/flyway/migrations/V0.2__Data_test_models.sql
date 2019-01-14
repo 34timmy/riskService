@@ -1,14 +1,17 @@
 insert into company_list (id, company_ids, descr)
 VALUES ('1', '8602166992;5410786860', 'Список 1');
 insert into company_list (id, company_ids, descr)
-VALUES ('2', '8602166992;5410786860', 'Список 2');
+VALUES ('2', '8602166992;5410786860;5503217263', 'Список 2');
 insert into normative_parameters (param_name, value, descr)
 VALUES ('FIIJJJ', '0.55', 'Testers gonna test');
+insert into normative_parameters (param_name, value, descr)
+VALUES ('ABCD', '2', 'Testers gonna test2');
 
 INSERT INTO users (ID, firstName, lastName, EMAIL, PASSWORD)
 values (1, 'user', 'last', 'user@gmail.com', '$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC');
 
-INSERT INTO roles (role, user_id)
+INSERT INTO role (id, descr) VALUES ('ROLE_ADMIN', 'admin');
+INSERT INTO user_roles (role_id, user_id)
 values ('ROLE_ADMIN', 1);
 -- INSERT INTO COMPANY (ID, INN,descr)
 -- values (8602166992, 10,'Comp 1'),

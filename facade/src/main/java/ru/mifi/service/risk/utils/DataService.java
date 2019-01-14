@@ -17,10 +17,12 @@ import ru.mifi.service.risk.utils.old.CalculationService;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Основная логика по расчету.
@@ -53,7 +55,9 @@ public class DataService {
                         leafs.stream()
                                 .map(Formula::getId)
                                 .collect(Collectors.toSet()),
-                        companies,
+                        Stream.of(companies, allCompanies)
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.toSet()),
                         calcKey.getYear());
                 LOG.info("Данные получены. Начинаем расчет формул.");
                 CalculationService calculationService = new CalculationService(

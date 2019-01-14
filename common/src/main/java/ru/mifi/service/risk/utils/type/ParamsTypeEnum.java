@@ -15,7 +15,7 @@ public enum ParamsTypeEnum {
             if (calculation == null) {
                 return null;
             }
-            return Arrays.stream(calculation.toUpperCase().replaceAll("[\\(\\)]", "").split("[\\+\\-\\*\\/]"))
+            return Arrays.stream(calculation.toUpperCase().split("[\\+\\-\\*\\/)(]"))
                     .map(String::trim)
                     .filter(str -> str.startsWith("SB_"))
                     .filter(str -> str.endsWith("_T") || str.endsWith("_C") || str.endsWith("_P"))
