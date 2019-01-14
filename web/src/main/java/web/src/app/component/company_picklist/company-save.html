@@ -12,8 +12,9 @@
       </div>
       <div class="modal-body">
 
-        <p-autoComplete [size]="50" [(ngModel)]="text" [suggestions]="autoCompleteResults"
-                        (completeMethod)="search($event)"></p-autoComplete>
+        <!--<p-autoComplete [size]="50" [(ngModel)]="text" [suggestions]="autoCompleteResults"-->
+                        <!--(completeMethod)="search($event)"></p-autoComplete>-->
+        <input id="input" type="text" size="30" pInputText [(ngModel)]="text">
       </div>
 
       <div class="modal-footer">
