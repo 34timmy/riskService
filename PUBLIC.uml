@@ -1,41 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Diagram>
   <ID>DATABASE</ID>
-  <OriginalElement>ca26b225-bfab-49f6-8fac-15522c5c0348.SCHEMA:TESTDB.PUBLIC</OriginalElement>
+  <OriginalElement>bd679f72-8072-4430-b675-8eccddf93470.SCHEMA:TESTDB.PUBLIC</OriginalElement>
   <nodes>
-    <node x="60.0" y="301.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.FORMULA_PARAMS</node>
-    <node x="350.66666666666663" y="453.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.MODEL</node>
-    <node x="316.66666666666663" y="589.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.MODEL_CALC</node>
-    <node x="33.66666666666663" y="442.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.COMPANY_LIST</node>
-    <node x="516.0" y="819.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.BUSINESS_PARAM</node>
-    <node x="0.0" y="819.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.COMPANY</node>
-    <node x="0.0" y="0.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.FORMULA</node>
-    <node x="663.6666666666666" y="442.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.COMPANY_BUSINESS_PARAMS</node>
-    <node x="221.0" y="819.0">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.NORMATIVE_PARAMETERS</node>
-    <node x="34.66666666666663" y="611.5">ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER</node>
+    <node x="-14.801988470214724" y="200.04503300192164">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY</node>
+    <node x="302.35132717022935" y="440.1638143428607">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA_PARAMS</node>
+    <node x="-5.354843152438178" y="-21.110955801647506">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.INDUSTRY</node>
+    <node x="456.51391093658617" y="146.0">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA</node>
+    <node x="201.0" y="91.54369643249586">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.BUSINESS_DATA</node>
+    <node x="987.766781990573" y="140.2824083640236">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL_CALC</node>
+    <node x="953.7245391631038" y="-24.38784538339874">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL</node>
+    <node x="1189.8252643465594" y="256.9364518476127">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.USERS</node>
+    <node x="716.7245391631038" y="177.11215461660126">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER</node>
+    <node x="735.0082031060981" y="354.6089229882896">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.ROLE</node>
+    <node x="65.74999999999994" y="424.0">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_BUSINESS_DATA</node>
+    <node x="200.19783266128997" y="-20.518145161288345">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.NORMATIVE_PARAMETERS</node>
+    <node x="684.7245391631038" y="-13.38784538339874">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_LIST</node>
+    <node x="991.0458164846226" y="381.0701865095619">bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.USER_ROLES</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER" target="ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.COMPANY_LIST">
-      <point x="-87.33333333333331" y="-70.0" />
-      <point x="-44.0" y="48.5" />
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_BUSINESS_DATA" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.BUSINESS_DATA">
+      <point x="52.75000000000006" y="-59.0" />
+      <point x="224.47748349903918" y="365.0986715682179" />
+      <point x="252.0" y="365.098671568218" />
+      <point x="-51.0" y="37.0" />
     </edge>
-    <edge source="ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.FORMULA_PARAMS" target="ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.FORMULA">
-      <point x="0.0" y="-48.0" />
-      <point x="0.0" y="125.5" />
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA_PARAMS" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.BUSINESS_DATA">
+      <point x="-51.25" y="-47.5" />
+      <point x="353.83287431146726" y="412.736604907361" />
+      <point x="354.0" y="399.0" />
+      <point x="51.0" y="37.0" />
     </edge>
-    <edge source="ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.MODEL_CALC" target="ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.MODEL">
-      <point x="0.0" y="-92.5" />
-      <point x="39.0" y="37.5" />
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_LIST">
+      <point x="-83.66666666666669" y="-80.5" />
+      <point x="758.5578724964371" y="118.61215461660126" />
+      <point x="737.2245391631038" y="118.61215461660126" />
+      <point x="-52.5" y="48.0" />
     </edge>
-    <edge source="ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER" target="ca26b225-bfab-49f6-8fac-15522c5c0348.TABLE:TESTDB.PUBLIC.MODEL">
-      <point x="87.33333333333331" y="-70.0" />
-      <point x="252.99999999999994" y="564.0" />
-      <point x="389.66666666666663" y="564.0" />
-      <point x="-39.0" y="37.5" />
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA_PARAMS" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.FORMULA">
+      <point x="51.25" y="-47.5" />
+      <point x="456.0466950425639" y="431.6244366549825" />
+      <point x="562.374002895897" y="431.81418673251744" />
+      <point x="0.0" y="114.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY_BUSINESS_DATA" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY">
+      <point x="-52.74999999999994" y="-59.0" />
+      <point x="118.5" y="399.0" />
+      <point x="74.74304453170694" y="399.0" />
+      <point x="0.0" y="59.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.USER_ROLES" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.USERS">
+      <point x="42.25" y="-36.5" />
+      <point x="1118.002615320981" y="475.9704643172929" />
+      <point x="1283.7365367389693" y="476.59769364287047" />
+      <point x="0.0" y="92.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.RESULT_DATA_MAPPER" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL">
+      <point x="83.66666666666669" y="-80.5" />
+      <point x="925.8912058297705" y="118.61215461660126" />
+      <point x="995.7245391631038" y="118.61215461660126" />
+      <point x="-42.0" y="59.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.COMPANY" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.INDUSTRY">
+      <point x="0.0" y="-59.0" />
+      <point x="0.0" y="48.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL_CALC" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.MODEL">
+      <point x="0.0" y="-114.0" />
+      <point x="42.0" y="59.0" />
+    </edge>
+    <edge source="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.USER_ROLES" target="bd679f72-8072-4430-b675-8eccddf93470.TABLE:TESTDB.PUBLIC.ROLE">
+      <point x="-42.25" y="-36.5" />
+      <point x="1034.7570739721364" y="477.85215229402564" />
+      <point x="835.1527689729597" y="477.85215229402564" />
+      <point x="0.0" y="48.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.6025641025641025" x="849.9148936170213" y="538.0" />
+  <settings layout="Hierarchic Group" zoom="0.6943132108486456" x="1170.6588798336215" y="277.6472582294615" />
   <SelectedNodes />
   <Categories>
     <Category>Key columns</Category>

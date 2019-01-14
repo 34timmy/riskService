@@ -32,20 +32,31 @@ CREATE TABLE public.users (
 );
 
 ALTER TABLE public.users
-  ADD CONSTRAINT users_pk PRIMARY KEY (email);
+  ADD CONSTRAINT users_pk PRIMARY KEY (id);
 
+CREATE TABLE public.role (
+  id          VARCHAR2 (255) NOT NULL,
+  desc        VARCHAR2 (255),
+  parent_role VARCHAR2 (255)
+);
+ALTER TABLE public.role
+  ADD CONSTRAINT role_pk PRIMARY KEY (id);
 
-CREATE TABLE public.roles (
-  role    varchar(255) NOT NULL,
-  user_id varchar(255)
+CREATE TABLE public.user_roles (
+  role_id    varchar(255) NOT NULL,
+  user_id varchar(255) NOT NULL
 );
 
-ALTER TABLE public.roles
+ALTER TABLE public.user_roles
   ADD CONSTRAINT user_id_fk FOREIGN KEY (user_id) references users (id)
   ON DELETE CASCADE;
 
-ALTER TABLE public.roles
-  ADD CONSTRAINT user_roles_idx UNIQUE (user_id, role);
+ALTER TABLE public.user_roles
+  ADD CONSTRAINT role_id_fk FOREIGN KEY (role_id) references role (id)
+  ON DELETE CASCADE;
+
+ALTER TABLE public.user_roles
+  ADD CONSTRAINT user_roles_idx UNIQUE (user_id, role_id);
 
 CREATE TABLE public.business_data (
   param_code  VARCHAR2 (255) NOT NULL,
@@ -63,14 +74,15 @@ CREATE TABLE public.company_business_data (
 ALTER TABLE public.company_business_data
   ADD CONSTRAINT company_bus_param_pk PRIMARY KEY (company_id, param_code, year);
 --Нужны ли эти констрейнты? ну нет описания и нет - рассчитать-то всё можем.
-ALTER TABLE public.company_business_data ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id) ON DELETE CASCADE;
-ALTER TABLE public.company_business_data ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
+-- TODO ALTER TABLE public.company_business_data ADD CONSTRAINT company_fk FOREIGN KEY (company_id) REFERENCES company (id) ON DELETE CASCADE;
+-- TODO ALTER TABLE public.company_business_data ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
 
 
 CREATE TABLE public.model (
-  id    VARCHAR2 (255) NOT NULL,
-  name  VARCHAR2 (500),
-  descr VARCHAR2 (4000)
+  id      VARCHAR2 (255) NOT NULL,
+  name    VARCHAR2 (500),
+  descr   VARCHAR2 (4000),
+  role_id VARCHAR2 (255)
 );
 ALTER TABLE public.model
   ADD CONSTRAINT model_pk PRIMARY KEY (id);
@@ -162,18 +174,3 @@ CREATE TABLE public.normative_parameters (
   descr      VARCHAR2 (4000),
   value      DOUBLE PRECISION
 )
--- h2 не поддерживает хранимки. Закоменчено до тестов на оракле
--- CREATE OR REPLACE PROCEDURE create_temp_result_table(table_name VARCHAR2) IS
---     v_column VARCHAR2(30);
---     BEGIN
---         EXECUTE IMMEDIATE 'CREATE TABLE public.' || table_name ||  '(' ||
---                           'node VARCHAR2(255) NOT NULL,' ||
---                           'parent_node VARCHAR2(255),' ||
---                           'weight INTEGER,' ||
---                           'is_leaf INTEGER,' ||
---                           'value DOUBLE,' ||
---                           ')';
---         EXECUTE IMMEDIATE 'ALTER TABLE public.' || table_name || ' ADD CONSTRAINT ' || table_name || '_pk PRIMARY KEY (node)';
---         EXECUTE IMMEDIATE 'ALTER TABLE public.' || table_name || ' ADD CONSTRAINT ' || table_name || '_weight_val_check CHECK (weight BETWEEN 0 and 100);';
---         EXECUTE IMMEDIATE 'ALTER TABLE public.' || table_name || ' ADD CONSTRAINT ' || table_name || '_leaf_val_check CHECK (is_leaf BETWEEN 0 and 1)';
---     END create_temp_result_table;
