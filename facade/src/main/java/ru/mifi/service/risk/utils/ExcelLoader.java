@@ -23,11 +23,9 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -64,11 +62,15 @@ public class ExcelLoader {
             workbook = new XSSFWorkbook(inputStream);
 
             loadData(workbook.getSheet("data"), accessor);
-
-            String modelId = loadModel(workbook.getSheet("model"), accessor);
-
-            loadFormulas(workbook.getSheet("formulas"), accessor);
-
+            String modelId = "Импорт без модели. Идентификатора нет.";
+            XSSFSheet modelSheet = workbook.getSheet("model");
+            if (modelSheet != null) {
+                modelId = loadModel(modelSheet, accessor);
+            }
+            XSSFSheet formulaslSheet = workbook.getSheet("formulas");
+            if (formulaslSheet != null) {
+                loadFormulas(formulaslSheet, accessor);
+            }
 
             LOG.info("Файл успешно обработан.");
             return returnResultAsMap(modelId);
