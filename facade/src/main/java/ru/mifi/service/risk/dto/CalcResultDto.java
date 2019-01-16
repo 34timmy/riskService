@@ -25,6 +25,7 @@ public class CalcResultDto implements Serializable {
     private final String node;
     private final String parentNode;
     private final Double weight;
+    private final Double interpretationIndex;
     private final Double value;
     private final String normalizedValue;
     private final String lineadValue;
@@ -43,6 +44,7 @@ public class CalcResultDto implements Serializable {
         this.value = resultSet.getDouble(7);
         this.normalizedValue = String.valueOf(resultSet.getDouble(8));
         this.lineadValue = String.valueOf(resultSet.getDouble(9));
+        this.interpretationIndex = resultSet.getDouble(10);
     }
 
     /**

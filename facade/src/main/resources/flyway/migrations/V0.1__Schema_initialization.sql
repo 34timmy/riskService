@@ -78,10 +78,11 @@ ALTER TABLE public.company_business_data
 -- TODO ALTER TABLE public.company_business_data ADD CONSTRAINT param_fk FOREIGN KEY (param_code) REFERENCES business_data (param_code) ON DELETE CASCADE;
 
 CREATE TABLE public.model (
-  id      VARCHAR2 (255) NOT NULL,
-  name    VARCHAR2 (500),
-  descr   VARCHAR2 (4000),
-  role_id VARCHAR2 (255)
+  id          VARCHAR2 (255) NOT NULL,
+  name        VARCHAR2 (500),
+  descr       VARCHAR2 (4000),
+  role_id     VARCHAR2 (255),
+  k_interpret DOUBLE PRECISION
 );
 ALTER TABLE public.model
   ADD CONSTRAINT model_pk PRIMARY KEY (id);
@@ -90,7 +91,8 @@ CREATE TABLE public.model_calc (
   model_id      VARCHAR2 (255) NOT NULL,
   descr         VARCHAR2 (4000),
   node          VARCHAR2 (255) NOT NULL,
-  parent_id   VARCHAR2 (255),
+  k_interpret   DOUBLE PRECISION ,
+  parent_id     VARCHAR2 (255),
   weight        DOUBLE PRECISION,
   expert_value  DOUBLE PRECISION,
   level         INTEGER,

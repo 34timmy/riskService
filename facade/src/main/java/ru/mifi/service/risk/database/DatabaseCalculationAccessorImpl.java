@@ -19,10 +19,11 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     //TODO надо сортировать формулы и потом доставать по 1000 для расчета. Чтоб не все сразу
     private static final String SQL_GET_MODEL_LEAFS =
             "SELECT " +
-                    "   f.id, f.descr, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, mc.weight, mc.comments " +
+                    "   f.id, f.descr, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, mc.weight, mc.comments, COALESCE (mc.k_interpret, m.k_interpret) as k_interpret " +
                     "FROM " +
                     "   model_calc mc " +
                     "JOIN formula f ON (f.id = mc.node)" +
+                    "JOIN model m ON (m.id = mc.model_id)" +
                     "WHERE mc.model_id = ? AND mc.is_leaf = '1'";
 
     private static final String SQL_GET_COMPANY_IDS_BY_LIST_ID =
@@ -34,9 +35,9 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     private static final String SQL_SAVE_FORMULA_TO_TEMP_TABLE =
             "INSERT INTO " +
                     "   %s" +
-                    "       (company_id, node, value, normalized_value, linead_value, comment)" +
+                    "       (company_id, node, value, normalized_value, linead_value, comment, interpretation_index)" +
                     "   VALUES" +
-                    "       (?,         ?,      ?,      ?,             ?,               ?)";
+                    "       (?,         ?,      ?,      ?,             ?,               ?,      ?)";
     private static final String SQL_SAVE_RESULT_TABLE_NAME =
             "INSERT INTO " +
                     "   result_data_mapper" +
@@ -62,9 +63,13 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
             "MERGE INTO";
     private static final String SQL_GET_MODEL_CALC =
             "SELECT " +
-                    "  mc.descr, mc.node, mc.parent_id, mc.weight, mc.is_leaf, mc.level, mc.comments, mc_parent.comments as parent_comments, mc_parent.weight as parent_weight " +
+                    "   mc.descr, mc.node, mc.parent_id, mc.weight, mc.is_leaf, mc.level, mc.comments, " +
+                    "   mc_parent.comments as parent_comments, mc_parent.weight as parent_weight, " +
+                    "   COALESCE(mc.k_interpret, m.k_interpret) as k_interpret, " +
+                    "   COALESCE(mc_parent.k_interpret, m.k_interpret) as parent_k_interpret " +
                     "FROM model_calc mc " +
                     "LEFT JOIN model_calc mc_parent ON (mc_parent.node = mc.parent_id) " +
+                    "JOIN model m ON (m.id = mc.model_id) " +
                     "WHERE mc.model_id = ?";
     private static final int SQL_BATCH_SIZE = 100;
     private static final String SQL_UPDATE_WEIGHT = "UPDATE %s t1 set t1.weight = (select weight from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
@@ -215,11 +220,13 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
                         new HierarchyNode(
                                 resultSet.getString("node"),
                                 resultSet.getDouble("weight"),
+                                resultSet.getDouble("k_interpret"),
                                 extractComments(resultSet.getString("comments"))
                         ),
                         new HierarchyNode(
                                 resultSet.getString("parent_id"),
                                 resultSet.getDouble("parent_weight"),
+                                resultSet.getDouble("parent_k_interpret"),
                                 extractComments(resultSet.getString("parent_comments"))
                         )
 
@@ -283,6 +290,7 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
                         saveFormulaStmt.setDouble(5, node.getLineadResult());
                     }
                     saveFormulaStmt.setString(6, node.getComment());
+                    saveFormulaStmt.setDouble(7, node.getInterpretationValue());
                     saveFormulaStmt.addBatch();
                     if (++counter == SQL_BATCH_SIZE) {
                         saveFormulaStmt.executeBatch();

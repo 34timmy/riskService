@@ -12,6 +12,7 @@ import ru.mifi.service.risk.domain.Formula;
 import ru.mifi.service.risk.domain.FormulaResult;
 import ru.mifi.service.risk.domain.HierarchyNode;
 import ru.mifi.service.risk.domain.HierarchyResult;
+import ru.mifi.service.risk.domain.enums.FormulaTypeEnum;
 import ru.mifi.service.risk.exception.DataLeakException;
 import ru.mifi.service.risk.exception.FormulaCalculationException;
 import ru.mifi.utils.CollectionUtils;
@@ -51,45 +52,6 @@ public class CalculationService {
      */
     private Set<FormulaResult> wrongFormulasFromLastExecution = new HashSet<>();
 
-
-//    public Map<String, Double> calculateOnlyExpression(String input, Map<Integer, JSONArray> mapYearInn) throws JSONException, DataLeakException {
-////        inn, result
-//        Map<String, Double> resultMap = new HashMap<>();
-//        for (Integer year : mapYearInn.keySet()) {
-//            for (int arNum = 0; arNum < mapYearInn.get(year).length(); arNum++) {
-//                String inn = null;
-//                try {
-//                    inn = mapYearInn.get(year).getString(arNum);
-//
-//                    Map<String, Double> curYearData = excelLoader.getData().get(new DataKey(year, inn));
-//                    Map<String, Double> prevYearData = excelLoader.getData().get(new DataKey(year - 1, inn));
-//                    Map<String, Double> prevPrevYearData = excelLoader.getData().get(new DataKey(year - 2, inn));
-//
-//                    DataReplacer replacer = new DataReplacer(this.getData(), this.getInnsInDevelop(), year, this.getAllInns());
-//
-//                    String formulaAfterReplace;
-//
-//
-//                    formulaAfterReplace = replacer.replaceBalanceRowIdWithValue(input.toUpperCase(),
-//                            curYearData, prevYearData, prevPrevYearData);
-//
-//                    if (formulaAfterReplace.contains("NaN")) {
-//                        throw new DataLeakException(String.format("Формула \t{ %s } не используется в расчетах из-за невалидных данных", input));
-//                    } else {
-//                        resultMap.put(inn, replacer.calculateExpression(formulaAfterReplace));
-//
-//                    }
-//
-//                } catch (JSONException | DataLeakException ex) {
-//                    LOG.warn(String.format("Параметры: Инн = %s, Год = %s\nВ формуле по id:%s\nОшибка: \n\t{\n\t\t%s.\n\t}",
-//                            inn, year, null, ex.getMessage()));
-//                }
-//            }
-//        }
-//
-//        return resultMap;
-//
-//    }
 
     /**
      * Расчет набора формул на конкретных параметрах: год и инн
@@ -225,6 +187,10 @@ public class CalculationService {
                 result.putIfAbsent(key, new HashMap<>());
                 FormulaResult curFormulaResultObj = calculationData.get(key).get(formula.getId());
                 if (curFormulaResultObj != null) {
+                    double normalizedValue = totalValue == 0
+                            ? 0
+                            : curFormulaResultObj.getResult() / totalValue;
+                    double avgVal = totalValue / calculationData.keySet().size();
                     result.get(key).put(
                             formula.getId(),
                             new FormulaResult(
@@ -232,13 +198,18 @@ public class CalculationService {
                                     curFormulaResultObj.getId(),
                                     curFormulaResultObj.getInputeValue(),
                                     curFormulaResultObj.getResult(),
-                                    totalValue == 0
-                                            ? 0
-                                            : curFormulaResultObj.getResult() / totalValue,
+                                    normalizedValue,
                                     curFormulaResultObj.getYear(),
                                     minVal == maxVal
                                             ? minVal * 100
                                             : ((curFormulaResultObj.getResult() - minVal) / (maxVal - minVal)) * 100,
+                                    FormulaTypeEnum.S.calculate(
+                                            normalizedValue,
+                                            0,
+                                            avgVal,
+                                            0, 0,
+                                            avgVal * formula.getInterpretationK()),
+                                    formula.getInterpretationK(),
                                     curFormulaResultObj
                             )
                     );
@@ -302,6 +273,18 @@ public class CalculationService {
                 nodeResult.setLineadResult(minVal == maxVal
                         ? minVal * 100
                         : ((nodeResult.getResult() - minVal) / (maxVal - minVal)) * 100);
+                double avgVal = totalVal / nodeResults.size();
+                nodeResult.setInterpretationK(parentNode.getInterpretationK());
+                nodeResult.setInterpretationValue(
+                        FormulaTypeEnum.S.calculate(
+                                nodeResult.getNormalizedResult(),
+                                0,
+                                avgVal,
+                                0, 0,
+                                avgVal * nodeResult.getInterpretationK()
+                        )
+                );
+                nodeResult.selfCommentInit();
             }
             calculatedNodes.add(parentId);
         }
@@ -318,64 +301,6 @@ public class CalculationService {
                 .mapToDouble(fr -> calculateNode(children, fr.getId(), formulasData) * fr.getWeight())
                 .average()
                 .getAsDouble();
-    }
-
-    /**
-     * Вычисляет итоговый риск по конкретной компании (конкретным данынм)
-     *
-     * @param formulasData результаты расчета по компании
-     * @param inn          инн компании
-     * @param year         год компании
-     * @return коллекция результатов формул по иерархии для компании
-     */
-    @Deprecated
-    private Collection<FormulaResult> calculateHierarchyById(Map<String, FormulaResult> formulasData,
-                                                             String inn, int year) {
-        List<List<String>> keySet = formulasData.keySet()
-                .stream()
-                .filter(Objects::nonNull)
-                .map(key -> new LinkedList<>(Arrays.asList(key.split("[.]"))))
-                .sorted(Comparator.comparingInt(o -> -o.size()))
-                .collect(Collectors.toCollection(LinkedList::new));
-        while (keySet.size() > 1) {
-
-            List<String> activeElem = keySet.get(0);
-            int amount = 0;
-            double total = 0;
-//            for (List<String> elem : keySet) {
-            for (int i = 0; i < keySet.size(); ) {
-                if (keySet.get(i).size() == activeElem.size()) {
-                    boolean isHierarchical = true;
-                    for (int j = 0; j < keySet.get(i).size() - 1; j++) {
-                        if (!keySet.get(i).get(j).equals(activeElem.get(j))) {
-                            isHierarchical = false;
-                            i++;
-                            break;
-                        }
-                    }
-                    if (isHierarchical) {
-                        amount++;
-                        total += formulasData
-                                .get(String.join(".", keySet.get(i))
-                                ).getResult();
-                        keySet.remove(keySet.get(i));
-                    }
-                } else {
-                    i++;
-                }
-            }
-            activeElem.remove(activeElem.size() - 1);
-            String formulaId = String.join(".", activeElem);
-            formulasData.put(formulaId, new FormulaResult(inn, formulaId, total / amount,
-                    total / amount, year, Collections.EMPTY_SET));
-            keySet.add(activeElem);
-
-            keySet = keySet.stream()
-                    .sorted(Comparator.comparingInt(o -> -o.size()))
-                    .collect(Collectors.toCollection(LinkedList::new));
-        }
-//        TODO: keySet пустой
-        return formulasData.values();
     }
 
     /**

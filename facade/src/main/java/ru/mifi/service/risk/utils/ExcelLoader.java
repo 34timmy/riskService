@@ -107,8 +107,9 @@ public class ExcelLoader {
             Double weight = Double.valueOf(formatCellVal(row.getCell(3)));               //Weight
             Integer level = Integer.parseInt(formatCellVal(row.getCell(4)));
             Integer isLeaf = Integer.parseInt(formatCellVal(row.getCell(5)));
+            Double interpreteK = Double.parseDouble(formatCellVal(row.getCell(6)));
             StringJoiner comments = new StringJoiner(";");
-            for (int i = 6; i <= 10; i++) {
+            for (int i = 7; i <= 9; i++) {
                 if (formatter.formatCellValue(row.getCell(i)) != null &&
                         !formatter.formatCellValue(row.getCell(i)).equalsIgnoreCase("")) {
                     comments.add(formatter.formatCellValue(row.getCell(i)));
@@ -122,6 +123,7 @@ public class ExcelLoader {
                     weight,
                     level,
                     isLeaf,
+                    interpreteK,
                     comments.toString()
             );
         }

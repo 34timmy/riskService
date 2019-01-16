@@ -26,6 +26,7 @@ public class DatabaseDdlAccessor {
                     "   weight DOUBLE PRECISION, " +
                     "   is_leaf INTEGER, " +
                     "   comment VARCHAR2(4000), " +
+                    "   interpretation_index DOUBLE, " +
                     "   value DOUBLE, " +
                     "   normalized_value DOUBLE, " +
                     "   linead_value DOUBLE " +

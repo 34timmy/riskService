@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -12,5 +13,6 @@ import java.util.Set;
 public class HierarchyNode {
     private final String id;
     private final Double weight;
-    private final Set<String> comments;
+    private final Double interpretationK;
+    private final List<String> comments;
 }
