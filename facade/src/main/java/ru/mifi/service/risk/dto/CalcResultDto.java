@@ -6,7 +6,12 @@ import lombok.SneakyThrows;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Класс с результами расчета, к оторый отдаем на клиент
@@ -22,6 +27,7 @@ public class CalcResultDto implements Serializable {
     private final Double weight;
     private final Double value;
     private final String normalizedValue;
+    private final String lineadValue;
     private final Integer isLeaf;
     private final String comment;
     private final Set<CalcResultDto> children = new HashSet<>();
@@ -35,11 +41,8 @@ public class CalcResultDto implements Serializable {
         this.isLeaf = resultSet.getInt(5);
         this.comment = resultSet.getString(6);
         this.value = resultSet.getDouble(7);
-        if (isLeaf == 1) {
-            this.normalizedValue = String.valueOf(resultSet.getDouble(8));
-        } else {
-            this.normalizedValue = "-";
-        }
+        this.normalizedValue = String.valueOf(resultSet.getDouble(8));
+        this.lineadValue = String.valueOf(resultSet.getDouble(9));
     }
 
     /**
@@ -79,8 +82,8 @@ public class CalcResultDto implements Serializable {
 
         Map<String, List<CalcResultDto>> idToElemMap = new HashMap<>();
         for (CalcResultDto dto : dtos) {
-             List<CalcResultDto> nodesList = idToElemMap.getOrDefault(dto.getCompanyId(), new ArrayList<CalcResultDto>());
-            nodesList.add( dto);
+            List<CalcResultDto> nodesList = idToElemMap.getOrDefault(dto.getCompanyId(), new ArrayList<CalcResultDto>());
+            nodesList.add(dto);
             idToElemMap.put(dto.getCompanyId(), nodesList);
         }
 
@@ -91,7 +94,7 @@ public class CalcResultDto implements Serializable {
         if (
                 !this.node.equalsIgnoreCase(child.parentNode)
                         && !(this.getNode().equalsIgnoreCase(ROOT_NODE) && child.getParentNode() == null)
-                ) {
+        ) {
             throw new IllegalArgumentException("Переданный объект не является потомком по иерархии! " +
                     "\ncurNode=" + this.node + ", notChildNode=" + child.node);
         }

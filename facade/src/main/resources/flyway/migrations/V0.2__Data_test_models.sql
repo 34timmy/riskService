@@ -3,7 +3,7 @@ VALUES ('1', '8602166992;5410786860', 'Список 1');
 insert into company_list (id, company_ids, descr)
 VALUES ('2', '8602166992;5410786860;5503217263', 'Список 2');
 insert into normative_parameters (param_name, value, descr)
-VALUES ('FIIJJJ', '0.55', 'Testers gonna test');
+VALUES ('FIIJJJ', '200', 'Testers gonna test');
 insert into normative_parameters (param_name, value, descr)
 VALUES ('ABCD', '2', 'Testers gonna test2');
 

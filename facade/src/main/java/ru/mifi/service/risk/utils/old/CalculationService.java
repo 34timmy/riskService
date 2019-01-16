@@ -186,15 +186,7 @@ public class CalculationService {
 
         Map<String, Map<String, FormulaResult>> normalizedData = normalizeFormulasValue(calculationData);
 
-        //<inn, value>
-        Map<String, Collection<FormulaResult>> resultMap = new HashMap<>();
-        for (String inn : this.innsInDevelop) {
-            if (normalizedData.get(inn) != null) {
-                resultMap.put(inn, calculateHierarchyByModelCalc(
-                        normalizedData.get(inn), inn, year));
-            }
-        }
-        return new HierarchyResult(calculationData, resultMap, simpleData);
+        return new HierarchyResult(calculationData, calculateHierarchyByModelCalc(normalizedData, year), simpleData);
     }
 
     /**
@@ -212,11 +204,20 @@ public class CalculationService {
         Map<String, Map<String, FormulaResult>> result = new HashMap<>();
         for (Formula formula : formulas) {
             double totalValue = 0;
+            double maxVal = Integer.MIN_VALUE;
+            double minVal = Integer.MAX_VALUE;
 //            error here null
             for (Map<String, FormulaResult> elem : calculationData.values()) {
                 FormulaResult curFormulaResult;
                 if ((curFormulaResult = elem.get(formula.getId())) != null) {
-                    totalValue += curFormulaResult.getResult();
+                    double curVal = curFormulaResult.getResult();
+                    totalValue += curVal;
+                    if (curVal > maxVal) {
+                        maxVal = curVal;
+                    }
+                    if (curVal < minVal) {
+                        minVal = curVal;
+                    }
                 }
             }
             for (String key : calculationData.keySet()) {
@@ -235,6 +236,9 @@ public class CalculationService {
                                             ? 0
                                             : curFormulaResultObj.getResult() / totalValue,
                                     curFormulaResultObj.getYear(),
+                                    minVal == maxVal
+                                            ? minVal * 100
+                                            : ((curFormulaResultObj.getResult() - minVal) / (maxVal - minVal)) * 100,
                                     curFormulaResultObj
                             )
                     );
@@ -245,11 +249,11 @@ public class CalculationService {
     }
 
     @SneakyThrows
-    private Collection<FormulaResult> calculateHierarchyByModelCalc(
-            Map<String, FormulaResult> formulasData,
-            String inn,
+    private Map<String, Collection<FormulaResult>> calculateHierarchyByModelCalc(
+            Map<String, Map<String, FormulaResult>> fullFormulasData,
             int year
     ) {
+        Set<String> calculatedNodes = new HashSet<>();
         Map<HierarchyNode, HierarchyNode> idToParent = accessor.getModelCalcHierarchy(modelId);
         Map<HierarchyNode, List<HierarchyNode>> parents = idToParent.entrySet().stream()
                 .collect(
@@ -259,28 +263,56 @@ public class CalculationService {
                                 CollectionUtils::mergeLists));
         for (HierarchyNode parentNode : parents.keySet()) {
             String parentId = parentNode.getId();
-            if (formulasData.containsKey(parentId)) {
+            if (calculatedNodes.contains(parentId)) {
                 continue;
             }
-            Double val = calculateNode(
-                    parents.entrySet().stream()
-                            .collect(Collectors.toMap(
-                                    entry -> entry.getKey().getId(),
-                                    Map.Entry::getValue
-                            )),
-                    parentId,
-                    formulasData
-            );
-            formulasData.put(parentId, new FormulaResult(inn, parentId, val, val, year, parentNode.getComments()));
+            List<FormulaResult> nodeResults = new ArrayList<>();
+            double totalVal = 0;
+            double maxVal = Integer.MIN_VALUE;
+            double minVal = Integer.MAX_VALUE;
+            for (String inn : fullFormulasData.keySet()) {
+                Map<String, FormulaResult> oneCompanyData = fullFormulasData.get(inn);
+                Double val = calculateNode(
+                        parents.entrySet().stream()
+                                .collect(Collectors.toMap(
+                                        entry -> entry.getKey().getId(),
+                                        Map.Entry::getValue
+                                )),
+                        parentId,
+                        oneCompanyData
+                );
+                FormulaResult nodeResult = new FormulaResult(inn, parentId, val, val, year, parentNode.getComments());
+                oneCompanyData.put(parentId, nodeResult);
+                nodeResults.add(nodeResult);
 
+                totalVal += val;
+                if (val > maxVal) {
+                    maxVal = val;
+                }
+                if (val < minVal) {
+                    minVal = val;
+                }
+            }
+            //Поскольку мы сохранили ссылки на объекты, пройдемся по ним ещё раз и проставим нормированное и
+            //смасштабированное значение
+            for (FormulaResult nodeResult : nodeResults) {
+                nodeResult.setNormalizedResult(totalVal == 0
+                        ? 0
+                        : nodeResult.getResult() / totalVal);
+                nodeResult.setLineadResult(minVal == maxVal
+                        ? minVal * 100
+                        : ((nodeResult.getResult() - minVal) / (maxVal - minVal)) * 100);
+            }
+            calculatedNodes.add(parentId);
         }
-        return formulasData.values();
+        return fullFormulasData.keySet().stream()
+                .collect(Collectors.toMap(key -> key, key -> fullFormulasData.get(key).values()));
 
     }
 
     private Double calculateNode(Map<String, List<HierarchyNode>> children, String nodeId, Map<String, FormulaResult> formulasData) {
         if (formulasData.containsKey(nodeId)) {
-            return formulasData.get(nodeId).getResult();
+            return formulasData.get(nodeId).getNormalizedResult();
         }
         return children.get(nodeId).stream()
                 .mapToDouble(fr -> calculateNode(children, fr.getId(), formulasData) * fr.getWeight())

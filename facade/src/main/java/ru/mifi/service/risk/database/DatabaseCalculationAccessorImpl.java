@@ -34,9 +34,9 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     private static final String SQL_SAVE_FORMULA_TO_TEMP_TABLE =
             "INSERT INTO " +
                     "   %s" +
-                    "       (company_id, node, value, normalized_value, comment)" +
+                    "       (company_id, node, value, normalized_value, linead_value, comment)" +
                     "   VALUES" +
-                    "       (?,         ?,      ?,      ?,             ?)";
+                    "       (?,         ?,      ?,      ?,             ?,               ?)";
     private static final String SQL_SAVE_RESULT_TABLE_NAME =
             "INSERT INTO " +
                     "   result_data_mapper" +
@@ -277,7 +277,12 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
                     } else {
                         saveFormulaStmt.setDouble(4, node.getNormalizedResult());
                     }
-                    saveFormulaStmt.setString(5, node.getComment());
+                    if (node.getLineadResult() == null) {
+                        saveFormulaStmt.setNull(5, Types.DOUBLE);
+                    } else {
+                        saveFormulaStmt.setDouble(5, node.getLineadResult());
+                    }
+                    saveFormulaStmt.setString(6, node.getComment());
                     saveFormulaStmt.addBatch();
                     if (++counter == SQL_BATCH_SIZE) {
                         saveFormulaStmt.executeBatch();

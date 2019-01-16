@@ -17,6 +17,7 @@ public class FormulaResult {
     private final String descr;
     private final FormulaTypeEnum formulaType;
     private Double normalizedResult;
+    private Double lineadResult;
     private double inputeValue;
     private double result;
     private String comment;
@@ -72,11 +73,12 @@ public class FormulaResult {
      * @param formulaResult результат формулы-родитель
      */
     public FormulaResult(String inn, String id, double inputeValue, double result, double normalizedResult, int year,
-                         FormulaResult formulaResult) {
+                         double lineadResult, FormulaResult formulaResult) {
         this.inn = inn;
         this.id = id;
         this.result = result;
         this.normalizedResult = normalizedResult;
+        this.lineadResult = lineadResult;
         this.inputeValue = inputeValue;
         this.year = year;
         this.descr = formulaResult.descr;
@@ -107,6 +109,7 @@ public class FormulaResult {
         this.descr = null;
         this.formulaType = null;
         this.normalizedResult = null;
+        this.lineadResult = null;
         this.comment = commentInit(comments);
     }
 
