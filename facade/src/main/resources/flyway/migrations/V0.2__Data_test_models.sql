@@ -10,7 +10,9 @@ VALUES ('ABCD', '2', 'Testers gonna test2');
 INSERT INTO users (ID, firstName, lastName, EMAIL, PASSWORD)
 values (1, 'user', 'last', 'user@gmail.com', '$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC');
 
-INSERT INTO role (id, descr) VALUES ('ROLE_ADMIN', 'admin');
+INSERT INTO role (id, descr)
+VALUES ('ROLE_ADMIN', 'admin'),
+       ('ROLE_USER', 'user');
 INSERT INTO user_roles (role_id, user_id)
 values ('ROLE_ADMIN', 1);
 -- INSERT INTO COMPANY (ID, INN,descr)

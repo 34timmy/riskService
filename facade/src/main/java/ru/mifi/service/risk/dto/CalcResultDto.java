@@ -48,6 +48,7 @@ public class CalcResultDto implements Serializable {
     }
 
     /**
+     *      Отдает результаты вложенно
      * Проставляет связи между объектами на основании полей node/parentNode.
      *
      * @param dtos список объектов dto
@@ -79,6 +80,13 @@ public class CalcResultDto implements Serializable {
         return resultDtoMap;
     }
 
+    /**
+     * Отдает результаты списком
+     * Проставляет связи между объектами на основании полей node/parentNode.
+     *
+     * @param dtos список объектов dto
+     * @return мапа <companyId, результат>
+     */
     public static Map<String, List<CalcResultDto>> setDtosAsList(Set<CalcResultDto> dtos) {
         Map<String, CalcResultDto> resultDtoMap = new HashMap<>();
 

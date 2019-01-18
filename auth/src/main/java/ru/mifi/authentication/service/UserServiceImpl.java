@@ -79,6 +79,7 @@ public class UserServiceImpl implements UserDetailsService {
 //        TODO role on flag
         user.setRoles(Collections.singleton(Role.ROLE_USER));
         userMapper.createUser(user);
+        userMapper.createRole(Role.ROLE_USER.toString(), user.getId());
     }
 
     public void evictCache() {

@@ -43,6 +43,9 @@ public interface UserMapper {
     })
     User getByEmail(String email) throws SQLException;
 
-    @Select("SELECT r.role from roles r where r.user_id=#{id}")
+    @Select("SELECT usr.role_id from user_roles usr where usr.user_id=#{id}")
     Set<Role> getRolesForUser(String id);
+
+    @Insert("INSERT INTO user_roles(role_id,user_id) values(#{role},#{id})")
+    void createRole(String role, String id);
 }

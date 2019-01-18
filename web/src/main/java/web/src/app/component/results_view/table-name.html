@@ -15,7 +15,15 @@
         </ng-template>
         <ng-template pTemplate="body" let-result>
           <tr [pSelectableRow]="result">
-            <td>{{result.companyListName}}</td>
+            <td>{{result.companyListName}}
+              <button pButton icon="fa fa-align-left" style="float:right;margin: 5px 5px 5px 5px" class="ui-button-primary"
+                      (click)="showTreeView(result)">
+              </button>
+              <button pButton icon="fa fa-table" style="float:right;margin: 5px 5px 5px 5px" class="ui-button-primary "
+                      (click)="showTableView(result)">
+              </button>
+            </td>
+
             <td>{{result.year}}</td>
             <!--<td>{{result.date |  date:'MM/dd/yyyy'}}</td>-->
           </tr>
@@ -27,3 +35,4 @@
 </p-tabView>
 </div>
 <app-resulttable></app-resulttable>
+<app-treeview></app-treeview>

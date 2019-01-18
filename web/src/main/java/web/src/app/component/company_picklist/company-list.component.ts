@@ -66,7 +66,7 @@ export class CompanyListComponent implements OnInit {
   reloadCompanyLists() {
     this.loadModels();
     this.years = this.loadYears();
-
+    this.loadIndustries();
     this.companyService.getAllCompanyLists().subscribe(
       res => {
 
@@ -139,6 +139,23 @@ export class CompanyListComponent implements OnInit {
         // .children.map(x => {
         // return x.data.id;
         // }).join(";"),
+        this.selectedYear)
+        .subscribe(res => {
+            this.companyService.setFlagForreloadNames(true);
+            this.showToggle = false
+            this.successMessage(res,
+              'Расчёт завершен',
+              '')
+
+          },
+          err => {
+            this.errorMessage(err.json())
+          });
+    }if (this.selectedNodes.length == 1) {
+      this.companyService.calculate(this.selectedModel,
+        this.selectedNodes[0].data.id,
+        this.selectedNodes[0]
+          .data.id,
         this.selectedYear)
         .subscribe(res => {
             this.companyService.setFlagForreloadNames(true);

@@ -102,7 +102,6 @@ public class DatabaseSelectAccessor {
             while (res.next()) {
                 dtos.add(new CalcResultDto(res));
             }
-//            return CalcResultDto.setLinksAmongDtos(dtos);
             return CalcResultDto.setDtosAsList(dtos);
         } catch (SQLException e) {
             throw new DatabaseException("Ошибка БД при получении имен таблиц с результатами", e);

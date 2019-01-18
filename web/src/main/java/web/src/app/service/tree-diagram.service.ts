@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {
-  basePath,
+  basePath, companiesPath,
   constructorPath,
   formulaPath, industryPath,
   modelCalcPath,
@@ -142,7 +142,7 @@ export class TreeDiagramService {
   }
 
   getAllIndustries() {
-    return this.http.get(basePath + constructorPath + industryPath, this.reqOptions);
+    return this.http.get(basePath + companiesPath + industryPath, this.reqOptions);
   }
 
   private getAllNodes() {

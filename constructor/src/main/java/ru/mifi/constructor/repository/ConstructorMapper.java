@@ -143,7 +143,7 @@ public interface ConstructorMapper {
     @Select("SELECT * FROM company")
     List<Company> getAllCompanies();
 
-    @Select("SELECT * FROM industries")
+    @Select("SELECT * FROM industry")
     List<Industry> getAllIndustries();
 
     @Delete("DELETE FROM company_list cl where cl.id = #{id}")

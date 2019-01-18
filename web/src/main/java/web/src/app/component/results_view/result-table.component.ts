@@ -42,8 +42,8 @@ export class ResultTableComponent implements OnInit {
   reloadTable(level) {
     this.filteredList = [];
     this.baseCols = [
-      {field: 'companyId', header: 'ИНН'}
-      // {field: 'descr', header: 'Название'}
+      {field: 'companyId', header: 'ИНН'},
+      {field: 'descr', header: 'Название'}
     ];
     let keys = Object.keys(this.companyListResult);
     let tempCompanyListResult = this.convertResults(this.companyListResult);
@@ -62,11 +62,14 @@ export class ResultTableComponent implements OnInit {
 
 
       keys.map(key => {
-        let obj = {companyId: key};
+        let obj = {
+          companyId: key,
+          descr: tempCompanyListResult.find(s=>s.companyId==key).descr
+        };
         for (let nodeName of uniqueNodes) {
           Object.defineProperty(obj,
             nodeName, {
-              value: this.tempListFilteredByLevel.find(node => node.node == nodeName).value,
+              value: tempCompanyListResult.find(node => {return node.companyId == key && node.node == nodeName}).value,
               writable: true,
               enumerable: true,
               configurable: true
@@ -88,7 +91,7 @@ export class ResultTableComponent implements OnInit {
     let year = data.year;
     let tableName = data.tableName;
 
-    this.treeService.getCalcResultDTOs(tableName)
+    this.treeService.getCalcResultDTOsAsList(tableName)
       .subscribe(calcResultDTOs => {
           let calcResultDTOsJSON = calcResultDTOs.json().data;
           this.companyListResult = (calcResultDTOsJSON);
@@ -118,44 +121,52 @@ export class ResultTableComponent implements OnInit {
 
     return [
       {
-        companyId: 1,
-        node: "node1",
-        value: 0,
+        companyId: "5410786860",
+        descr: "Компания 1",
+        node: "Степень надежности",
+        value: 0.78,
         level: 1
       }, {
-        companyId: 1,
-        node: "node2",
-        value: 0,
+        companyId: "5410786860",
+        descr: "Компания 1",
+        node: "Надежность",
+        value: 0.78,
         level: 2
       }, {
-        companyId: 1,
-        node: "node3",
-        value: 0,
+        companyId: "5410786860",
+        descr: "Компания 1",
+        node: "Репутационный риск",
+        value: 0.25,
         level: 3
       }, {
-        companyId: 1,
-        node: "node4",
-        value: 0,
+        companyId: "5410786860",
+        descr: "Компания 1",
+        node: "Финансовый риск",
+        value: 0.53,
         level: 3
       }, {
-        companyId: 2,
-        node: "node1",
-        value: 0,
+        companyId: "8602166992",
+        descr: "Компания 2",
+        node: "Степень надежности",
+        value: 0.46,
         level: 1
       }, {
-        companyId: 2,
-        node: "node2",
-        value: 0,
+        companyId: "8602166992",
+        descr: "Компания 2",
+        node: "Надежность",
+        value: 0.46,
         level: 2
       }, {
-        companyId: 2,
-        node: "node3",
-        value: 0,
+        companyId: "8602166992",
+        descr: "Компания 2",
+        node: "Репутационный риск",
+        value: 0.29,
         level: 3
       }, {
-        companyId: 2,
-        node: "node4",
-        value: 0,
+        companyId: "8602166992",
+        descr: "Компания 2",
+        node: "Финансовый риск",
+        value: 0.17,
         level: 3
       }
 

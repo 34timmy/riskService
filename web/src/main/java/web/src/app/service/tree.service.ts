@@ -95,6 +95,14 @@ export class TreeService {
   //   // return this.modelsNodes;
   // }
 
+  getCalcResultDTOsAsList(tableName) {
+    return this.http.get(basePath +
+      "/getData" +
+      "/byTableAsList?" +
+      "tableName=" + tableName
+      , this.reqOptions);
+  }
+
   getCalcResultDTOs(tableName) {
     return this.http.get(basePath +
       "/getData" +

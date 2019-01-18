@@ -19,8 +19,8 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
 
   @ViewChild(ResultTableComponent)
   resultTable: ResultTableComponent;
-  // @ViewChild(TreeViewComponent)
-  // treeViewChild: TreeViewComponent;
+  @ViewChild(TreeViewComponent)
+  treeViewChild: TreeViewComponent;
 
   constructor(private treeService: TreeService,
               private companyService: CompanyService,
@@ -67,20 +67,26 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
 
   private onRowSelect(event) {
     // this.treeViewChild.showTreeView(event.data);
-    this.resultTable.showTreeView(event.data);
 
 
   }
 
 
+  showTreeView(event) {
+    this.treeViewChild.showTreeView(event);
 
+  }
 
+  showTableView(event) {
+    this.resultTable.showTreeView(event);
+
+  }
 
   private getCompaniesLists() {
     this.companyService.companyLists.subscribe(res => {
       this.companyLists = res;
-      this.resultTable.setCompanies(res)
-      // this.treeViewChild.setCompanies(res)
+      this.resultTable.setCompanies(res);
+      this.treeViewChild.setCompanies(res);
     });
   }
 

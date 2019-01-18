@@ -32,6 +32,18 @@ public class DataController extends ExceptionHandlerController {
     private DataService service;
 
     @ApiOperation(value = "По конкретной таблице")
+    @RequestMapping(value = "/byTableAsList", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Object> loadResultFromTableAsList(
+            @ApiParam(value = "Имя таблицы")
+            @RequestParam("tableName") String tableName
+    ) throws RestException {
+        Map<String, List<CalcResultDto>> result = accessor.getDataFromTableAsList(tableName);
+        return ResponseHelper.successResponse(result);
+    }
+
+    @ApiOperation(value = "По конкретной таблице")
     @RequestMapping(value = "/byTable", method = RequestMethod.GET)
     public
     @ResponseBody
@@ -39,7 +51,7 @@ public class DataController extends ExceptionHandlerController {
             @ApiParam(value = "Имя таблицы")
             @RequestParam("tableName") String tableName
     ) throws RestException {
-        Map<String, List<CalcResultDto>> result = accessor.getDataFromTableAsList(tableName);
+        Map<String, CalcResultDto> result = accessor.getDataFromTable(tableName);
         return ResponseHelper.successResponse(result);
     }
 

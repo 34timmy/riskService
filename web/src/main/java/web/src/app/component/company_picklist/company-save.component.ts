@@ -54,22 +54,22 @@ export class CompanySaveComponent implements OnInit {
       })
     } else {
       let collectToCompanyList = this.collectToCompanyList(name, this.selectedCompanies);
-      if (this.autoCompleteResults.indexOf(name) !== -1) {
-        //TODO set id from existing lists
-        this.errorMessage({
-          cause: 'Данное название уже существует!',
-          url: '',
-          detail: ''
-        })
-        // this.companyService.updateCompanyList(collectToCompanyList).subscribe(
-        //   res => {
-        //   },
-        //   err => {
-        //   }
-        // );
-
-      }
-      else {
+      // if (this.autoCompleteResults.indexOf(name) !== -1) {
+      //   //TODO set id from existing lists
+      //   this.errorMessage({
+      //     cause: 'Данное название уже существует!',
+      //     url: '',
+      //     detail: ''
+      //   })
+      //   // this.companyService.updateCompanyList(collectToCompanyList).subscribe(
+      //   //   res => {
+      //   //   },
+      //   //   err => {
+      //   //   }
+      //   // );
+      //
+      // }
+      // else {
         this.companyService.createCompanyList(collectToCompanyList).subscribe(
           res => {
             // this.companyListChild.reloadCompanyLists();
@@ -84,7 +84,7 @@ export class CompanySaveComponent implements OnInit {
             this.errorMessage(err.json());
           }
         );
-      }
+      // }
     }
   }
 
