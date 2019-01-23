@@ -32,6 +32,8 @@ public class CalcResultDto implements Serializable {
     private final Integer isLeaf;
     private final String comment;
     private final Set<CalcResultDto> children = new HashSet<>();
+    private Integer level = null;
+
 
     @SneakyThrows
     public CalcResultDto(ResultSet resultSet) {
@@ -48,7 +50,7 @@ public class CalcResultDto implements Serializable {
     }
 
     /**
-     *      Отдает результаты вложенно
+     * Отдает результаты вложенно
      * Проставляет связи между объектами на основании полей node/parentNode.
      *
      * @param dtos список объектов dto
@@ -93,6 +95,7 @@ public class CalcResultDto implements Serializable {
         Map<String, List<CalcResultDto>> idToElemMap = new HashMap<>();
         for (CalcResultDto dto : dtos) {
             List<CalcResultDto> nodesList = idToElemMap.getOrDefault(dto.getCompanyId(), new ArrayList<CalcResultDto>());
+            setLevels(dtos);
             nodesList.add(dto);
             idToElemMap.put(dto.getCompanyId(), nodesList);
         }
@@ -109,5 +112,49 @@ public class CalcResultDto implements Serializable {
                     "\ncurNode=" + this.node + ", notChildNode=" + child.node);
         }
         children.add(child);
+    }
+
+//    public void setLevel(Set<CalcResultDto> dtos) {
+//        CalcResultDto obj = this;
+//        if (this.getNode().equals("root")) {
+//            this.level = 0;
+//
+//        } else {
+//            String parNode;
+//            while ((parNode = obj.getParentNode()) != null) {
+//                String finalParNode = parNode;
+////                if ()
+//                obj = dtos.stream().filter(x -> x.getNode().equals(finalParNode)).findFirst().get();
+//                this.level++;
+//            }
+//        }
+//    }
+
+
+    private static void setLevels(Set<CalcResultDto> dtos) {
+        dtos.forEach(dto ->
+        {
+            if (dto.getNode().equals("root")) {
+                dto.level = 0;
+            } else {
+                if (dto.getLevel() == null) {
+                    dto.level = 1;
+                    while (dto.getParentNode() != null) {
+                        Integer tempDtoLvl;
+                        CalcResultDto finalDto = dto;
+                        CalcResultDto calcResultDto = dtos.stream()
+                                .filter(x -> finalDto.getParentNode().equals(x.getNode()))
+                                .findFirst().get();
+                        if ((tempDtoLvl = calcResultDto.getLevel()) == null) {
+                            dto.level++;
+                            dto = calcResultDto;
+                        } else {
+                            dto.level += tempDtoLvl;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     }
 }

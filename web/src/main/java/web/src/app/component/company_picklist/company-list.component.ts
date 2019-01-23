@@ -169,7 +169,7 @@ export class CompanyListComponent implements OnInit {
             this.errorMessage(err.json())
           });
     }
-    else {
+    if (this.selectedNodes.length == 0) {
       this.companyService.calculateByIndustry(this.selectedModel,
         this.selectedIndustry,
         this.selectedIndustry,

@@ -136,7 +136,9 @@ export class TreeViewComponent implements OnInit {
                   // }
                 }
               )
-              .data.descr
+              .data.descr || '-',
+            weight: '-',
+            value: list[key].value
           },
           children: [this.convertChildren(list[key])]
         }

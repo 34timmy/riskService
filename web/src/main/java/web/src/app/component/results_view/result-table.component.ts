@@ -117,61 +117,61 @@ export class ResultTableComponent implements OnInit {
         tempList.push(node)
       }
     }
-    // return tempListFilteredByLevel;
+    return tempList;
 
-    return [
-      {
-        companyId: "5410786860",
-        descr: "Компания 1",
-        node: "Степень надежности",
-        value: 0.78,
-        level: 1
-      }, {
-        companyId: "5410786860",
-        descr: "Компания 1",
-        node: "Надежность",
-        value: 0.78,
-        level: 2
-      }, {
-        companyId: "5410786860",
-        descr: "Компания 1",
-        node: "Репутационный риск",
-        value: 0.25,
-        level: 3
-      }, {
-        companyId: "5410786860",
-        descr: "Компания 1",
-        node: "Финансовый риск",
-        value: 0.53,
-        level: 3
-      }, {
-        companyId: "8602166992",
-        descr: "Компания 2",
-        node: "Степень надежности",
-        value: 0.46,
-        level: 1
-      }, {
-        companyId: "8602166992",
-        descr: "Компания 2",
-        node: "Надежность",
-        value: 0.46,
-        level: 2
-      }, {
-        companyId: "8602166992",
-        descr: "Компания 2",
-        node: "Репутационный риск",
-        value: 0.29,
-        level: 3
-      }, {
-        companyId: "8602166992",
-        descr: "Компания 2",
-        node: "Финансовый риск",
-        value: 0.17,
-        level: 3
-      }
-
-
-    ]
+    // return [
+    //   {
+    //     companyId: "5410786860",
+    //     descr: "Компания 1",
+    //     node: "Степень надежности",
+    //     value: 0.78,
+    //     level: 1
+    //   }, {
+    //     companyId: "5410786860",
+    //     descr: "Компания 1",
+    //     node: "Надежность",
+    //     value: 0.78,
+    //     level: 2
+    //   }, {
+    //     companyId: "5410786860",
+    //     descr: "Компания 1",
+    //     node: "Репутационный риск",
+    //     value: 0.25,
+    //     level: 3
+    //   }, {
+    //     companyId: "5410786860",
+    //     descr: "Компания 1",
+    //     node: "Финансовый риск",
+    //     value: 0.53,
+    //     level: 3
+    //   }, {
+    //     companyId: "8602166992",
+    //     descr: "Компания 2",
+    //     node: "Степень надежности",
+    //     value: 0.46,
+    //     level: 1
+    //   }, {
+    //     companyId: "8602166992",
+    //     descr: "Компания 2",
+    //     node: "Надежность",
+    //     value: 0.46,
+    //     level: 2
+    //   }, {
+    //     companyId: "8602166992",
+    //     descr: "Компания 2",
+    //     node: "Репутационный риск",
+    //     value: 0.29,
+    //     level: 3
+    //   }, {
+    //     companyId: "8602166992",
+    //     descr: "Компания 2",
+    //     node: "Финансовый риск",
+    //     value: 0.17,
+    //     level: 3
+    //   }
+    //
+    //
+    // ]
   }
 
 
