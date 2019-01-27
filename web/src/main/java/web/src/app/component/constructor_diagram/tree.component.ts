@@ -58,6 +58,7 @@ export class Tree implements OnInit {
   modelsLoaded: Observable<boolean>;
   reloadModels = new BehaviorSubject<boolean>(false);
   showToggle = false;
+  copy = false;
 
   constructor(
     private nodesSrv: NodesListService,
@@ -98,8 +99,7 @@ export class Tree implements OnInit {
         this.data = res.json();
         this.initData();
       });
-    }
-    else {
+    } else {
       this.data = [];
       setTimeout(() => this.initData(), 0);
     }
@@ -145,7 +145,7 @@ export class Tree implements OnInit {
   }
 
   public makeTransform() {
-    this.paneTransform = this.sanitizer.bypassSecurityTrustStyle(`translate(${this.paneX }px, ${this.paneY}px) scale(${this.zoom})`)
+    this.paneTransform = this.sanitizer.bypassSecurityTrustStyle(`translate(${this.paneX}px, ${this.paneY}px) scale(${this.zoom})`)
   }
 
   public preventMouse(event) {
@@ -179,8 +179,7 @@ export class Tree implements OnInit {
             this.successMessage(node,
               'Запись ' + node.descr + ' изменена',
               null);
-          }
-          else {
+          } else {
 
             let modelCalc = {
               node: node.id,
@@ -229,8 +228,7 @@ export class Tree implements OnInit {
             this.successMessage(node,
               'Запись ' + node.descr + ' изменена',
               null);
-          }
-          else {
+          } else {
             this.nodesSrv.addNodeOnSaveRule();
             this.successMessage(node,
               'Запись ' + node.descr + ' добавлена',
@@ -247,6 +245,9 @@ export class Tree implements OnInit {
 
   private onSaveModel(node) {
     console.log('model ', node);
+    if (this.copy) {
+      this.copyModel(node)
+    }
     this.treeService.saveModel(node)
       .subscribe(
         res => {
@@ -256,8 +257,7 @@ export class Tree implements OnInit {
             this.successMessage(node,
               'Запись ' + node.descr + ' изменена',
               null);
-          }
-          else {
+          } else {
             this.nodesSrv.addNodeOnSaveModel();
             this.reloadModels.next(true);
             this.successMessage(node,
@@ -286,8 +286,7 @@ export class Tree implements OnInit {
               'Запись ' + node.descr + ' изменена',
               null);
 
-          }
-          else {
+          } else {
             this.nodesSrv.addNodeOnSaveModelCalc();
             this.successMessage(node,
               'Запись ' + node.descr + ' добавлена',
@@ -310,16 +309,31 @@ export class Tree implements OnInit {
         if (node.type === 'model') {
           this.onSaveModel(node.data);
 
-        }
-        else if (node.type === 'modelcalc') {
+        } else if (node.type === 'modelcalc') {
           this.onSaveModelCalc(node.data);
-        }
-        else if (node.type === 'formula') {
+        } else if (node.type === 'formula') {
           this.onSaveFormula(node);
         }
       }
     )
     console.log('updatedNodes ', this.updatedNodes)
+  }
+
+
+  showModelDialogForCopy() {
+    this.copy = true;
+    this.modelEditChild.resetForm();
+    this.modelEditChild.showToggle = true;
+  }
+
+  copyModel(model) {
+    this.treeService.copyModel(model).subscribe(res => {
+      this.successMessage(model,
+        'Запись ' + model.descr + ' скопирована',
+        null);
+    }, err => {
+      this.errorMessage(err.json());
+    })
   }
 
   private successMessage(obj, summary, detail) {

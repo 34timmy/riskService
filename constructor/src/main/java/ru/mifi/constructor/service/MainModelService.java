@@ -6,18 +6,24 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.mifi.constructor.model.CompanyList;
 import ru.mifi.constructor.model.DTO.TreeNodeDTO;
 import ru.mifi.constructor.model.Model;
+import ru.mifi.constructor.model.ModelCalc;
 import ru.mifi.constructor.repository.ConstructorMapper;
+import ru.mifi.constructor.utils.exception.NotFoundException;
 import ru.mifi.service.risk.domain.Formula;
 
+import java.lang.reflect.Array;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MainModelService {
 
     @Autowired
     ConstructorMapper constructorMapper;
+
 
     public List<Model> getAllModels() throws SQLException {
         return constructorMapper.getAllModels();
@@ -39,6 +45,27 @@ public class MainModelService {
     @Transactional
     public void createModel(Model model) {
         constructorMapper.createModel(model);
+    }
+
+    @Transactional
+    public void copyModel(Model model) {
+        Model modelFromDb = constructorMapper.getModel(model.getId());
+        if (modelFromDb == null) {
+            throw new NotFoundException("");
+        }
+
+        String uuid = UUID.randomUUID().toString();
+        model.setId(uuid);
+        constructorMapper.createModel(model);
+        ArrayList<ModelCalc> modelCalcs = new ArrayList<>(modelFromDb.getModelCalcs());
+        modelCalcs.forEach(modelCalc ->
+        {
+            modelCalc.setModel_id(uuid);
+            constructorMapper.createModelCalc(modelCalc);
+        });
+        model.setModelCalcs(modelCalcs);
+
+
     }
 
     @Transactional
@@ -73,4 +100,6 @@ public class MainModelService {
     public void deleteCompanyList(String id) {
         constructorMapper.deleteCompanyList(id);
     }
+
+
 }

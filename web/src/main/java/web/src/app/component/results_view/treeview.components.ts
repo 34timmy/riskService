@@ -21,6 +21,9 @@ export class TreeViewComponent implements OnInit {
   modelsLoaded: Observable<boolean>;
   draggedNode: TreeNode;
   showToggle;
+  valueFilter: number = 1;
+  valueTimeout: any;
+
 
   constructor(private treeService: TreeService,
               private notificationService: MessageService) {
@@ -44,7 +47,7 @@ export class TreeViewComponent implements OnInit {
       {field: 'inn', header: 'ИНН', width: '30%'},
       {field: 'name', header: 'Название', width: '30%'},
       {field: 'weight', header: 'Вес', width: '10%'},
-      {field: 'value', header: 'Значение индекса', width: '10%'},
+      {field: 'lineadValue', header: 'Значение индекса', width: '10%'},
       // {field: 'level', header: 'Уровень', width: '10%'},
       // {field: 'actions', header: 'Действия', width: '10%'}
     ];
@@ -138,7 +141,7 @@ export class TreeViewComponent implements OnInit {
               )
               .data.descr || '-',
             weight: '-',
-            value: list[key].value
+            lineadValue: list[key].lineadValue
           },
           children: [this.convertChildren(list[key])]
         }
@@ -161,29 +164,37 @@ export class TreeViewComponent implements OnInit {
           isLeaf: list.isLeaf,
           node: list.node,
           parentNode: list.parentNode,
-          value: list.value,
+          lineadValue: list.lineadValue,
           normalizedValue: list.normalizedValue,
           level: list.level,
           weight: list.weight
         },
         children: tempList
       };
-    }
-    else {
+    } else {
       list.forEach(val =>
         this.convertChildren(val))
     }
     if (list.children) {
       if (list.children.length == 0) {
         return convertedObj;
-      }
-      else {
+      } else {
         for (let child of list.children) {
           tempList.push(this.convertChildren(child))
         }
         return convertedObj;
       }
     }
+  }
+
+  onYearChange(event, dt) {
+    if (this.valueTimeout) {
+      clearTimeout(this.valueTimeout);
+    }
+
+    this.valueTimeout = setTimeout(() => {
+      dt.filter(event.value, 'year', 'gt');
+    }, 250);
   }
 
   closeModal() {

@@ -10,20 +10,32 @@
                 aria-hidden="true" (click)="closeModal()">
         </button>
       </div>
+
       <div class="modal-body">
+
         <!--<p-dialog header="Списки компаний" [(visible)]="showToggle"-->
         <!--[modal]="true" [width]="1000"-->
         <!--[maximizable]="true" draggable="true" [resizable]="true"-->
         <!--[dismissableMask]="true" [closeOnEscape]="true">-->
-        <p-treeTable [value]="treeCompanyListResult"
+        <p-treeTable #dt [value]="treeCompanyListResult"
                      [columns]="cols" selectionMode="single"
                      [(selection)]="selectedNode"
                      [resizableColumns]="true"
         >
-          <ng-template pTemplate="header" let-columns>
+          <ng-template pTemplate="header" let-columns >
             <tr>
-              <th *ngFor="let col of columns" ttResizableColumn [ttSortableColumn]="col.field">{{col.header}}
+              <th *ngFor="let col of columns" ttResizableColumn [ttSortableColumn]="col.field" >{{col.header}}
                 <p-treeTableSortIcon [field]="col.field"></p-treeTableSortIcon>
+
+              </th>
+            </tr>
+            <tr>
+              <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                <div *ngSwitchCase="'lineadValue'">
+                  Value < {{valueFilter}}
+                  <i class="fa fa-close" (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="valueFilter"></i>
+                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="valueFilter" [min]="1" [max]="100" (onChange)="onYearChange($event, dt)"></p-slider>
+                </div>
               </th>
             </tr>
           </ng-template>
@@ -57,10 +69,10 @@
                 {{rowData.weight}}
               </td>
               <td
-                [ngClass]="{'risk0-33':   rowData.value<=0.33,
-          'risk33-66':  rowData.value>=0.33 && rowData.value<=0.66,
-          'risk66-100':  rowData.value>=0.66}">
-                {{rowData.value}}
+                [ngClass]="{'risk0-33':   rowData.lineadValue<=0.33,
+          'risk33-66':  rowData.lineadValue>=0.33 && rowData.lineadValue<=0.66,
+          'risk66-100':  rowData.lineadValue>=0.66}">
+                {{valueFilter * rowData.lineadValue/100}}
               </td>
               <!--<td *ngIf="rowData.level">-->
                 <!--{{rowData.level}}-->

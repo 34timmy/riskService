@@ -7,6 +7,7 @@ export const registerPath = '/register';
 export const usersPath = '/users';
 export const constructorPath = '/constructor';
 export const modelPath = '/models';
+export const copyPath = '/copy';
 export const treeNodesPath = '/treeNodes';
 export const industryPath = '/industries';
 export const modelCalcPath = '/modelCalcs';

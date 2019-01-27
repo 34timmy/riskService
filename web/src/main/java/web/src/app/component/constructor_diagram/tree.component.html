@@ -17,7 +17,9 @@
         </button>
       </div>
       <div class="modal-body">
-
+        <button pButton type="button"  style="color:#ffffff;position:absolute;" icon="fas fa-copy"
+                aria-hidden="true" (click)="showModelDialogForCopy()">
+        </button>
         <p-confirmDialog icon="pi pi-exclamation-triangle" width="425" [closeOnEscape]="true">
         </p-confirmDialog>
         <p-toast position="top-right">

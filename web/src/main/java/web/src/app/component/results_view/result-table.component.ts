@@ -69,7 +69,7 @@ export class ResultTableComponent implements OnInit {
         for (let nodeName of uniqueNodes) {
           Object.defineProperty(obj,
             nodeName, {
-              value: tempCompanyListResult.find(node => {return node.companyId == key && node.node == nodeName}).value,
+              value: tempCompanyListResult.find(node => {return node.companyId == key && node.node == nodeName}).lineadValue,
               writable: true,
               enumerable: true,
               configurable: true

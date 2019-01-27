@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {
   basePath, companiesPath,
-  constructorPath,
+  constructorPath, copyPath,
   formulaPath, industryPath,
   modelCalcPath,
   modelPath,
@@ -98,6 +98,10 @@ export class TreeDiagramService {
     } else {
       return this.createModel(model);
     }
+  }
+
+  copyModel(model) {
+    return this.http.post(basePath + constructorPath + modelPath + copyPath, JSON.stringify(model), this.reqOptionsJson);
   }
 
   deleteModel(model) {

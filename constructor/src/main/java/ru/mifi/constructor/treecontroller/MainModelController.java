@@ -69,6 +69,12 @@ public class MainModelController {
         mainModelService.createModel(model);
     }
 
+    @PostMapping(value = "/copy",consumes = "application/json")
+    public void ccopyModel(@Valid @RequestBody Model model) {
+//        TODO responseEntity
+        mainModelService.copyModel(model);
+    }
+
     @PutMapping(consumes = "application/json")
     public void updateModel(@Valid @RequestBody Model model) {
 //        TODO responseEntity

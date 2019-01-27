@@ -10,12 +10,13 @@ import {CompanyEditComponent} from './component/company_picklist/company-edit.co
 import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
 import {
+  CalendarModule,
   CodeHighlighterModule,
   DataListModule,
   MessageService,
   ProgressBarModule,
   SharedModule,
-  SidebarModule,
+  SidebarModule, SliderModule,
   TabViewModule
 } from 'primeng/primeng';
 import {GrowlModule} from 'primeng/components/growl/growl';
@@ -131,7 +132,9 @@ import {ResultTableComponent} from "./component/results_view/result-table.compon
     InputTextareaModule,
     MenuModule,
     CheckboxModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    CalendarModule,
+    SliderModule
   ],
   providers: [CompanyService, UserService, TreeService,
     NodesListService, TreeDiagramService,
