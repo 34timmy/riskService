@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mifi.service.risk.domain.CalculationParamKey;
-import ru.mifi.service.risk.domain.ResultDataMapper;
+import ru.mifi.service.risk.domain.ResultDataMapperDto;
 import ru.mifi.service.risk.dto.CalcResultDto;
 import ru.mifi.service.risk.exception.DatabaseException;
 
@@ -24,7 +24,11 @@ import java.util.Set;
 public class DatabaseSelectAccessor {
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseSelectAccessor.class);
     private static final String SQL_GET_RES_TABLES_NAMES = "SELECT table_name FROM result_data_mapper WHERE model_id = ? AND company_list_id = ? AND all_company_list_id = ? AND year = ?";
-    private static final String SQL_GET_ALL_RES_TABLES_NAMES = "SELECT * FROM result_data_mapper";
+    private static final String SQL_GET_ALL_RES_TABLES_NAMES =
+            "SELECT " +
+            "       rdm.*, m.NAME as model_name, m.DESCR as model_descr" +
+            "   FROM result_data_mapper rdm " +
+            "   JOIN model m on (m.id = rdm.MODEL_ID)";
     private static final String SQL_GET_RES_FROM_TABLE =
             "SELECT " +
                     "   company_id, node, parent_node, weight, is_leaf, comment, value, normalized_value, " +
@@ -110,14 +114,14 @@ public class DatabaseSelectAccessor {
         }
     }
 
-    public Set<ResultDataMapper> getTableNamesForCalcResult() {
-        Set<ResultDataMapper> tableNames = new HashSet<>();
+    public Set<ResultDataMapperDto> getTableNamesForCalcResult() {
+        Set<ResultDataMapperDto> tableNames = new HashSet<>();
         try (Connection conn = dataSource.getConnection()) {
             Statement stmt = conn.createStatement();
 //            ResultSet rs = stmt.executeQuery(SQL_GET_ALL_TABLE_NAMES);
             ResultSet rs = stmt.executeQuery(SQL_GET_ALL_RES_TABLES_NAMES);
             while (rs.next()) {
-                tableNames.add(new ResultDataMapper(rs));
+                tableNames.add(new ResultDataMapperDto(rs));
                //                if ((tableName = rs.getString("table_name")).toLowerCase().startsWith("calc_result")) {
 //                    tableNames.add(tableName);
 //                }

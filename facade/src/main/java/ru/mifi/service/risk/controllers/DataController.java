@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.mifi.service.risk.database.DatabaseSelectAccessor;
 import ru.mifi.service.risk.domain.CalculationParamKey;
-import ru.mifi.service.risk.domain.ResultDataMapper;
+import ru.mifi.service.risk.domain.ResultDataMapperDto;
 import ru.mifi.service.risk.dto.CalcResultDto;
 import ru.mifi.service.risk.exception.RestException;
 import ru.mifi.service.risk.utils.DataService;
@@ -100,7 +100,7 @@ public class DataController extends ExceptionHandlerController {
     @GetMapping(value = "/getListOfResults", produces = "application/json")
     @ResponseBody
     public Map<String, Object> getListOfResults() {
-        Set<ResultDataMapper> result = accessor.getTableNamesForCalcResult();
+        Set<ResultDataMapperDto> result = accessor.getTableNamesForCalcResult();
         return ResponseHelper.successResponse(result);
     }
 }
