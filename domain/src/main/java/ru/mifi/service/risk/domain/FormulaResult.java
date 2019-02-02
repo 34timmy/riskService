@@ -5,7 +5,6 @@ import lombok.Data;
 import ru.mifi.service.risk.domain.enums.FormulaTypeEnum;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by DenRUS on 19.10.2017.
@@ -31,6 +30,7 @@ public class FormulaResult {
     private double d;
     private double _XB;
     private double inputValue;
+    private final String nodeName;
 
     /**
      * Конструктор по всем полям
@@ -51,7 +51,7 @@ public class FormulaResult {
      */
     public FormulaResult(String inn, String id, double inputeValue, double result, int year,
                          String descr, FormulaTypeEnum formulaType, double a, double b, double c, double d, double xb,
-                         double interpretationK, List<String> comments) {
+                         double interpretationK, List<String> comments, String nodeName) {
         this.inn = inn;
         this.id = id;
         this.result = result;
@@ -66,6 +66,7 @@ public class FormulaResult {
         this.d = d;
         this._XB = xb;
         this.allComments = comments;
+        this.nodeName = nodeName;
     }
 
     /**
@@ -95,8 +96,9 @@ public class FormulaResult {
         this.d = formulaResult.d;
         this._XB = formulaResult._XB;
         this.interpretationK = interpretationK;
-        this.interpretationValue= interpretationValue;
+        this.interpretationValue = interpretationValue;
         this.comment = commentInit(formulaResult.getAllComments(), interpretationValue);
+        this.nodeName = formulaResult.getNodeName();
     }
 
     /**
@@ -108,10 +110,11 @@ public class FormulaResult {
      * @param result      резуальтат
      * @param year        год
      */
-    public FormulaResult(String inn, String id, double inputeValue, double result, int year, List<String> comments) {
+    public FormulaResult(String inn, String id, double inputeValue, double result, int year, String nodeName, List<String> comments) {
         this.inn = inn;
         this.id = id;
         this.result = result;
+        this.nodeName = nodeName;
         this.inputeValue = inputeValue;
         this.year = year;
         this.descr = null;
@@ -128,7 +131,7 @@ public class FormulaResult {
      * @param id   идентификатор формулы
      * @param year год
      */
-    public FormulaResult(String inn, String id, int year, String msg) {
+    public FormulaResult(String inn, String id, int year, String nodeName, String msg) {
         this.inn = inn;
         this.id = id;
         this.result = 0;
@@ -136,6 +139,7 @@ public class FormulaResult {
         this.year = year;
         this.descr = null;
         this.formulaType = null;
+        this.nodeName = nodeName;
         this.a = 0;
         this.b = 0;
         this.c = 0;
@@ -157,13 +161,13 @@ public class FormulaResult {
         if (comments.size() != 3) {
             throw new IllegalArgumentException("Неверное количество комментариев!");
         }
-        if (interpretationValue <= ((double)1/3)) {
+        if (interpretationValue <= ((double) 1 / 3)) {
             return comments.get(0);
         }
-        if (interpretationValue > ((double)1/3) && interpretationValue <= ((double)2/3)) {
+        if (interpretationValue > ((double) 1 / 3) && interpretationValue <= ((double) 2 / 3)) {
             return comments.get(1);
         }
-        if (interpretationValue > ((double)2/3) && interpretationValue <= ((double)1)) {
+        if (interpretationValue > ((double) 2 / 3) && interpretationValue <= ((double) 1)) {
             return comments.get(2);
         }
         return "Интерпретационное значение больше 1";

@@ -155,7 +155,8 @@ CREATE TABLE public.result_data_mapper (
   all_company_list_id VARCHAR2 (255) NOT NULL,
   year                INTEGER NOT NULL,
   table_name          VARCHAR2 (4000) NOT NULL,
-  calculated_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
+  calculated_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+  user_started        VARCHAR2 (4000)
 );
 ALTER TABLE public.result_data_mapper
   ADD CONSTRAINT res_data_mapper_model_fk FOREIGN KEY (model_id) REFERENCES model (id)

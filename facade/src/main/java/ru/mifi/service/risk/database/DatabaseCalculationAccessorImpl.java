@@ -19,7 +19,8 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     //TODO надо сортировать формулы и потом доставать по 1000 для расчета. Чтоб не все сразу
     private static final String SQL_GET_MODEL_LEAFS =
             "SELECT " +
-                    "   f.id, f.descr, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, mc.weight, mc.comments, COALESCE (mc.k_interpret, m.k_interpret) as k_interpret " +
+                    "   f.id, f.descr, f.calculation, f.formula_type, f.a, f.b, f.c, f.d, f.xb, mc.weight, mc.comments, " +
+                    "   COALESCE (mc.k_interpret, m.k_interpret) as k_interpret, mc.DESCR " +
                     "FROM " +
                     "   model_calc mc " +
                     "JOIN formula f ON (f.id = mc.node)" +
@@ -35,15 +36,15 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     private static final String SQL_SAVE_FORMULA_TO_TEMP_TABLE =
             "INSERT INTO " +
                     "   %s" +
-                    "       (company_id, node, value, normalized_value, linead_value, comment, interpretation_index)" +
+                    "       (company_id, node, value, normalized_value, linead_value, comment, interpretation_index, node_name)" +
                     "   VALUES" +
-                    "       (?,         ?,      ?,      ?,             ?,               ?,      ?)";
+                    "       (?,         ?,      ?,      ?,             ?,               ?,      ?,                      ?)";
     private static final String SQL_SAVE_RESULT_TABLE_NAME =
             "INSERT INTO " +
                     "   result_data_mapper" +
-                    "       (model_id, company_list_id, all_company_list_id, year, table_name)" +
+                    "       (model_id, company_list_id, all_company_list_id, year, table_name, user_started)" +
                     "   VALUES" +
-                    "       (?,?,?,?,?)";
+                    "       (?,?,?,?,?,?)";
     private static final String SQL_GET_NORMATIVE_VALUE_STMT =
             "SELECT " +
                     "   value, descr " +
@@ -66,7 +67,8 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
                     "   mc.descr, mc.node, mc.parent_id, mc.weight, mc.is_leaf, mc.level, mc.comments, " +
                     "   mc_parent.comments as parent_comments, mc_parent.weight as parent_weight, " +
                     "   COALESCE(mc.k_interpret, m.k_interpret) as k_interpret, " +
-                    "   COALESCE(mc_parent.k_interpret, m.k_interpret) as parent_k_interpret " +
+                    "   COALESCE(mc_parent.k_interpret, m.k_interpret) as parent_k_interpret, " +
+                    "   mc_parent.DESCR as parent_descr " +
                     "FROM model_calc mc " +
                     "LEFT JOIN model_calc mc_parent ON (mc_parent.node = mc.parent_id) " +
                     "JOIN model m ON (m.id = mc.model_id) " +
@@ -221,13 +223,15 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
                                 resultSet.getString("node"),
                                 resultSet.getDouble("weight"),
                                 resultSet.getDouble("k_interpret"),
-                                extractComments(resultSet.getString("comments"))
+                                extractComments(resultSet.getString("comments")),
+                                resultSet.getString("descr")
                         ),
                         new HierarchyNode(
                                 resultSet.getString("parent_id"),
                                 resultSet.getDouble("parent_weight"),
                                 resultSet.getDouble("parent_k_interpret"),
-                                extractComments(resultSet.getString("parent_comments"))
+                                extractComments(resultSet.getString("parent_comments")),
+                                resultSet.getString("parent_descr")
                         )
 
                 );
@@ -256,7 +260,8 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     @SneakyThrows
     public String saveDataToDb(
             HierarchyResult finalResult,
-            CalculationParamKey key
+            CalculationParamKey key,
+            String user
     ) {
         String tableName = new DatabaseDdlAccessor().createTempTable(
                 key,
@@ -291,6 +296,7 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
                     }
                     saveFormulaStmt.setString(6, node.getComment());
                     saveFormulaStmt.setDouble(7, node.getInterpretationValue());
+                    saveFormulaStmt.setString(8, node.getNodeName());
                     saveFormulaStmt.addBatch();
                     if (++counter == SQL_BATCH_SIZE) {
                         saveFormulaStmt.executeBatch();
@@ -307,6 +313,7 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
         saveResultToMapperTableStmt.setString(3, key.getAllCompaniesListId());
         saveResultToMapperTableStmt.setInt(4, key.getYear());
         saveResultToMapperTableStmt.setString(5, tableName);
+        saveResultToMapperTableStmt.setString(6, user);
         saveResultToMapperTableStmt.executeUpdate();
         saveResultToMapperTableStmt.clearParameters();
         return tableName;

@@ -33,6 +33,7 @@ public class Formula {
     public final static String D_NAME = "D";
     public final static String CALCULATION_INPUT_NAME = "calculationFormula";
     private final Double interpretationK;
+    private final String nodeName;
 
 
     private String id;
@@ -64,6 +65,7 @@ public class Formula {
         this.interpretationK = leafs.getDouble("k_interpret");
         this._XB = leafs.getString("xb");
         this.comments = extractComments(leafs.getString("comments"));
+        this.nodeName = leafs.getString("descr");
 
     }
 
@@ -93,7 +95,7 @@ public class Formula {
             this.inputValue = inputValue;
 
             return new FormulaResult(inn, this.id, inputValue, result, year, descr, formulaType,
-                    a, b, c, d, xb, interpretationK, comments);
+                    a, b, c, d, xb, interpretationK, comments, nodeName);
 
         } catch (Exception ex) {
             throw new FormulaCalculationException("Ошибка при расчете: " + ex);
