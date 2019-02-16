@@ -43,7 +43,7 @@ public class DataService {
      * @param calcKey Объект с параметрами расчета
      * @return надо подумать: либо id таблицы с данными, либо сообщение-статус расчета.
      */
-    public Map<String, Object> performCalculation(CalculationParamKey calcKey) {
+    public Map<String, Object> performCalculation(CalculationParamKey calcKey, String user) {
         try (DatabaseCalculationAccessorImpl accessor = new DatabaseCalculationAccessorImpl(dataSource)) {
             HierarchyResult finalResult;
             {
@@ -74,7 +74,7 @@ public class DataService {
                 );
                 LOG.info("Расчет завершен.");
             }
-            String tableName = accessor.saveDataToDb(finalResult, calcKey);
+            String tableName = accessor.saveDataToDb(finalResult, calcKey, user);
             return getResultAsMap(tableName, "Расчет проведен успешно");
         } catch (SQLException e) {
             throw new DatabaseException("Ошибка БД при расчете иерархии: " + e.getMessage(), e);

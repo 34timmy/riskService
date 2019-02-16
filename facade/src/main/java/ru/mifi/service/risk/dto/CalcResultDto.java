@@ -32,6 +32,7 @@ public class CalcResultDto implements Serializable {
     private final Integer isLeaf;
     private final String comment;
     private final Set<CalcResultDto> children = new HashSet<>();
+    private final String nodeName;
     private Integer level = null;
 
 
@@ -47,6 +48,7 @@ public class CalcResultDto implements Serializable {
         this.normalizedValue = String.valueOf(resultSet.getDouble(8));
         this.lineadValue = String.valueOf(resultSet.getDouble(9));
         this.interpretationIndex = resultSet.getDouble(10);
+        this.nodeName = resultSet.getString(10);
     }
 
     /**

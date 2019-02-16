@@ -109,7 +109,7 @@ public class CalculationService {
                     }
 
                 } catch (FormulaCalculationException | DataLeakException ex) {
-                    wrongFormulas.add(new FormulaResult(inn, formula.getId(), year, ex.getMessage()));
+                    wrongFormulas.add(new FormulaResult(inn, formula.getId(), year, formula.getNodeName(), ex.getMessage()));
                     LOG.warn(String.format("Параметры: Инн = %s, Год = %s\nВ формуле по id:%s\nОшибка: \n\t{\n\t\t%s.\n\t}",
                             inn, year, formula.getId(), ex.getMessage()));
                 }
@@ -252,7 +252,15 @@ public class CalculationService {
                         parentId,
                         oneCompanyData
                 );
-                FormulaResult nodeResult = new FormulaResult(inn, parentId, val, val, year, parentNode.getComments());
+                FormulaResult nodeResult = new FormulaResult(
+                        inn,
+                        parentId,
+                        val,
+                        val,
+                        year,
+                        parentNode.getNodeName(),
+                        parentNode.getComments()
+                );
                 oneCompanyData.put(parentId, nodeResult);
                 nodeResults.add(nodeResult);
 

@@ -41,7 +41,7 @@ public class ActionController extends ExceptionHandlerController {
     ) throws RestException {
         CalculationParamKey key = new CalculationParamKey(modelId, companyListId, industryCompanyListId, year);
         LOG.info("Получен запрос на расчет по параметрам: " + key);
-        Map<String, Object> result = dataService.performCalculation(key);
+        Map<String, Object> result = dataService.performCalculation(key, getCurrentUserName());
         return ResponseHelper.successResponse(result);
     }
     @ApiOperation(value = "Запустить основной расчет")
@@ -60,7 +60,7 @@ public class ActionController extends ExceptionHandlerController {
     ) throws RestException {
         CalculationParamKey key = new CalculationParamKey(modelId, industryCompanyListId, year, industryId);
         LOG.info("Получен запрос на расчет по параметрам: " + key);
-        Map<String, Object> result = dataService.performCalculation(key);
+        Map<String, Object> result = dataService.performCalculation(key, getCurrentUserName());
         return ResponseHelper.successResponse(result);
     }
 

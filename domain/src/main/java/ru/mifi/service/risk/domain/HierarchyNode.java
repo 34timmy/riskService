@@ -15,4 +15,5 @@ public class HierarchyNode {
     private final Double weight;
     private final Double interpretationK;
     private final List<String> comments;
+    private final String nodeName;
 }
