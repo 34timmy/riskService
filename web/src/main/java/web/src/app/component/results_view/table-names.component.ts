@@ -41,7 +41,7 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
       {field: 'allCompaniesListName', header: 'Расширенный список'},
       {field: 'year', header: 'Год расчёта'},
       {field: 'date', header: 'Время расчёта'},
-      {field: 'user', header: 'Исполнитель расчёта'},
+      {field: 'userStarted', header: 'Исполнитель расчёта'},
     ];
 
     this.years = this.initYears();
@@ -121,8 +121,8 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
         x => x.data.id == result.companyListId).data.descr;
       let companyListName2 = this.companyLists.find(
         x => x.data.id == result.allCompanyListId).data.descr;
-      parsedNames.push(new ResultTableModel(result.modelId,result.descr, result.companyListId, companyListName1,
-        result.allCompanyListId, companyListName2, result.year, result.tableName))
+      parsedNames.push(new ResultTableModel(result.modelId, result.modelName, result.companyListId, companyListName1,
+        result.allCompanyListId, companyListName2, result.year, result.tableName, result.userStarted))
     }
     return parsedNames;
   }

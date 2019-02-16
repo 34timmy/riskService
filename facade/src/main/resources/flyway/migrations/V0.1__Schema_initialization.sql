@@ -156,7 +156,6 @@ CREATE TABLE public.result_data_mapper (
   year                INTEGER NOT NULL,
   table_name          VARCHAR2 (4000) NOT NULL,
   model_name          VARCHAR2 (4000) NOT NULL,
-  calculated_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
   calculated_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
   user_started        VARCHAR2 (4000)
 );

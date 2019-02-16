@@ -1,7 +1,7 @@
 export class ResultTableModel {
 
   id: number;
-  descr: string;
+  modelName: string;
   modelId: string;
   companyListId: string;
   companyListName: string;
@@ -10,11 +10,12 @@ export class ResultTableModel {
   year: string;
   tableName: string;
   date: string;
+  userStarted: string;
 
-  constructor(modelId: string, descr: string,
-              companyListId: string, companyListName: string, allcompaniesListid: string, allCompaniesListName: string, year: string, tableName: string) {
+  constructor(modelId: string, modelName: string,
+              companyListId: string, companyListName: string, allcompaniesListid: string, allCompaniesListName: string, year: string, tableName: string, userStarted: string) {
     this.modelId = modelId;
-    this.descr = descr;
+    this.modelName = modelName;
     this.companyListId = companyListId;
     this.companyListName = companyListName;
     this.allCompaniesListId = allcompaniesListid;
@@ -23,7 +24,8 @@ export class ResultTableModel {
     this.tableName = tableName;
     let tableNameArr = tableName.toString().split("_");
     this.date = this.convertDate(tableNameArr[tableNameArr.length - 1])
-    .toLocaleString('ru');
+      .toLocaleString('ru');
+    this.userStarted = userStarted;
   }
 
   convertDate(dateString) {

@@ -14,7 +14,7 @@ import static ru.mifi.utils.StringUtils.extractComments;
  * Работа с базой при непосредственном расчете.
  * Created by DenRUS on 08.10.2018.
  */
-public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable implements DatabaseCalculationAccessor{
+public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable implements DatabaseCalculationAccessor {
 
     //TODO надо сортировать формулы и потом доставать по 1000 для расчета. Чтоб не все сразу
     private static final String SQL_GET_MODEL_LEAFS =
@@ -42,9 +42,9 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     private static final String SQL_SAVE_RESULT_TABLE_NAME =
             "INSERT INTO " +
                     "   result_data_mapper" +
-                    "       (model_id, company_list_id, all_company_list_id, year, table_name, user_started)" +
+                    "       (model_id, company_list_id, all_company_list_id, year, table_name, user_started,model_name)" +
                     "   VALUES" +
-                    "       (?,?,?,?,?,?)";
+                    "       (?,?,?,?,?,?,?)";
     private static final String SQL_GET_NORMATIVE_VALUE_STMT =
             "SELECT " +
                     "   value, descr " +
@@ -78,6 +78,8 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     private static final String SQL_UPDATE_IS_LEAF = "UPDATE %s t1 set t1.is_leaf = (select is_leaf from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
     private static final String SQL_UPDATE_PARENT_NODE = "UPDATE %s t1 set t1.parent_node = (select parent_id from model_calc mc where mc.node=t1.node AND mc.model_id = '%s')";
     private static final String SQL_GET_COMPANY_IDS_BY_INDUSTRY = "SELECT id FROM company WHERE industry=?";
+    private static final String SQL_GET_MODEL_NAME = "SELECT m.descr FROM model m WHERE m.id=?";
+    private final PreparedStatement getModelNameStmt;
     private final PreparedStatement getModelCalcStmt;
     private final PreparedStatement getModelLeafsStmt;
     private final Statement getFuncParamsStmt;
@@ -98,6 +100,7 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
         this.getModelCalcStmt = connection.prepareStatement(SQL_GET_MODEL_CALC);
         this.getNormativeValueStmt = connection.prepareStatement(SQL_GET_NORMATIVE_VALUE_STMT);
         this.saveResultToMapperTableStmt = connection.prepareStatement(SQL_SAVE_RESULT_TABLE_NAME);
+        this.getModelNameStmt = connection.prepareStatement(SQL_GET_MODEL_NAME);
         this.getCompanyIdsByIndustryId = connection.prepareStatement(SQL_GET_COMPANY_IDS_BY_INDUSTRY);
     }
 
@@ -121,6 +124,7 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
     /**
      * Получаем расширенный список компаний по ключу. Если задан идентификатор списка - по берем по нему.
      * Если идентификатор не задан - берем по отрасли.
+     *
      * @param calcKey ключ с параметрами расчета
      * @return идентификаторы компаний
      * @throws SQLException
@@ -251,6 +255,18 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
         }
     }
 
+
+    @SneakyThrows
+    public String getModelName(String paramCode) {
+        getModelNameStmt.setObject(1, paramCode);
+        try (ResultSet modelName = getModelNameStmt.executeQuery()) {
+            if (!modelName.next()) {
+                return null;
+            }
+            return modelName.getString("model_name");
+        }
+    }
+
     /**
      * Сохраняем результат расчета иерархии в базу
      *
@@ -267,6 +283,9 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
                 key,
                 connection
         );
+//        TODO jdbs exscpetion
+//        String modelName = getModelName(key.getModelId());
+        String modelName = "Model_name";
         Map<String, Collection<FormulaResult>> hierarchyData = finalResult.getHierarchyData();
         try (PreparedStatement saveFormulaStmt = connection.prepareStatement(
                 String.format(
@@ -314,6 +333,7 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
         saveResultToMapperTableStmt.setInt(4, key.getYear());
         saveResultToMapperTableStmt.setString(5, tableName);
         saveResultToMapperTableStmt.setString(6, user);
+        saveResultToMapperTableStmt.setString(7, modelName);
         saveResultToMapperTableStmt.executeUpdate();
         saveResultToMapperTableStmt.clearParameters();
         return tableName;
