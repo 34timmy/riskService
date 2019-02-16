@@ -11,6 +11,7 @@ const PROXY_CONFIG = [
       "/refresh",
       "/register",
       "/profile"
+      // "/copy"
     ],
     target: "http://localhost:8080",
     secure: false

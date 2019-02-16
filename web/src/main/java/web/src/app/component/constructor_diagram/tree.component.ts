@@ -5,7 +5,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {TreeDiagramService} from "../../service/tree-diagram.service";
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {FormulaEditComponent} from "./formula/formula-edit.component";
-import {ConfirmationService, MessageService} from "primeng/api";
+import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 import {ModelEditComponent} from "./model/model-edit.component";
 import {ModelcalcEditComponent} from "./modelcalc/modelcalc-edit.component";
 import {ChooseComponent} from "./choose_dialog/choose.component";
@@ -32,6 +32,7 @@ export class Tree implements OnInit {
   @ViewChild('chooseChild')
   private chooseChild: ChooseComponent;
 
+  contextMenu = new BehaviorSubject<boolean>(true);
 
   private _config = {
     confirmationService: this.confirmationService,
@@ -42,6 +43,7 @@ export class Tree implements OnInit {
     modelEditChild: this.modelEditChild,
     modelCalcEditChild: this.modelCalcEditChild,
     chooseChild: this.chooseChild,
+    contextMenu: this.contextMenu,
     nodeWidth: 200,
     nodeHeight: 100
   };
@@ -59,6 +61,7 @@ export class Tree implements OnInit {
   reloadModels = new BehaviorSubject<boolean>(false);
   showToggle = false;
   copy = false;
+  private items: MenuItem[];
 
   constructor(
     private nodesSrv: NodesListService,
@@ -70,10 +73,13 @@ export class Tree implements OnInit {
     this._config.treeService = this.treeService;
     this._config.confirmationService = this.confirmationService;
     this._config.notificationService = this.notificationService;
+    this._config.notificationService = this.notificationService;
+    this._config.contextMenu = this.contextMenu;
   }
 
 
   ngOnInit() {
+
     this.treeService.getTheBoolean().subscribe(value => {
         this.modelsLoaded = of(value);
         console.log('moldesLoaded', this.modelsLoaded)
@@ -83,6 +89,31 @@ export class Tree implements OnInit {
         this.typeDialog = of(value);
       }
     );
+
+    this.items = [
+      {
+        label: 'File',
+        items: [{
+          label: 'New',
+          icon: 'pi pi-fw pi-plus',
+          items: [
+            {label: 'Project'},
+            {label: 'Other'},
+          ]
+        },
+          {label: 'Open'},
+          {label: 'Quit'}
+        ]
+      },
+      {
+        label: 'Edit',
+        icon: 'pi pi-fw pi-pencil',
+        items: [
+          {label: 'Delete', icon: 'pi pi-fw pi-trash'},
+          {label: 'Refresh', icon: 'pi pi-fw pi-refresh'}
+        ]
+      }
+    ];
 
     // if (!_data || !Array.isArray(_data.json)) return
     // if (typeof _data.config === 'object') {
@@ -118,6 +149,7 @@ export class Tree implements OnInit {
     this.treeService.setTheBoolean(true)
 
   }
+
 
   public newNode() {
     this.nodesSrv.newNode()
@@ -217,6 +249,7 @@ export class Tree implements OnInit {
       }
     );
   }
+
 
   private onSaveRule(node) {
     console.log('rule ', node);

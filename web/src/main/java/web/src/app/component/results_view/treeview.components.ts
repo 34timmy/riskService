@@ -21,7 +21,7 @@ export class TreeViewComponent implements OnInit {
   modelsLoaded: Observable<boolean>;
   draggedNode: TreeNode;
   showToggle;
-  valueFilter: number = 1;
+  valueFilter: number = 100;
   valueTimeout: any;
 
 
@@ -48,6 +48,7 @@ export class TreeViewComponent implements OnInit {
       {field: 'name', header: 'Название', width: '30%'},
       {field: 'weight', header: 'Вес', width: '10%'},
       {field: 'lineadValue', header: 'Значение индекса', width: '10%'},
+      {field: 'comment', header: 'Комментарий', width: '10%'},
       // {field: 'level', header: 'Уровень', width: '10%'},
       // {field: 'actions', header: 'Действия', width: '10%'}
     ];
@@ -141,7 +142,8 @@ export class TreeViewComponent implements OnInit {
               )
               .data.descr || '-',
             weight: '-',
-            lineadValue: list[key].lineadValue
+            lineadValue: list[key].lineadValue,
+            comment: '-'
           },
           children: [this.convertChildren(list[key])]
         }
@@ -159,6 +161,7 @@ export class TreeViewComponent implements OnInit {
     if (list.length == undefined) {
       convertedObj = {
         data: {
+          descr:'-',
           comment: list.comment,
           companyId: list.descr,
           isLeaf: list.isLeaf,

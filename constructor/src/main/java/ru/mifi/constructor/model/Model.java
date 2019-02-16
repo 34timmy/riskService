@@ -9,5 +9,6 @@ import java.util.List;
 public class Model {
     private String id;
     private String descr;
+    private String role;
     private List<ModelCalc> modelCalcs;
 }

@@ -70,7 +70,7 @@ public class MainModelController {
     }
 
     @PostMapping(value = "/copy",consumes = "application/json")
-    public void ccopyModel(@Valid @RequestBody Model model) {
+    public void copyModel(@Valid @RequestBody Model model) {
 //        TODO responseEntity
         mainModelService.copyModel(model);
     }

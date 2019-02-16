@@ -8,6 +8,7 @@ import {RuleEditComponent} from "../../rule/rule-edit.component";
 import {ModelcalcEditComponent} from "../modelcalc/modelcalc-edit.component";
 import {ChooseComponent} from "../choose_dialog/choose.component";
 import {v4 as uuid} from 'uuid';
+import {BehaviorSubject} from "rxjs";
 
 
 export class TreeDiagramNodesList {
@@ -39,6 +40,7 @@ export class TreeDiagramNodesList {
   private modelCalcEditChild: ModelcalcEditComponent;
   @ViewChild(ChooseComponent)
   private chooseChild: ChooseComponent;
+  contextMenu: BehaviorSubject<boolean>;
 
   private uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -71,6 +73,7 @@ export class TreeDiagramNodesList {
     this.modelEditChild = this.config.modelEditChild;
     this.modelCalcEditChild = this.config.modelCalcEditChild;
     this.chooseChild = this.config.chooseChild;
+    this.contextMenu = this.config.contextMenu;
   }
 
   private _makeRoots() {
@@ -127,8 +130,7 @@ export class TreeDiagramNodesList {
       // _parent.children.delete(origin);
       if (!_parent.hasChildren()) {
         _parent.toggle(false)
-      }
-      else {
+      } else {
 
         this.createNewNodesOnDrop(_parent, _target);
         _target.children.add(origin);
@@ -142,6 +144,7 @@ export class TreeDiagramNodesList {
 
     this.serialize()
   }
+
   //--------------------------------------------------------------------------------
   private createNewNodesOnDrop(parent, _target) {
     if (parent.children) {
@@ -150,8 +153,7 @@ export class TreeDiagramNodesList {
         return this.createNewNodesOnDrop(child, _target)
 
       })
-    }
-    else {
+    } else {
       return this.createChildForDrop(parent, _target);
     }
   }
@@ -188,6 +190,7 @@ export class TreeDiagramNodesList {
     this._makeRoots();
     return _nodeTemplate.guid
   }
+
   //--------------------------------------------------------------------------------
   public getThisNodeList() {
     return this;
@@ -246,13 +249,12 @@ export class TreeDiagramNodesList {
               this.errorMessage(err.json())
             }
           );
-        }
-        else if (node.type === 'modelcalc') {
+        } else if (node.type === 'modelcalc') {
           node.treeService.deleteModelCalc(node.guid).subscribe((val) => {
               if (val.ok) {
                 this.delete(node);
                 this.successMessage(node,
-                  'Записб ' + node.data.descr + ' удалена',
+                  'Запись ' + node.data.descr + ' удалена',
                   null)
               }
             },
@@ -260,8 +262,7 @@ export class TreeDiagramNodesList {
               this.errorMessage(err.json())
             }
           );
-        }
-        else if (node.type === 'model') {
+        } else if (node.type === 'model') {
           node.treeService.deleteModel(node.data).subscribe((val) => {
               if (val.ok) {
                 this.delete(node);
@@ -302,12 +303,10 @@ export class TreeDiagramNodesList {
       this.showModelEditDialog();
       this.modelEditChild.fillModelForm(node.data);
 
-    }
-    else if (node.type === 'modelcalc') {
+    } else if (node.type === 'modelcalc') {
       this.showModelCalcEditDialog();
       this.modelCalcEditChild.fillModelcalcForm(node.data);
-    }
-    else if (node.type === 'formula') {
+    } else if (node.type === 'formula') {
       this.showFormulaEditDialog();
       this.formulaEditChild.fillFormulaForm(node.data);
     }
@@ -315,19 +314,20 @@ export class TreeDiagramNodesList {
   }
 
   public addNode(node = null) {
+    this.contextMenu.next(false);
     this.globalNode = node;
     let valueForm;
     let newNodeGuid;
     console.log('Метод для добавления записи ', node);
     if (node === null) {
+
       this.showModelEditDialog();
       this.modelEditChild.fillEmptyModelForm();
-    }
-    else if (node.type === 'model') {
+    } else if (node.type === 'model') {
+
       this.showModelCalcEditDialog();
       this.modelCalcEditChild.fillModelcalcFormWithModelId(node);
-    }
-    else if (node.type === 'modelcalc') {
+    } else if (node.type === 'modelcalc') {
       this.showChooseDialog(node);
     }
   }
@@ -346,7 +346,6 @@ export class TreeDiagramNodesList {
     return _nodeTemplate.guid
 
   }
-
 
 
   private showChooseDialog(node) {

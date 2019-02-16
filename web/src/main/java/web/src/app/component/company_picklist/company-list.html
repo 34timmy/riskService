@@ -75,18 +75,20 @@
               <td>
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 {{rowData.id}}
+
               </td>
               <td>
                 {{rowData.descr || rowData.name }}
-              </td>
-              <td>
-                <p-button *ngIf="!calculationPerform" type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px"
-                          styleClass="ui-button-success"
-                          (click)="onEdit(rowData)"></p-button>
-                <p-button *ngIf="!calculationPerform" icon="fa fa-trash" style="margin: 5px 5px 5px 5px"
+                <p-button *ngIf="!calculationPerform" icon="fa fa-trash" style="float: right; margin: 5px 5px 5px 5px"
                           styleClass="ui-button-danger "
                           (click)="onDelete(rowData)"></p-button>
               </td>
+              <!--<td>-->
+                <!--&lt;!&ndash;<p-button *ngIf="!calculationPerform" type="button" icon="fa fa-edit" style="margin: 5px 5px 5px 5px"&ndash;&gt;-->
+                          <!--&lt;!&ndash;styleClass="ui-button-success"&ndash;&gt;-->
+                          <!--&lt;!&ndash;(click)="onEdit(rowData)"></p-button>&ndash;&gt;-->
+
+              <!--</td>-->
             </tr>
           </ng-template>
           <app-company-save #saveChild></app-company-save>

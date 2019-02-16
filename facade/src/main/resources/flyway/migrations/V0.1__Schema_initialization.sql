@@ -106,8 +106,8 @@ ALTER TABLE public.model_calc
   ON DELETE CASCADE;
 ALTER TABLE public.model_calc
   ADD CONSTRAINT weight_val_check CHECK (weight BETWEEN 0 AND 100);
-ALTER TABLE public.model_calc
-  ADD CONSTRAINT node_unique UNIQUE(node);
+-- ALTER TABLE public.model_calc
+--   ADD CONSTRAINT node_unique UNIQUE(node);
 ALTER TABLE public.model_calc
   ADD CONSTRAINT leaf_val_check CHECK (is_leaf BETWEEN 0 AND 1);
 
@@ -155,6 +155,7 @@ CREATE TABLE public.result_data_mapper (
   all_company_list_id VARCHAR2 (255) NOT NULL,
   year                INTEGER NOT NULL,
   table_name          VARCHAR2 (4000) NOT NULL,
+  model_name          VARCHAR2 (4000) NOT NULL,
   calculated_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
 );
 ALTER TABLE public.result_data_mapper

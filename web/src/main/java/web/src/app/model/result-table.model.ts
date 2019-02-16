@@ -11,9 +11,10 @@ export class ResultTableModel {
   tableName: string;
   date: string;
 
-  constructor(modelId: string,
+  constructor(modelId: string, descr: string,
               companyListId: string, companyListName: string, allcompaniesListid: string, allCompaniesListName: string, year: string, tableName: string) {
     this.modelId = modelId;
+    this.descr = descr;
     this.companyListId = companyListId;
     this.companyListName = companyListName;
     this.allCompaniesListId = allcompaniesListid;

@@ -11,7 +11,7 @@ import {CompanyService} from './service/company.service';
 import {routing} from './app.routes';
 import {
   CalendarModule,
-  CodeHighlighterModule,
+  CodeHighlighterModule, ContextMenu, ContextMenuModule,
   DataListModule,
   MessageService,
   ProgressBarModule,
@@ -134,7 +134,8 @@ import {ResultTableComponent} from "./component/results_view/result-table.compon
     CheckboxModule,
     ProgressSpinnerModule,
     CalendarModule,
-    SliderModule
+    SliderModule,
+    ContextMenuModule
   ],
   providers: [CompanyService, UserService, TreeService,
     NodesListService, TreeDiagramService,

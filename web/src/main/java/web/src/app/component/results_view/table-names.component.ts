@@ -36,9 +36,9 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     //TODO
 
-    this.cols = [{field: 'model', header: 'Модель'},
-      {field: 'companiesList1', header: 'Список'},
-      {field: 'companiesList2', header: 'Расширенный список'},
+    this.cols = [{field: 'modelName', header: 'Модель'},
+      {field: 'companyListName', header: 'Список'},
+      {field: 'allCompaniesListName', header: 'Расширенный список'},
       {field: 'year', header: 'Год расчёта'},
       {field: 'date', header: 'Время расчёта'},
       {field: 'user', header: 'Исполнитель расчёта'},
@@ -88,21 +88,27 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
     let _self = this;
 
     if (this.resultList) {
-      this._table.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
-        // get the from/start value
-        var s = _self.dateFilters[0].getTime();
-        var e;
-        // the to/end value might not be set
-        // use the from/start date and add 1 day
-        // or the to/end date and add 1 day
-        if (_self.dateFilters[1]) {
-          e = _self.dateFilters[1].getTime() + 86400000;
-        } else {
-          e = s + 86400000;
-        }
-        // compare it to the actual values
-        return value.getTime() >= s && value.getTime() <= e;
+
+      this._table.filterConstraints['my'] = (value, filter): boolean => {
+        // Make sure the value and the filter are Dates
+        return value.getTime() == filter.getTime();
       }
+
+      // this._table.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
+      //   // get the from/start value
+      //   var s = _self.dateFilters[0].getTime();
+      //   var e;
+      //   // the to/end value might not be set
+      //   // use the from/start date and add 1 day
+      //   // or the to/end date and add 1 day
+      //   if (_self.dateFilters[1]) {
+      //     e = _self.dateFilters[1].getTime() + 86400000;
+      //   } else {
+      //     e = s + 86400000;
+      //   }
+      //   // compare it to the actual values
+      //   return value.getTime() >= s && value.getTime() <= e;
+      // }
     }
   }
 
@@ -115,7 +121,7 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
         x => x.data.id == result.companyListId).data.descr;
       let companyListName2 = this.companyLists.find(
         x => x.data.id == result.allCompanyListId).data.descr;
-      parsedNames.push(new ResultTableModel(result.modelId, result.companyListId, companyListName1,
+      parsedNames.push(new ResultTableModel(result.modelId,result.descr, result.companyListId, companyListName1,
         result.allCompanyListId, companyListName2, result.year, result.tableName))
     }
     return parsedNames;

@@ -23,6 +23,7 @@ export class ResultTableComponent implements OnInit {
   showToggle;
   selectedLevel;
   levels: any[];
+  valueFilter: number = 1;
 
   constructor(private treeService: TreeService,
               private notificationService: MessageService) {

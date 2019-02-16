@@ -14,6 +14,7 @@ public class ResultDataMapper {
     private String allCompanyListId;
     private String year;
     private String tableName;
+    private String modelName;
 
     public ResultDataMapper(ResultSet rs) throws SQLException {
         this.modelId = rs.getString(1);
@@ -21,6 +22,8 @@ public class ResultDataMapper {
         this.allCompanyListId = rs.getString(3);
         this.year = rs.getString(4);
         this.tableName = rs.getString(5);
+        this.modelName = rs.getString(6);
+
 
     }
 }

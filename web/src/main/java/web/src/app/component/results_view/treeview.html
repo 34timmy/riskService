@@ -32,9 +32,9 @@
             <tr>
               <th *ngFor="let col of columns" [ngSwitch]="col.field">
                 <div *ngSwitchCase="'lineadValue'">
-                  Value < {{valueFilter}}
-                  <i class="fa fa-close" (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="valueFilter"></i>
-                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="valueFilter" [min]="1" [max]="100" (onChange)="onYearChange($event, dt)"></p-slider>
+                  Value = {{valueFilter}}
+                  <i  (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="valueFilter"></i>
+                  <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="valueFilter" [min]="1" [max]="100" ></p-slider>
                 </div>
               </th>
             </tr>
@@ -56,15 +56,10 @@
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 {{rowData.node}}
               </td>
-              <td *ngIf="rowData.descr; else comment">
+              <td >
                 {{rowData.descr}}
               </td>
-              <td *ngIf="rowData.comment; else nodeName" #comment>
-                {{rowData.comment}}
-              </td>
-              <td *ngIf="!rowData.comment && rowData.node" #nodeName>
-                No com
-              </td>
+
               <td>
                 {{rowData.weight}}
               </td>
@@ -73,6 +68,12 @@
           'risk33-66':  rowData.lineadValue>=0.33 && rowData.lineadValue<=0.66,
           'risk66-100':  rowData.lineadValue>=0.66}">
                 {{valueFilter * rowData.lineadValue/100}}
+              </td>
+              <td *ngIf="rowData.comment; else nodeName" #comment>
+                {{rowData.comment}}
+              </td>
+              <td *ngIf="!rowData.comment && rowData.node" #nodeName>
+                No comment
               </td>
               <!--<td *ngIf="rowData.level">-->
                 <!--{{rowData.level}}-->

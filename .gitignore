@@ -21,6 +21,7 @@ package-lock.json
 *.ipr
 */target/
 *.log*
+*.log
 ### NetBeans ###
 /nbproject/private/
 /build/

@@ -57,7 +57,7 @@ export class CompanyListComponent implements OnInit {
     this.cols = [
       {field: 'id', header: 'Id'},
       {field: 'name', header: 'Name'},
-      {field: 'actions', header: 'Actions'}
+      // {field: 'actions', header: 'Actions'}
     ];
     this.reloadCompanyLists();
 

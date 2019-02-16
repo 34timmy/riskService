@@ -6,6 +6,12 @@
     <div>
       <p-table #dt [columns]="cols" [value]="resultList" [paginator]="true" [rows]="10"
                selectionMode="single" [(selection)]="selectedItem" (onRowSelect)="onRowSelect($event)">
+        <ng-template pTemplate="caption">
+          <div style="text-align: left">
+            <i class="fa fa-search" style=" margin:4px 4px 0 0"></i>
+            <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+          </div>
+        </ng-template>
         <ng-template pTemplate="header" let-columns>
           <tr>
             <th *ngFor="let col of columns" [pSortableColumn]="col.field">
@@ -16,11 +22,11 @@
           </tr>
           <tr>
             <th *ngFor="let col of columns" [ngSwitch]="col.field">
-              <input *ngSwitchCase="'model'" pInputText type="text"
+              <input *ngSwitchCase="'modelId'" pInputText type="text"
                      (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
-              <input *ngSwitchCase="'companiesList1'" pInputText type="text"
+              <input *ngSwitchCase="'companyListName'" pInputText type="text"
                      (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
-              <input *ngSwitchCase="'companiesList2'" pInputText type="text"
+              <input *ngSwitchCase="'allCompaniesListName'" pInputText type="text"
                      (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
               <p-dropdown *ngSwitchCase="'year'" [options]="years" [style]="{'width':'100%'}"
                           (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
@@ -29,9 +35,9 @@
                 appendTo="body"
                 *ngSwitchCase="'date'"
                 selectionMode="range"
-                [readonlyInput]="false"
+                [readonlyInput]="true"
                 dateFormat="dd.mm.yy"
-                (onSelect)="dt.filter($event, col.field, 'dateRangeFilter')">
+                (onSelect)="dt.filter($event, 'DateInserted', 'my')">
               </p-calendar>
               <input *ngSwitchCase="'user'" pInputText type="text"
                      (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
@@ -39,30 +45,18 @@
             </th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-result>
+        <ng-template pTemplate="body" let-result let-columns="columns">
           <tr [pSelectableRow]="result">
-            <td>{{result.modelId}}
-              <button pButton icon="fa fa-align-left" style="float:right;margin: 5px 5px 5px 5px"
+            <td *ngFor="let col of columns" [ngSwitch]="col.field">
+              {{result[col.field] }}
+              <button *ngSwitchCase="'modelId'" pButton icon="fa fa-align-left" style="float:right;margin: 5px 5px 5px 5px"
                       class="ui-button-primary"
                       label="Иерархия" (click)="showTreeView(result)">
               </button>
-              <button pButton icon="fa fa-table" style="float:right;margin: 5px 5px 5px 5px" class="ui-button-primary "
+              <button *ngSwitchCase="'modelId'" pButton icon="fa fa-table" style="float:right;margin: 5px 5px 5px 5px" class="ui-button-primary "
                       label="Таблица" (click)="showTableView(result)">
               </button>
             </td>
-            <td>
-              {{result.companyListName}}
-            </td>
-            <td>
-              {{result.allCompaniesListName}}
-            </td>
-
-            <td>{{result.year}}</td>
-            <td>
-              {{result.date}}
-            </td>
-
-            <td>{{result.user}}</td>
             <!--<td>{{result.date |  date:'MM/dd/yyyy'}}</td>-->
           </tr>
         </ng-template>
