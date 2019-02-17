@@ -263,7 +263,7 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
             if (!modelName.next()) {
                 return null;
             }
-            return modelName.getString("model_name");
+            return modelName.getString("descr");
         }
     }
 
@@ -279,13 +279,14 @@ public class DatabaseCalculationAccessorImpl extends CustomAutoCloseable impleme
             CalculationParamKey key,
             String user
     ) {
+        String modelName = getModelName(key.getModelId());
+
         String tableName = new DatabaseDdlAccessor().createTempTable(
                 key,
                 connection
         );
 //        TODO jdbs exscpetion
-//        String modelName = getModelName(key.getModelId());
-        String modelName = "Model_name";
+//        String modelName = "Model_name";
         Map<String, Collection<FormulaResult>> hierarchyData = finalResult.getHierarchyData();
         try (PreparedStatement saveFormulaStmt = connection.prepareStatement(
                 String.format(

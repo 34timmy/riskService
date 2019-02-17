@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ru.mifi.authentication.model.JwtUser;
 import ru.mifi.service.risk.exception.RestException;
 
 @Controller
@@ -16,8 +17,10 @@ public class ExceptionHandlerController {
 
     protected static String getCurrentUserName() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getPrincipal().toString();//TODO надо как-то иначе?
+        JwtUser principal = (JwtUser) auth.getPrincipal();
+        return String.format("%s %s (%s)", principal.getLastname(), principal.getFirstname(), principal.getEmail());//TODO надо как-то иначе?
     }
+
     @ExceptionHandler(RestException.class)
     public @ResponseBody
     String handleException(RestException e) {

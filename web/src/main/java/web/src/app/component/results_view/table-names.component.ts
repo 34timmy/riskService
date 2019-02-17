@@ -89,7 +89,7 @@ export class TableNamesComponent implements OnInit, AfterViewInit {
 
     if (this.resultList) {
 
-      this._table.filterConstraints['my'] = (value, filter): boolean => {
+      this._table.filterConstraints['DateInserted'] = (value, filter): boolean => {
         // Make sure the value and the filter are Dates
         return value.getTime() == filter.getTime();
       }
