@@ -17,7 +17,11 @@ public class ExceptionHandlerController {
 
     protected static String getCurrentUserName() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        JwtUser principal = (JwtUser) auth.getPrincipal();
+        Object principalObj = auth.getPrincipal();
+        if (principalObj instanceof String) {
+            return (String) principalObj;
+        }
+        JwtUser principal = (JwtUser) principalObj;
         return String.format("%s %s (%s)", principal.getLastname(), principal.getFirstname(), principal.getEmail());//TODO надо как-то иначе?
     }
 
